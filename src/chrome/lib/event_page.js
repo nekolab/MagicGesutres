@@ -1,5 +1,14 @@
 //Magic Gestures event page script file.
 
+var predefined = {
+    "Opera": {
+        "L":    "history-back",
+        "R":    "history-forward",
+        "DR":   "close-tab",
+        "LU":   "undo-close-tab"
+    }
+}
+
 var gestureList = {
     "L":    "history-back",
     "R":    "history-forward",
