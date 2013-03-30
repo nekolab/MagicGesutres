@@ -19,7 +19,7 @@
   },
 
   "background": {
-    "scripts": ["lib/event_page.js", "lib/core/gesture_engine.js", "lib/actions.js"],
+    "scripts": ["lib/event_page.js", "lib/core/gesture_engine.js", "lib/predefinded.js"],
     "persistent": false
   },
 
@@ -34,6 +34,6 @@
   "minimum_chrome_version": "27",
 
   "permissions": [
-    "tabs", "<all_urls>", "sessionRestore"
+    "tabs", "<all_urls>", "sessionRestore", "storage"
   ]
 }

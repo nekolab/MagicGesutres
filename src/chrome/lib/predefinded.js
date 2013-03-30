@@ -1,3 +1,26 @@
+/**
+ * @fileoverview This is an externs file provides predefinded contents.
+ * @externs
+ */
+
+var preDefindedGestures = {
+    Opera: {
+        L:   "history_back",
+        R:   "history_forward",
+        UL:  "goto_parent_dir",
+        UD:  "reload_tab",
+        U:   "stop_loading",
+        D:   "new_tab",
+        DU:  "duplicate_tab",
+        UR:  "maximize_tab", //Not Supported Yet
+        DL:  "minimize_tab", //Not Supported Yet
+        DR:  "close_tab",
+        RLR: "close_tab",
+        lD:  "open_in_newtab", //Not Supported Yet
+        lDU: "open_in_newtab_background", //Not Supported Yet
+    }
+};
+
 var preDefindedActions = {
     close_tab: function(tab){
         chrome.tabs.remove(tab.id);
