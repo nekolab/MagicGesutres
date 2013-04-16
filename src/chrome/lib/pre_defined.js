@@ -1,10 +1,10 @@
 /**
  * @fileoverview This is an externs file provides predefinded contents.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.3
  */
 
-var PRE_GESTURES = {
+const PRE_GESTURES = {
     MagicGestures: {
         L:     "history_back",
         R:     "history_forward",
@@ -93,7 +93,7 @@ var PRE_GESTURES = {
     }
 };
 
-var PRE_ACTIONS = {
+const PRE_ACTIONS = {
     close_tab: function(tab){
         chrome.tabs.remove(tab.id);
     },
@@ -233,7 +233,7 @@ var PRE_ACTIONS = {
     },
     undo_close_tab: function(tab){
         chrome.sessionRestore.getRecentlyClosed({maxResults: 1}, function(entries){
-            chrome.sessionRestore.restore(entries[0].id);
+            if (entries.length !== 0) {chrome.sessionRestore.restore(entries[0].id);}
         });
     },
     unpin_tab: function(tab){
@@ -241,5 +241,17 @@ var PRE_ACTIONS = {
     },
     view_source: function(tab){
         chrome.tabs.create({index: tab.index + 1, url: "view-source:" + tab.url, openerTabId: tab.id});
+    }
+};
+
+const INIT_CFG = {
+    Content_Script_CFG: {
+        enable:     true,
+        holdBtn:   2,
+        lineColor: "rgba(18,89,199,0.8)",
+        lineWidth: 2
+    },
+    Background_CFG: {
+        gestures: PRE_GESTURES.MagicGestures
     }
 };

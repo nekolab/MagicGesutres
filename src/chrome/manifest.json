@@ -1,6 +1,6 @@
 ﻿{
   "name": "Magic Gestures",
-  "version": "0.0.1",
+  "version": "0.0.1.5",
   "manifest_version": 2,
 
   "description": "Magic Gestures is a Google Chrome Extension providing mouse gestures.",
@@ -19,14 +19,14 @@
   },
 
   "background": {
-    "scripts": ["lib/event_page.js", "lib/core/gesture_engine.js", "lib/predefinded.js"],
+    "scripts": [ "lib/magicgestures.js", "lib/event_page.js", "lib/pre_defined.js" ],
     "persistent": false
   },
 
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
-      "js": [ "lib/content_script.js" ],
+      "js": [ "lib/magicgestures.js", "lib/content_script.js" ],
       "all_frames": true,
       "run_at": "document_end"
     }
