@@ -1,125 +1,103 @@
 /**
  * @fileoverview Magic Gestures runtime and settings storage template.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.2
+ * @version 0.0.0.5
  */
 
-const DEBUG = true;
+const ASSERT = true; const DEBUG = true;
+const ERROR  = true; const LOG   = true;
+const INFO   = true; const WARN  = true;
 
 var MagicGestures = Object.create(null);
+MagicGestures.runtime = Object.create(null);
 MagicGestures.settings = Object.create(null);
 
+MagicGestures.assert = function(bool, msg){
+    if (ASSERT) console.assert(bool, msg); };
+
 MagicGestures.debug = function(msg){
-    if (DEBUG) { console.debug(msg); }
-};
+    if (DEBUG) console.debug(msg); };
+
+MagicGestures.error = function(msg){
+    if (ERROR) console.error(msg); };
+
+MagicGestures.log = function(msg){
+    if (LOG) console.log(msg); };
+
+MagicGestures.info = function(msg){
+    if (INFO) console.info(msg); };
+
+MagicGestures.warn = function(msg){
+    if (WARN) console.warn(msg); };
 
 // Runtime environment should be initialized only once...
-MagicGestures.runtime = {
-    get: function(keys, callback){
-        chrome.storage.local.get("runtime", function(items){
-            if (keys === null) {
-                callback.call(null, items.runtime);
-            } else {
-                var result = {};
-                if (keys instanceof Array) {
-                    for (var i = keys.length - 1; i >= 0; i--) {
-                        result[keys[i]] = items.runtime[keys[i]];
-                    };
-                } else {
-                    result[keys] = items.runtime[keys];
-                }
-                callback.call(null, result);
+Object.defineProperties(MagicGestures.runtime, {
+    gestureTrie: {
+        get: function(){return gestureTrie;},
+        set: function(value){
+            gestureTrie = value;
+            MagicGestures.runtime.set({gestureTrie: value});
+        }
+    },
+    storage_backend: {
+        get: function(){
+            if (typeof storage_backend !== "undefined") {
+                if (storage_backend === "sync") {
+                    return chrome.storage.sync;}
+                if (storage_backend === "local") {
+                    return chrome.storage.local;}
             }
-        });
-        return void(0);
+            return undefined;
+        },
+        set: function(value){
+            storage_backend = (value === chrome.storage.sync) ? "sync" : "local";
+            MagicGestures.runtime.set({storage_backend: storage_backend});
+        }
     },
-    set: function(items, callback){
-        chrome.storage.local.get("runtime", function(runtimeItems){
-            for (var k in items) {
-                runtimeItems.runtime[k] = items[k];
-            };
-            chrome.storage.local.set(runtimeItems, callback);
-        });
-        return void(0);
+    get: {
+        value: function(keys, callback){
+            chrome.storage.local.get("runtime", function(items){
+                if (keys === null) {
+                    callback.call(null, items.runtime);
+                } else {
+                    var result = {};
+                    if (keys instanceof Array) {
+                        for (var i = keys.length - 1; i >= 0; i--) {
+                            result[keys[i]] = items.runtime[keys[i]];
+                        };
+                    } else {
+                        result[keys] = items.runtime[keys];
+                    }
+                    callback.call(null, result);
+                }
+            });
+            return void(0);
+        },
+        writable: false
     },
-    remove: function(key, callback){
-        chrome.storage.local.get("runtime", function(runtimeItems){
-            delete runtimeItems.runtime[key];
-            chrome.storage.local.set(runtimeItems, callback);
-        });
-        return void(0);
-    }
-};
-
-Object.defineProperty(MagicGestures.runtime, "gestureTrie", {
-    get: function(){return gestureTrie;},
-    set: function(value){
-        gestureTrie = value;
-        MagicGestures.runtime.set({gestureTrie: value});
+    set: {
+        value: function(items, callback){
+            chrome.storage.local.get("runtime", function(runtimeItems){
+                for (var k in items) {
+                    runtimeItems.runtime[k] = items[k];
+                };
+                chrome.storage.local.set(runtimeItems, callback);
+            });
+            return void(0);
+        },
+        writable: false
+    },
+    remove: {
+        value: function(key, callback){
+            chrome.storage.local.get("runtime", function(runtimeItems){
+                delete runtimeItems.runtime[key];
+                chrome.storage.local.set(runtimeItems, callback);
+            });
+            return void(0);
+        },
+        writable: false
     }
 });
-
-// Settings storage environment should be initialized only once.
-// TODO: Settings storage beackend should be saved in MagicGestres.runtime.backend
-MagicGestures.settings.storage = {
-    _backend: chrome.storage.local,
-    init: function(callback){
-        MagicGestures.debug("Initializing settings storage environment...");
-        chrome.storage.local.get("settings", function(items){
-            if ("settings" in items ) {
-                if ("type" in items.settings && items.settings.type === "sync"){
-                    MagicGestures.settings.storage._backend = chrome.storage.sync;
-                } else if (!("type" in items.settings)) {
-                    items.settings.type = "local";
-                    MagicGestures.settings.storage._backend.set(items);
-                }
-                if(callback != undefined) {callback.call(null);}
-            } else {
-                chrome.storage.local.set({settings: {type: "local"}}, callback);
-            }
-        });
-        return void(0);
-    },
-    get: function(keys, callback){
-        this._backend.get("settings", function(items){
-            if (keys === null) {
-                callback.call(null, items.settings);
-            } else {
-                var result = {};
-                if (keys instanceof Array) {
-                    for (var i = keys.length - 1; i >= 0; i--) {
-                        result[keys[i]] = items.settings[keys[i]];
-                    };
-                } else {
-                    result[keys] = items.settings[keys];
-                }
-                callback.call(null, result);
-            }
-        });
-        return void(0);
-    },
-    set: function(items, callback){
-        var storage = this;
-        this._backend.get("settings", function(settingItems){
-            for (var k in items){
-                settingItems.settings[k] = items[k];
-            };
-            storage._backend.set(settingItems, callback);
-        });
-        return void(0);
-    },
-    remove: function(key, callback){
-        this._backend.get("settings", function(settingItems){
-            delete settingItems.settings[key];
-            this._backend.set(settingItems, callback);
-        });
-        return void(0);
-    },
-    clear: function(callback){
-        this._backend.set({settings: {}}, callback);
-        return void(0);
-    }
-};
 
 Object.defineProperties(MagicGestures.settings, {
     enable: {
@@ -149,5 +127,105 @@ Object.defineProperties(MagicGestures.settings, {
             lineColor = value;
             MagicGestures.settings.storage.set({lineColor: value});
         }
+    },
+    storage: {
+        value: Object.create(null),
+        writable: true
+    }
+});
+
+// Settings storage environment should be initialized only once.
+Object.defineProperties(MagicGestures.settings.storage, {
+    _backend: {
+        get: function(){
+            if (typeof _backend !== "undefined") { return _backend; }
+            if (MagicGestures.runtime.storage_backend) {
+                _backend = MagicGestures.runtime.storage_backend;
+                return MagicGestures.runtime.storage_backend;}
+            return undefined;
+        },
+        set: function(value){
+            MagicGestures.runtime.storage_backend = _backend = value;
+        }
+    },
+    init: {
+        value: function(callback){
+            MagicGestures.log("Initializing settings storage environment...");
+            if (! MagicGestures.runtime.storage_backend) {
+                chrome.storage.local.get("settings", function(items){
+                    if ("settings" in items) {
+                        if ("type" in items.settings && items.settings.type === "local") {
+                            MagicGestures.settings.storage._backend = chrome.storage.local;
+                        } else if ("type" in items.settings && items.settings.type === "sync") {
+                            MagicGestures.settings.storage._backend = chrome.storage.sync;
+                        } else {
+                            items.type = "local";
+                            chrome.storage.local.set(items);
+                            MagicGestures.settings.storage._backend = chrome.storage.local;
+                        }
+                        if (callback !== undefined) { callback.call(null); }
+                    } else {
+                        MagicGestures.settings.storage._backend = chrome.storage.local;
+                        chrome.storage.local.set({settings: {type: "local"}}, callback);
+                    }
+                });
+            } else {
+                MagicGestures.settings.storage._backend = MagicGestures.runtime.storage_backend;
+                if (callback !== undefined) { callback.call(null); }
+            }
+            return void(0);
+        },
+        writable: false
+    },
+    get: {
+        value: function(keys, callback){
+            this._backend.get("settings", function(items){
+                if (keys === null) {
+                    callback.call(null, items.settings);
+                } else {
+                    var result = {};
+                    if (keys instanceof Array) {
+                        for (var i = keys.length - 1; i >= 0; i--) {
+                            result[keys[i]] = items.settings[keys[i]];
+                        };
+                    } else {
+                        result[keys] = items.settings[keys];
+                    }
+                    callback.call(null, result);
+                }
+            });
+            return void(0);
+        },
+        writable: false
+    },
+    set: {
+        value: function(items, callback){
+            var storage = this;
+            this._backend.get("settings", function(settingItems){
+                for (var k in items){
+                    settingItems.settings[k] = items[k];
+                };
+                storage._backend.set(settingItems, callback);
+            });
+            return void(0);
+        },
+        writable: false
+    },
+    remove: {
+        value: function(key, callback){
+            this._backend.get("settings", function(settingItems){
+                delete settingItems.settings[key];
+                this._backend.set(settingItems, callback);
+            });
+            return void(0);
+        },
+        writable: false
+    },
+    clear: {
+        value: function(callback){
+            this._backend.set({settings: {}}, callback);
+            return void(0);
+        },
+        writable: false
     }
 });

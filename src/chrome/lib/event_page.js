@@ -5,20 +5,28 @@
  */
 
 MagicGestures.runtime.init = function(callback){
-    MagicGestures.debug("Initializing runtime environment...");
-    chrome.storage.local.set({runtime: {}}, callback);
-    return void(0);
-};
-
-MagicGestures.settings.storage.switchBackend = function(type, callback){
-    this._backend.get(null, function(items){
-        MagicGestures.settings.storage._backend = (type === "sync") ? chrome.storage.sync : chrome.storage.local;
-        MagicGestures.settings.storage._backend.set(items, callback);
+    MagicGestures.log("Initializing runtime environment...");
+    chrome.storage.local.set({runtime: {}});
+    chrome.storage.local.get("settings", function(items) {
+        if ("settings" in items && "type" in items.settings) {
+            MagicGestures.runtime.storage_backend = (items.settings.type === "sync") ? chrome.storage.sync : chrome.storage.local;
+        }
+        if (callback !== undefined) { callback.call(null); }
     });
     return void(0);
 };
 
+MagicGestures.settings.storage.switchBackend = function(type, callback){
+    chrome.storage.local.get("settings", function(items){
+        items.settings.type = type;
+        chrome.storage.local.set(items, callback);
+    });
+    MagicGestures.settings.storage._backend = (type === "sync") ? chrome.storage.sync : chrome.storage.local;
+    return void(0);
+};
+
 MagicGestures.settings.init = function(callback){
+    MagicGestures.log("Initializing settings environment...");
     MagicGestures.settings.storage.init(function(){
         var gestureTrie = Object.create(null);
         for (var key in PRE_GESTURES.MagicGestures) {
@@ -32,7 +40,7 @@ MagicGestures.settings.init = function(callback){
             currentRoot.command = PRE_GESTURES.MagicGestures[key];
         }
         MagicGestures.runtime.gestureTrie = gestureTrie;
-        if (callback !== undefined) {callback.call(null);}
+        if (callback !== undefined) { callback.call(null); }
     });
 };
 
@@ -52,10 +60,10 @@ MagicGestures.handler = {
 };
 
 MagicGestures.init = function(){
-    MagicGestures.debug("Initializing MagicGestures...");
+    MagicGestures.log("Initializing MagicGestures...");
     MagicGestures.runtime.init(function(){
         MagicGestures.settings.init(function(){
-            MagicGestures.debug("Initializing pageAction and onMessage listener...");
+            MagicGestures.log("Initializing pageAction and onMessage listener...");
             //Show page action.
             chrome.tabs.onUpdated.addListener(MagicGestures.handler.pageAction);
             //Receive message from content scripts.

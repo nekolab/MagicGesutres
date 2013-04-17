@@ -165,7 +165,7 @@ const PRE_ACTIONS = {
     },
     next_tab: function(tab){
         chrome.tabs.query({index: tab.index + 1, windowId: tab.windowId}, function(tabs){
-            chrome.tabs.update(tabs[0].id, {active: true});
+            if (tabs.length !== 0) {chrome.tabs.update(tabs[0].id, {active: true});}
         });
     },
     open_bookmarks: function(tab){
