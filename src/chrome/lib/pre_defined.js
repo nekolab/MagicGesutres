@@ -10,7 +10,7 @@ const PRE_GESTURES = {
         R:     "history_forward",
         DR:    "close_tab",
         UD:    "reload_tab",
-        LU:    "undo_close_tab",
+        LU:    "undo_close_tab",                //Not Supported Yet
         UDU:   "reload_tab_bypass_cache",
         URD:   "close_window",
         UL:    "prev_tab",
@@ -54,7 +54,7 @@ const PRE_GESTURES = {
         RDU:   "maximize_window",
         LR:    "new_tab",
         DR:    "close_tab",
-        RL:    "undo_close_tab",
+        RL:    "undo_close_tab",                //Not Supported Yet
         UL:    "prev_tab",
         UR:    "next_tab",
         LRU:   "zoom_in_text",                  //Not Supported Yet
@@ -79,7 +79,7 @@ const PRE_GESTURES = {
         wU:    "scroll_to_top",                 //Not Supported Yet
         wD:    "scroll_to_bottom",              //Not Supported Yet
         DR:    "close_tab",
-        LU:    "undo_close_tab",
+        LU:    "undo_close_tab",                //Not Supported Yet
         DU:    "duplicate_tab",
         lDU:   "open_in_newtab_background",     //Not Supported Yet
         UD:    "reload_tab",
@@ -232,9 +232,9 @@ const PRE_ACTIONS = {
         chrome.tabs.update(tab.id, {pinned: !tab.pinned});
     },
     undo_close_tab: function(tab){
-        chrome.sessionRestore.getRecentlyClosed({maxResults: 1}, function(entries){
-            if (entries.length !== 0) {chrome.sessionRestore.restore(entries[0].id);}
-        });
+        // chrome.sessionRestore.getRecentlyClosed({maxResults: 1}, function(entries){
+        //     if (entries.length !== 0) {chrome.sessionRestore.restore(entries[0].id);}
+        // });
     },
     unpin_tab: function(tab){
         chrome.tabs.update(tab.id, {pinned: false});

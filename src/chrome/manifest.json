@@ -34,6 +34,6 @@
   "minimum_chrome_version": "27",
 
   "permissions": [
-    "tabs", "<all_urls>", "sessionRestore", "storage"
+    "tabs", "<all_urls>", "storage"
   ]
 }
