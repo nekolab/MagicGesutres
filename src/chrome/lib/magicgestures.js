@@ -9,26 +9,53 @@ const ERROR  = true; const LOG   = true;
 const INFO   = true; const WARN  = true;
 
 var MagicGestures = Object.create(null);
-MagicGestures.runtime = Object.create(null);
-MagicGestures.settings = Object.create(null);
 
-MagicGestures.assert = function(bool, msg){
-    if (ASSERT) console.assert(bool, msg); };
-
-MagicGestures.debug = function(msg){
-    if (DEBUG) console.debug(msg); };
-
-MagicGestures.error = function(msg){
-    if (ERROR) console.error(msg); };
-
-MagicGestures.log = function(msg){
-    if (LOG) console.log(msg); };
-
-MagicGestures.info = function(msg){
-    if (INFO) console.info(msg); };
-
-MagicGestures.warn = function(msg){
-    if (WARN) console.warn(msg); };
+Object.defineProperties(MagicGestures, {
+    runtime: {
+        value: Object.create(null),
+        writable: true
+    },
+    settings: {
+        value: Object.create(null),
+        writable: true
+    },
+    assert: {
+        value: function(bool, msg){
+            if (ASSERT) console.assert(bool, msg);
+        },
+        writable: false
+    },
+    debug: {
+        value: function(msg){
+            if (DEBUG) console.debug(msg);
+        },
+        writable: false
+    },
+    error: {
+        value: function(msg){
+            if (ERROR) console.error(msg);
+        },
+        writable: false
+    },
+    log: {
+        value: function(msg){
+            if (LOG) console.log(msg);
+        },
+        writable: false
+    },
+    info: {
+        value: function(msg){
+            if (INFO) console.info(msg);
+        },
+        writable: false
+    },
+    warn: {
+        value: function(msg){
+            if (WARN) console.warn(msg);
+        },
+        writable: false
+    }
+});
 
 // Runtime environment should be initialized only once...
 Object.defineProperties(MagicGestures.runtime, {
