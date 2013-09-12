@@ -111,16 +111,18 @@ Object.defineProperties(MagicGestures.runtime, {
                 MagicGestures.logging.error("Wrong syntax for MagicGestures init!!!");
             }
             MagicGestures.logging.info("Initializing", envName, "MagicGestures Module...");
-            if (envName === "content script") {
-                this.speak = function(msg, responseCallback) {
-                    chrome.runtime.sendMessage(msg, responseCallback);
-                };
-            } else {
-                this.speak = function(tabId, msg, responseCallback) {
-                    chrome.tabs.sendMessage(tabId, msg, responseCallback);
-                };
-            }
-            chrome.runtime.onMessage.addListener(this.listener.execute);
+            this.clear(function() {
+                if (envName === "content script") {
+                    this.speak = function(msg, responseCallback) {
+                        chrome.runtime.sendMessage(msg, responseCallback);
+                    };
+                } else {
+                    this.speak = function(tabId, msg, responseCallback) {
+                        chrome.tabs.sendMessage(tabId, msg, responseCallback);
+                    };
+                }
+                chrome.runtime.onMessage.addListener(this.listener.execute);
+            });
         },
         writable: false
     },
@@ -218,47 +220,42 @@ Object.defineProperties(MagicGestures.runtime, {
         value: Object.create(null),
         writable: false
     },
-    // Profile which is actived.
-    // Use this property is for speed the read and make async oprate become sync.
-    // Eachtime we update the current profile, we should send a message "currentProfileUpdated" to update it.
-    currentProfile: {
-        get: function() {
+    // CurrentProfile is the profile which is actived.
+    // "currentProfile" in runtime enviroment is a subset of current profile.
+    // Eachtime we update the current profile, we will send a message "currentProfileUpdated",
+    //   every content script should listen this event and update current profile.
+    // callback: With the object of current profile as syntax.
+    //           If there is no current profile in runtime storage, will return a empty object.
+    getCurrentProfile: {
+        value: function(callback) {
             if (this.envName === "background") {
                 MagicGestures.logging.error("Background Page CANNOT read runtime current profile.");
                 return;
             }
-            if (typeof currentProfile === "undefined") {
-                this.get({currentProfile: Object.create(null)}, function(result) {
-                    // Make sure result.currentProfile is not undefined because it will stuck in while.
-                    if (typeof result === "undefined" || typeof result.currentProfile === "undefined") {
-                        currentProfile = Object.create(null);
-                    } else {
-                        currentProfile = result.currentProfile;
-                    }
-                });
-                this.listener.add("currentProfileUpdated", function() {
-                    currentProfile = undefined;
-                });
-                while(typeof currentProfile === "undefined");
-            }
-            return currentProfile;
+            this.get({currentProfile: Object.create(null)}, function(result) {
+                callback.call(null, result.currentProfile);
+            });
+            return;
         },
-        // Set current profile.
-        // Use only for background page.
-        set: function(value) {
+        writable: false
+    },
+    // Set current profile.
+    // Use only for background page.
+    setCurrentProfile: {
+        value: function(value, callback) {
             if (this.envName === "background") {
-                currentProfile = value;
                 this.set({currentProfile: value}, function() {
                     chrome.tabs.query({}, function(tabs) {
                         tabs.forEach(function(tab) {
                             chrome.tabs.sendMessage(tab.id, "currentProfileUpdated");
                         });
                     });
-                });
+                }, callback);
             } else {
                 MagicGestures.logging.error("Content Script CANNOT set current profile.");
             }
-        }
+        },
+        writable: false
     }
 });
 
