@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.1
  */
 
 /*global chrome: false */
@@ -218,9 +218,15 @@ Object.defineProperties(MagicGestures.runtime, {
         value: Object.create(null),
         writable: false
     },
-    // Profile which is using now.
+    // Profile which is actived.
+    // Use this property is for speed the read and make async oprate become sync.
+    // Eachtime we update the current profile, we should send a message "currentProfileUpdated" to update it.
     currentProfile: {
         get: function() {
+            if (this.envName === "background") {
+                MagicGestures.logging.error("Background Page CANNOT read runtime current profile.");
+                return;
+            }
             if (typeof currentProfile === "undefined") {
                 this.get({currentProfile: Object.create(null)}, function(result) {
                     // Make sure result.currentProfile is not undefined because it will stuck in while.
@@ -249,6 +255,8 @@ Object.defineProperties(MagicGestures.runtime, {
                         });
                     });
                 });
+            } else {
+                MagicGestures.logging.error("Content Script CANNOT set current profile.");
             }
         }
     }
