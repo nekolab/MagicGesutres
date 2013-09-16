@@ -1,16 +1,16 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.1
+ * @version 0.0.1.5
  */
 
 /*global chrome: false */
-/*jshint devel: true, esnext: true, strict: true */
+/*jshint devel: true, esnext: true, strict: true, globalstrict: true */
 
 "use strict";
 
-var DIR = true, DEBUG = true, INFO = true;
-var LOG = true, ERROR = true, WARN = true, ASSERT = true;
+var DIR = true, DEBUG = true, INFO = true, ASSERT = true;
+var LOG = true, ERROR = true, WARN = true, UNITTEST = true;
 
 var MagicGestures = Object.create(null);
 
@@ -39,7 +39,7 @@ Object.defineProperties(MagicGestures.logging, {
     assert: {
         value: function(){
             if (ASSERT) {
-                console.assert.apply(null, arguments);
+                console.assert.apply(console, arguments);
             }
         },
         writable: false
@@ -47,7 +47,7 @@ Object.defineProperties(MagicGestures.logging, {
     debug: {
         value: function(){
             if (DEBUG) {
-                console.debug.apply(null, arguments);
+                console.debug.apply(console, arguments);
             }
         },
         writable: false
@@ -63,7 +63,7 @@ Object.defineProperties(MagicGestures.logging, {
     error: {
         value: function(){
             if (ERROR) {
-                console.error.apply(null, arguments);
+                console.error.apply(console, arguments);
             }
         },
         writable: false
@@ -71,7 +71,7 @@ Object.defineProperties(MagicGestures.logging, {
     log: {
         value: function(){
             if (LOG) {
-                console.log.apply(null, arguments);
+                console.log.apply(console, arguments);
             }
         },
         writable: false
@@ -79,7 +79,7 @@ Object.defineProperties(MagicGestures.logging, {
     info: {
         value: function(){
             if (INFO) {
-                console.info.apply(null, arguments);
+                console.info.apply(console, arguments);
             }
         },
         writable: false
@@ -87,7 +87,7 @@ Object.defineProperties(MagicGestures.logging, {
     warn: {
         value: function(){
             if (WARN) {
-                console.warn.apply(null, arguments);
+                console.warn.apply(console, arguments);
             }
         },
         writable: false
@@ -105,39 +105,46 @@ Object.defineProperties(MagicGestures.runtime, {
     // Initialize function.
     // Initialize the speak and listener for content script / background page.
     // envName: Should be one of the "content script" or "background"
+    // callback: Will be called after initialized.
     init: {
-        value: function(envName) {
+        value: function(envName, callback) {
             if (envName !== "content script" && envName !== "background") {
-                MagicGestures.logging.error("Wrong syntax for MagicGestures init!!!");
+                MagicGestures.logging.error("Wrong syntax \"" + envName + "\" for MagicGestures init!!!");
+                return void(0);
             }
             MagicGestures.logging.info("Initializing", envName, "MagicGestures Module...");
+            var MagicRuntime = this;
             this.clear(function() {
                 if (envName === "content script") {
-                    this.speak = function(msg, responseCallback) {
+                    MagicRuntime.speak = function(msg, responseCallback) {
                         chrome.runtime.sendMessage(msg, responseCallback);
                     };
                 } else {
-                    this.speak = function(tabId, msg, responseCallback) {
+                    MagicRuntime.speak = function(tabId, msg, responseCallback) {
                         chrome.tabs.sendMessage(tabId, msg, responseCallback);
                     };
                 }
-                chrome.runtime.onMessage.addListener(this.listener.execute);
+                chrome.runtime.onMessage.addListener(MagicRuntime.listener.execute);
+                if (callback) {
+                    callback.call(null);
+                }
             });
         },
         writable: false
     },
     // Get one or more items storage in runtime storage.
-    // keys: A single key to get, list of keys to get.
+    // keys: A single key to get, list of keys to get or object to get which define default value.
     //       Pass null will get the total useage of runtime storage.
     // callback: With the object of names and theirs value as syntax.
     //           An empty list or object will return an empty result object.
     get: {
         value: function(keys, callback) {
             chrome.storage.local.get("runtime", function(runtimeItems) {
+                runtimeItems = runtimeItems.runtime;
                 if (typeof keys === "undefined" || keys === null) {
-                    callback.call(null, runtimeItems);
-                } else if (Object.keys(keys).length === 0) {
-                    callback.call(null, Object.create(null));
+                    if (callback) {
+                        callback.call(null, runtimeItems);
+                    }
                 } else if (Object.prototype.toString.call(keys) === "[object Object]") {
                     // Find one or more items in runtime object
                     var result = Object.create(null);
@@ -147,7 +154,9 @@ Object.defineProperties(MagicGestures.runtime, {
                             result[key] = (key in runtimeItems) ? runtimeItems[key] : keys[key];
                         }
                     }
-                    callback.call(null, result);
+                    if (callback) {
+                        callback.call(null, result);
+                    }
                 } else {
                     // Convert string type key to array type keys
                     if (typeof keys === "string") {
@@ -160,7 +169,9 @@ Object.defineProperties(MagicGestures.runtime, {
                             result[keys[i]] = runtimeItems[keys[i]];
                         }
                     }
-                    callback.call(null, result);
+                    if (callback) {
+                        callback.call(null, result);
+                    }
                 }
             });
         },
@@ -169,20 +180,18 @@ Object.defineProperties(MagicGestures.runtime, {
     // Set one or more items from object into runtime storage.
     // items: Object specifying items to augment storage with.
     //        Values that cannot be serialized (functions, etc) will be ignored.
+    // Due to http://crbug.com/292399, values that cannot be serialized will be replaced as an empty object.
     // callback: Callback on success, or on failure (in which case runtime.lastError will be set).
     set: {
         value: function(items, callback) {
             this.get(null, function(runtimeItems) {
-                MagicGestures.logging.debug("Original items:");
-                MagicGestures.logging.dir(items);
-                MagicGestures.logging.debug("Original runtimeItems:");
-                MagicGestures.logging.dir(runtimeItems);
+                MagicGestures.logging.debug("Original items:", items);
+                MagicGestures.logging.debug("Original runtimeItems:", runtimeItems);
                 // Merge two objects
                 for (var item in items) {
                     runtimeItems[item] = items[item];
                 }
-                MagicGestures.logging.debug("After merge runtimeItems:");
-                MagicGestures.logging.dir(runtimeItems);
+                MagicGestures.logging.debug("After merge runtimeItems:", runtimeItems);
                 chrome.storage.local.set({runtime: runtimeItems}, callback);
             });
         },
@@ -193,16 +202,19 @@ Object.defineProperties(MagicGestures.runtime, {
     // callback: Callback on success, or on failure (in which case runtime.lastError will be set).
     remove: {
         value: function(keys, callback) {
-            this.get(null, function(runtimeItems) {
-                // Convert string type key to array type keys
-                if (typeof keys === "string") {
-                    keys = [keys];
-                }
-                // Delete keys from runtime storage.
-                for (var i = keys.length - 1; i >= 0; i--) {
-                    delete runtimeItems[keys[i]];
-                }
-                chrome.storage.local.set({runtime: runtimeItems}, callback);
+            var MagicRuntime = this;
+            MagicRuntime.get(null, function(runtimeItems) {
+                MagicRuntime.clear(function() {
+                    // Convert string type key to array type keys
+                    if (typeof keys === "string") {
+                        keys = [keys];
+                    }
+                    // Delete keys from runtime storage.
+                    for (var i = keys.length - 1; i >= 0; i--) {
+                        delete runtimeItems[keys[i]];
+                    }
+                    MagicRuntime.set(runtimeItems, callback);
+                });
             });
         },
         writable: false

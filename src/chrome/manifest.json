@@ -19,7 +19,7 @@
   },
 
   "background": {
-    "scripts": [ "lib/magicgestures.js", "lib/pre_defined.js", "lib/event_page.js" ],
+    "scripts": [ "lib/magicgestures.js", "lib/magicgestures_unit_test.js", "lib/pre_defined.js", "lib/event_page.js" ],
     "persistent": false
   },
 
