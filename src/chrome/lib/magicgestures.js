@@ -179,8 +179,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
     // Set one or more items from object into runtime storage.
     // items: Object specifying items to augment storage with.
-    //        Values that cannot be serialized (functions, etc) will be ignored.
-    // Due to http://crbug.com/292399, values that cannot be serialized will be replaced as an empty object.
+    //        Values that cannot be serialized will be replaced as an empty object.
     // callback: Callback on success, or on failure (in which case runtime.lastError will be set).
     set: {
         value: function(items, callback) {

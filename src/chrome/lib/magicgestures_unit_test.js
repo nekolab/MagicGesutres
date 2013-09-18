@@ -92,9 +92,8 @@ var runtimeSetTest = function(callback) {
 	console.group("Testing for MagicGestures.runtime.set");
 	MagicGestures.runtime.set({hello: "chromium", test: "only", func: function(){}}, function() {
 		MagicGestures.runtime.get(["hello", "world", "chromium", "test", "func"], function(result) {
-			// Due to http://crbug.com/292399, func is in result and is an empty object.
-			//MagicGestures.logging.assert(Object.keys(result) === 4, "Not correct properties count.");
-			//MagicGestures.logging.assert(typeof result.func === "undefined", "Deserialize failed.");
+			MagicGestures.logging.assert(Object.keys(result).length === 5, "Not correct properties count.");
+			MagicGestures.logging.assert(Object.keys(result.func).length === 0, "Deserialize function to empty object failed.");
 			MagicGestures.logging.assert(result.hello === "chromium" && result.world === "hello" &&
 				result.chromium === "browser" && result.test === "only", "Merge items in set function failed.", result);
 
