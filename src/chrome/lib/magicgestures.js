@@ -1,11 +1,11 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.5
+ * @version 0.0.1.6
  */
 
 /*global chrome: false */
-/*jshint devel: true, esnext: true, strict: true, globalstrict: true */
+/*jshint devel: true, esnext: true, forin: false, curly: false, strict: true, globalstrict: true */
 
 "use strict";
 
@@ -38,57 +38,50 @@ Object.defineProperties(MagicGestures, {
 Object.defineProperties(MagicGestures.logging, {
     assert: {
         value: function(){
-            if (ASSERT) {
+            if (ASSERT)
                 console.assert.apply(console, arguments);
-            }
         },
         writable: false
     },
     debug: {
         value: function(){
-            if (DEBUG) {
+            if (DEBUG)
                 console.debug.apply(console, arguments);
-            }
         },
         writable: false
     },
     dir: {
         value: function(object){
-            if (DIR) {
+            if (DIR)
                 console.dir(object);
-            }
         },
         writable: false
     },
     error: {
         value: function(){
-            if (ERROR) {
+            if (ERROR)
                 console.error.apply(console, arguments);
-            }
         },
         writable: false
     },
     log: {
         value: function(){
-            if (LOG) {
+            if (LOG)
                 console.log.apply(console, arguments);
-            }
         },
         writable: false
     },
     info: {
         value: function(){
-            if (INFO) {
+            if (INFO)
                 console.info.apply(console, arguments);
-            }
         },
         writable: false
     },
     warn: {
         value: function(){
-            if (WARN) {
+            if (WARN)
                 console.warn.apply(console, arguments);
-            }
         },
         writable: false
     }
@@ -125,9 +118,8 @@ Object.defineProperties(MagicGestures.runtime, {
                     };
                 }
                 chrome.runtime.onMessage.addListener(MagicRuntime.listener.execute);
-                if (callback) {
+                if (callback)
                     callback.call(null);
-                }
             });
         },
         writable: false
@@ -141,21 +133,16 @@ Object.defineProperties(MagicGestures.runtime, {
         value: function(keys, callback) {
             chrome.storage.local.get("runtime", function(runtimeItems) {
                 runtimeItems = runtimeItems.runtime;
+                var result = Object.create(null);
                 if (typeof keys === "undefined" || keys === null) {
-                    if (callback) {
-                        callback.call(null, runtimeItems);
-                    }
+                    result = runtimeItems;
                 } else if (Object.prototype.toString.call(keys) === "[object Object]") {
                     // Find one or more items in runtime object
-                    var result = Object.create(null);
                     for (var key in keys) {
                         //Check own property
                         if (keys.hasOwnProperty(key)) {
                             result[key] = (key in runtimeItems) ? runtimeItems[key] : keys[key];
                         }
-                    }
-                    if (callback) {
-                        callback.call(null, result);
                     }
                 } else {
                     // Convert string type key to array type keys
@@ -163,16 +150,14 @@ Object.defineProperties(MagicGestures.runtime, {
                         keys = [keys];
                     }
                     // Find one or more items in runtime object
-                    var result = Object.create(null);
                     for (var i = keys.length - 1; i >= 0; i--) {
                         if(keys[i] in runtimeItems) {
                             result[keys[i]] = runtimeItems[keys[i]];
                         }
                     }
-                    if (callback) {
-                        callback.call(null, result);
-                    }
                 }
+                if (callback)
+                    callback.call(null, result);
             });
         },
         writable: false
