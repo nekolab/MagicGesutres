@@ -292,8 +292,8 @@ Object.defineProperties(MagicGestures.runtime.listener, {
     // If it receive a message equals event's name, it will call the callback function.
     execute: {
         value: function(request, sender, sendResponse) {
-            if (request in this.eventPool) {
-                this.eventPool[request].apply(null, sender.tab ? [sendResponse] : [sender.tab, sendResponse]);
+            if (request in MagicGestures.runtime.listener.eventPool) {
+                MagicGestures.runtime.listener.eventPool[request].apply(null, sender.tab ? [sendResponse] : [sender.tab, sendResponse]);
             }
         },
         writable: false
