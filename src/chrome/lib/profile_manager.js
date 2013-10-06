@@ -62,11 +62,12 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                                 MagicGestures.Preset.Profiles.Opera(),
                                 MagicGestures.Preset.Profiles.SmoothGestures()
                             ].forEach(function(profile) {
+                                profile.gestureTrie = MagicGestures.Util.generateTrie(profile);
                                 profileMap[profile.id] = profile;
                             });
                             chrome.storage.local.set({profileMap: profileMap});
                         } else {
-                            // Load local profile.
+                            MagicGestures.logging.info("Loading profile from local storage...", result.profileMap);
                             for (var id in result.profileMap) {
                                 profileMap[id] = result.profileMap[id];
                             }
@@ -79,6 +80,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                 var getRemoteProfileMap = function(callback) {
                     chrome.storage.sync.get("profileMap", function(result) {
                         for (var id in result.profileMap) {
+                            MagicGestures.logging.info("Loading profile from sync storage...", result.profileMap);
                             if (id in profileMap) {
                                 profileMap[id] = MagicProfileManager.mergeManager(profileMap[id], result.profileMap[id]);
                             } else {
@@ -92,7 +94,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
 
                 MagicGestures.runtime.get(["profileMap", "active"], function(result) {
                     if (Object.keys(result).length !== 0) {
-                        // Copy info from runtime.
+                        MagicGestures.logging.info("Loading ProfileManager from runtime...");
                         MagicProfileManager._profileMap = result.profileMap;
                         MagicProfileManager._activedProfile = result.active;
                     } else {
@@ -113,17 +115,6 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                     }
                 });
 
-            }
-        },
-        /**
-         * guid is a random identify string generator.
-         */
-        guid: {
-            value: function() {
-                var s4 = function () {
-                  return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-                };
-                return s4() + s4() + s4() + s4();
             }
         },
         /**

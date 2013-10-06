@@ -9,8 +9,8 @@
 
 "use strict";
 
-var DIR = true, DEBUG = true, INFO = true, ASSERT = true;
-var LOG = true, ERROR = true, WARN = true, UNITTEST = false;
+var DIR = true, DEBUG = true, INFO = true;
+var LOG = true, ERROR = true, WARN = true, ASSERT = true;
 
 var MagicGestures = Object.create(null);
 

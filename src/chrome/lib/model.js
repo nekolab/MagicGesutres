@@ -144,7 +144,7 @@ MagicGestures.Profile = function(profile) {
      * This varible is the place to cache the gesture tire which complied from gestures. 
      * @type {object.<string, object.<string, object|string|boolean>>}
      */
-    this.gestureTire = undefined;
+    this.gestureTrie = undefined;
 
     /**
      * NeuralNet is the object which stores info about neural network.
