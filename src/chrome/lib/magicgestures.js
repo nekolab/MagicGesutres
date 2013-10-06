@@ -10,7 +10,7 @@
 "use strict";
 
 var DIR = true, DEBUG = true, INFO = true, ASSERT = true;
-var LOG = true, ERROR = true, WARN = true, UNITTEST = true;
+var LOG = true, ERROR = true, WARN = true, UNITTEST = false;
 
 var MagicGestures = Object.create(null);
 
@@ -108,6 +108,7 @@ Object.defineProperties(MagicGestures.runtime, {
             MagicGestures.logging.info("Initializing", envName, "MagicGestures Module...");
             var MagicRuntime = this;
             this.clear(function() {
+                MagicRuntime.envName = envName;
                 if (envName === "content script") {
                     MagicRuntime.speak = function(msg, responseCallback) {
                         chrome.runtime.sendMessage(msg, responseCallback);
