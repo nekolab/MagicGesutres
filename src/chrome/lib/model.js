@@ -128,6 +128,13 @@ MagicGestures.Profile = function(profile) {
     this.locusColor = [255, 255, 255, 1];
 
     /**
+     * Indicate the width of locus.
+     * Unit is px, default to 2.
+     * @type {number}
+     */
+    this.locusWidth = 2;
+
+    /**
      * Locus time to live (ttl) means gesture will be canceled after specified seconds with no action.
      * Set to 0 means disable this option and alway show locus.
      * @type {number}
