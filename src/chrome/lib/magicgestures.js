@@ -23,14 +23,6 @@ Object.defineProperties(MagicGestures, {
     runtime: {
         value: Object.create(null),
         writable: true
-    },
-    directionEngine: {
-        value: Object.create(null),
-        writable: true
-    },
-    AIEngine: {
-        value: Object.create(null),
-        writable: true
     }
 });
 
@@ -106,22 +98,28 @@ Object.defineProperties(MagicGestures.runtime, {
                 return void(0);
             }
             MagicGestures.logging.info("Initializing", envName, "MagicGestures Module...");
-            var MagicRuntime = this;
-            this.clear(function() {
-                MagicRuntime.envName = envName;
+
+            var internalInit = function() {
+                MagicGestures.runtime.envName = envName;
                 if (envName === "content script") {
-                    MagicRuntime.speak = function(msg, responseCallback) {
+                    MagicGestures.runtime.speak = function(msg, responseCallback) {
                         chrome.runtime.sendMessage(msg, responseCallback);
                     };
                 } else {
-                    MagicRuntime.speak = function(tabId, msg, responseCallback) {
+                    MagicGestures.runtime.speak = function(tabId, msg, responseCallback) {
                         chrome.tabs.sendMessage(tabId, msg, responseCallback);
                     };
                 }
-                chrome.runtime.onMessage.addListener(MagicRuntime.listener.execute);
+                chrome.runtime.onMessage.addListener(MagicGestures.runtime.listener.execute);
                 if (callback)
                     callback.call(null);
-            });
+            };
+
+            if (envName === "content script") {
+                internalInit();
+            } else {
+                MagicGestures.runtime.clear(internalInit);
+            }
         },
         writable: false
     },
@@ -169,7 +167,7 @@ Object.defineProperties(MagicGestures.runtime, {
     // callback: Callback on success, or on failure (in which case runtime.lastError will be set).
     set: {
         value: function(items, callback) {
-            this.get(null, function(runtimeItems) {
+            MagicGestures.runtime.get(null, function(runtimeItems) {
                 MagicGestures.logging.debug("Original items:", items);
                 MagicGestures.logging.debug("Original runtimeItems:", runtimeItems);
                 // Merge two objects
@@ -187,7 +185,7 @@ Object.defineProperties(MagicGestures.runtime, {
     // callback: Callback on success, or on failure (in which case runtime.lastError will be set).
     remove: {
         value: function(keys, callback) {
-            var MagicRuntime = this;
+            var MagicRuntime = MagicGestures.runtime;
             MagicRuntime.get(null, function(runtimeItems) {
                 MagicRuntime.clear(function() {
                     // Convert string type key to array type keys
@@ -225,11 +223,11 @@ Object.defineProperties(MagicGestures.runtime, {
     //           If there is no current profile in runtime storage, will return a empty object.
     getCurrentProfile: {
         value: function(callback) {
-            if (this.envName === "background") {
+            if (MagicGestures.runtime.envName === "background") {
                 MagicGestures.logging.error("Background Page CANNOT read runtime current profile.");
                 return;
             }
-            this.get({currentProfile: Object.create(null)}, function(result) {
+            MagicGestures.runtime.get({currentProfile: Object.create(null)}, function(result) {
                 callback.call(null, result.currentProfile);
             });
             return;
@@ -240,8 +238,8 @@ Object.defineProperties(MagicGestures.runtime, {
     // Use only for background page.
     setCurrentProfile: {
         value: function(value, callback) {
-            if (this.envName === "background") {
-                this.set({currentProfile: value}, function() {
+            if (MagicGestures.runtime.envName === "background") {
+                MagicGestures.runtime.set({currentProfile: value}, function() {
                     chrome.tabs.query({}, function(tabs) {
                         tabs.forEach(function(tab) {
                             chrome.tabs.sendMessage(tab.id, "currentProfileUpdated");
@@ -274,10 +272,10 @@ Object.defineProperties(MagicGestures.runtime.listener, {
     //               also sendResponse will be passed to callback for optional send response.
     add: {
         value: function(name, callback) {
-            if (name in this.eventPool) {
-                delete this.eventPool[name];
+            if (name in MagicGestures.runtime.listener.eventPool) {
+                delete MagicGestures.runtime.listener.eventPool[name];
             }
-            this.eventPool[name] = callback;
+            MagicGestures.runtime.listener.eventPool[name] = callback;
         },
         writable: false
     },
@@ -285,7 +283,7 @@ Object.defineProperties(MagicGestures.runtime.listener, {
     // name: Event's name
     remove: {
         value: function(name) {
-            delete this.eventPool[name];
+            delete MagicGestures.runtime.listener.eventPool[name];
         },
         writable: false
     },
