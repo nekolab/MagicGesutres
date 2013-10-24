@@ -29,7 +29,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
             set: function(value) {
                 this._profileMap = value;
                 this.syncCenter.update("profileMap", value);
-                MagicGestures.runtime.set(value);
+                MagicGestures.runtime.set({profileMap: value});
             }
         },
         /**
