@@ -1,248 +1,190 @@
-﻿/**
+/**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.2
+ * @version 0.0.1.0
  */
 
-Object.defineProperties(MagicGestures, {
-    gesture: { value: Object.create(null), writable: true },
-    tabs:    { value: Object.create(null), writable: true }
-});
+/*global MagicGestures: true */
+/*jshint strict: true, globalstrict: true */
 
-Object.defineProperties(MagicGestures.gesture, {
-    code:     { value: "", writable: true },
-    distance: { value: 0 , writable: true },
-    locus:    { value: Object.create(null), writable: true },
-    reset:    { value: function(){
-            MagicGestures.gesture.code = "";
-            MagicGestures.gesture.distance = 0;
-            MagicGestures.gesture.locus.points = [];
-            MagicGestures.gesture.locus.gestureTrie = MagicGestures.runtime.gestureTrie;
-            MagicGestures.gesture.locus.startPoint = {x: 0, y: 0};
+"use strict";
+
+Object.defineProperty(MagicGestures, "tab", {
+    value: Object.create(null, {
+        clientWidth: {
+            value: document.documentElement.clientWidth,
+            writable: true
         },
-        writable: false
-    }
-});
-
-Object.defineProperties(MagicGestures.gesture.locus, {
-    points:      { value: [], writable: true },
-    gestureTrie: { value: [], writable: true },
-    startPoint:  { value: {x: 0, y: 0}, writable: true }
-});
-
-Object.defineProperties(MagicGestures.tabs, {
-    clientWidth: {
-        value: document.documentElement.clientWidth,
-        writable: true
-    },
-    clientHeight: {
-        value: document.documentElement.clientHeight,
-        writable: true
-    },
-    divInserted: {
-        value: false,
-        writable: true
-    },
-    _pointWaitlist: {
-        value: [],
-        writable: true,
-        enumerable: false
-    },
-    _asyncDraw: {
-        value: function(){
-            if (this._asyncDraw.timeout) return;
-            this._asyncDraw.timeout = setTimeout(function(){
-                var len = MagicGestures.tabs._pointWaitlist.length;
-                for (var i = 0; i < len; i++) {
-                    MagicGestures.tabs.insertedPolyline.points.appendItem(MagicGestures.tabs._pointWaitlist[i]);
+        clientHeight: {
+            value: document.documentElement.clientHeight,
+            writable: true
+        },
+        gestureCanvas: {
+            value: Object.create(null, {
+                element: {
+                    value: undefined,
+                    writable: true
+                },
+                context2D: {
+                    value: undefined,
+                    writable: true
                 }
-                MagicGestures.tabs._pointWaitlist.length = 0;
-                MagicGestures.tabs._asyncDraw.timeout = undefined;
-            }, 10);
+            })
         },
-        writable: false,
-        enumerable: false
-    },
-    addGestureLayer: {
-        value: function(){
-            this.insertedDiv = document.createElement("div");
-            this.insertedDiv.setAttribute("style", "position: fixed; left: 0px; top: 0px;\
-                display: block; z-index: 999999; border: none; background-color: transparent;");
-            this.insertedDiv.setAttribute("width", MagicGestures.tabs.clientWidth);
-            this.insertedDiv.setAttribute("height", MagicGestures.tabs.clientHeight);
-
-            this.insertedSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            this.insertedSVG.style.position = "fixed";
-            this.insertedSVG.style.top = "0px";
-            this.insertedSVG.style.left = "0px";
-            this.insertedSVG.style.zIndex = 999999;
-            this.insertedSVG.setAttribute("width", MagicGestures.tabs.clientWidth);
-            this.insertedSVG.setAttribute("height", MagicGestures.tabs.clientHeight);
-
-            this.insertedPolyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            this.insertedPolyline.setAttribute("stroke", MagicGestures.settings.lineColor);
-            this.insertedPolyline.setAttribute("stroke-width", MagicGestures.settings.lineWidth);
-            this.insertedPolyline.setAttribute("fill", "none");
-
-            this.insertedSVG.appendChild(this.insertedPolyline);
-            this.insertedDiv.appendChild(this.insertedSVG);
-            document.body.appendChild(this.insertedDiv);
-            this.divInserted = true;
-            MagicGestures.tabs.oncontextmenuBak = document.oncontextmenu;
-            document.oncontextmenu = MagicGestures.tabs.disableContext;
-        },
-        writable: false
-    },
-    appendGesturePoint: {
-        value: function(point){
-            var svgPoint = this.insertedSVG.createSVGPoint();
-            svgPoint.x = point.x;
-            svgPoint.y = point.y;
-            // Disable asynchronous gesture draw.
-            // this._pointWaitlist.push(svgPoint);
-            // this._asyncDraw();
-            this.insertedPolyline.points.appendItem(svgPoint);
-        },
-        writable: false
-    },
-    disableContext: {
-        value: function(e){
-            e.preventDefault();
-            MagicGestures.info("Right-Click Disabled!!!");
-        },
-        writable: false
-    },
-    removeGestureLayer: {
-        value: function(){
-            document.body.removeChild(this.insertedDiv);
-            this.divInserted = false;
-        },
-        writable: false
-    }
-});
-
-MagicGestures.handler = {
-    mousedown: function(e){
-        if (e.button == MagicGestures.settings.holdBtn) {
-            MagicGestures.gesture.reset();
-            MagicGestures.gesture.locus.startPoint = {x: e.clientX, y: e.clientY};
-            MagicGestures.gesture.locus.points.push({x: e.clientX, y: e.clientY});
-            MagicGestures.info("Right Mouse Down!!! X @ " + e.clientX + " , Y @ " + e.clientY);
-            if (document.oncontextmenu == MagicGestures.tabs.disableContext) {
-                document.oncontextmenu = MagicGestures.tabs.oncontextmenuBak; }
-            MagicGestures.info("Right-Click Enabled!!!");
-        }
-    },
-    mousemove: function(e){
-        if (e.button == MagicGestures.settings.holdBtn && e.clientX !== MagicGestures.gesture.locus.startPoint.x && e.clientY !== MagicGestures.gesture.locus.startPoint.y) {
-            if (! MagicGestures.tabs.divInserted) {
-                MagicGestures.tabs.addGestureLayer();
-            }
-            MagicGestures.tabs.appendGesturePoint({x: e.clientX, y: e.clientY});
-
-            var current = {x: e.clientX, y: e.clientY};
-            var prev = MagicGestures.gesture.locus.points.slice(-1)[0];
-            MagicGestures.gesture.locus.points.push(current);
-            // MagicGestures.gesture.distance calc distance
-
-            var deltaX = current.x - prev.x;
-            var deltaY = current.y - prev.y;
-
-            var prevDir = (MagicGestures.gesture.code === "") ? "" : MagicGestures.gesture.code.substr(-1,1);
-            var currDir = undefined;
-
-            var isDiagonal = false;
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                currDir = (deltaX > 0) ? "R" : "L";
-            } else if (Math.abs(deltaX) < Math.abs(deltaY)) {
-                currDir = (deltaY > 0) ? "D" : "U";
-            }
-            /* Beacuse lack of way to check is diagonal or not
-             * so I disable it temporary
-             else if (deltaY < 0) {
-                isDiagonal = true;
-                currDir = (deltaX < 0) ? "7" : "9";
-            } else {
-                isDiagonal = true;
-                currDir = (deltaX < 0) ? "1" : "3";
-            }
-            */
-
-            if ((Math.abs(deltaX) > 15 || Math.abs(deltaY) > 15) && (currDir !== prevDir)) {
-
-                if (MagicGestures.gesture.locus.gestureTrie) {
-                    MagicGestures.gesture.locus.gestureTrie = MagicGestures.gesture.locus.gestureTrie[currDir];
-                    MagicGestures.gesture.code += currDir;
-                } else {
-                    //TODO: endGesture
-                }
-            }
-        }
-    },
-    mouseup: function(e){
-        MagicGestures.info("Mouse UP!!!");
-        if (e.button == MagicGestures.settings.holdBtn && MagicGestures.tabs.divInserted) {
-            MagicGestures.tabs.removeGestureLayer();
-            MagicGestures.info("Right Mouse Up!!!   X @ " + e.clientX + " , Y @ " + e.clientY);
-            MagicGestures.log(MagicGestures.gesture.code);
-            MagicGestures.debug(MagicGestures.gesture.locus.gestureTrie);
-            if (MagicGestures.gesture.locus.gestureTrie && "check" in MagicGestures.gesture.locus.gestureTrie) {
-                chrome.runtime.sendMessage({
-                    command: MagicGestures.gesture.locus.gestureTrie.command
-                }, function(response){
-                    MagicGestures.debug(response.status);
+        init: {
+            value: function() {
+                MagicGestures.runtime.getCurrentProfile(function(result) {
+                    MagicGestures.runtime.currentProfile = result;
+                    MagicGestures.tab.eventHandler.init();
+                    MagicGestures.tab.mouseHandler.init();
+                    MagicGestures.tab.gesture.possibleNext = result.gestureTrie;
                 });
             }
-            MagicGestures.gesture.reset();
+        },
+        createCanvas: {
+            value: function() {
+                if (!MagicGestures.tab.gestureCanvas.element) {
+                    MagicGestures.tab.gestureCanvas.element = document.createElement("canvas");
+                    MagicGestures.tab.gestureCanvas.element.setAttribute("id", "MagicGesturesDrawCanvas");
+                    MagicGestures.tab.gestureCanvas.element.setAttribute("style", "position: fixed; left: 0px; " +
+                        "top: 0px; display: block; z-index: 999999; border: none; background-color: transparent;");
+                    MagicGestures.tab.gestureCanvas.element.setAttribute("width", MagicGestures.tab.clientWidth);
+                    MagicGestures.tab.gestureCanvas.element.setAttribute("height", MagicGestures.tab.clientHeight);
+                    document.body.appendChild(MagicGestures.tab.gestureCanvas.element);
+                    MagicGestures.tab.gestureCanvas.context2D = MagicGestures.tab.gestureCanvas.element.getContext("2d");
+                    MagicGestures.tab.gestureCanvas.context2D.lineWidth = MagicGestures.runtime.currentProfile.locusWidth;
+                    MagicGestures.tab.gestureCanvas.context2D.lineCap = "round";
+                    MagicGestures.tab.gestureCanvas.context2D.lineJoin = "round";
+                    var lineColor = MagicGestures.runtime.currentProfile.locusColor;
+                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle="#" + lineColor[0].toString(16) +
+                        lineColor[1].toString(16) + lineColor[2].toString(16) + lineColor[3].toString(16);
+                }
+            }
+        },
+        destoryCanvas: {
+            value: function() {
+                if (this.gestureCanvas) {
+                    document.body.removeChild(MagicGestures.tab.gestureCanvas.element);
+                    MagicGestures.tab.gestureCanvas.context2D = MagicGestures.tab.gestureCanvas.element = undefined;
+                }               
+            }
+        },
+        gesture: {
+            value: Object.create(null, {
+                points: { value: [] },
+                code: { value: "", writable: true },
+                distance: { value: 0, writable: true },
+                possibleNext: { value: undefined, writable: true },
+                reset: {
+                    value: function() {
+                        MagicGestures.tab.gesture.code = "";
+                        MagicGestures.tab.gesture.distance = 0;
+                        MagicGestures.tab.gesture.points.length = 0;
+                        MagicGestures.tab.gesture.possibleNext = MagicGestures.runtime.currentProfile.gestureTrie;
+                    }
+                }
+            })
+        },
+        eventHandler: {
+            value: Object.create(null, {
+                init: {
+                    value: function() {
+                        window.addEventListener("resize", MagicGestures.tab.eventHandler.handle, true);
+                    }
+                },
+                handle: {
+                    value: function(event) {
+                        switch(event.type) {
+                            case "resize":
+                                MagicGestures.logging.debug("Window resized!!!");
+                                MagicGestures.tab.clientWidth  = document.documentElement.clientWidth;
+                                MagicGestures.tab.clientHeight = document.documentElement.clientHeight;
+                                break;
+                            default:
+                                MagicGestures.logging.error("Event handler: Invaild event.");
+                                break;
+                        }
+                    }
+                }
+            })
+        },
+        mouseHandler: {
+            value: Object.create(null, {
+                init: {
+                    value: function() {
+                        document.addEventListener("mousedown", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                    }
+                },
+                eventAdapter: {
+                    value: function(event) {
+                        if (event.button == MagicGestures.runtime.currentProfile.triggerButton) {
+                            MagicGestures.tab.gesture.points.push({clientX: event.clientX, clientY: event.clientY});
+                            MagicGestures.tab.mouseHandler.handle(event);
+                        }
+                    }
+                },
+                animationStroke: {
+                    value: function() {
+                        if (MagicGestures.tab.gestureCanvas.context2D) {
+                            window.requestAnimationFrame(MagicGestures.tab.mouseHandler.animationStroke);
+                            MagicGestures.tab.gestureCanvas.context2D.stroke();
+                            MagicGestures.tab.gestureCanvas.context2D.beginPath();
+                            var previousEvent = MagicGestures.tab.gesture.points.slice(-1)[0];
+                            MagicGestures.tab.gestureCanvas.context2D.moveTo(previousEvent.clientX, previousEvent.clientY);
+                        }
+                    }
+                },
+                handle: {
+                    value: function(event) {
+                        switch(event.type) {
+                            case "mousedown":
+                                document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                MagicGestures.tab.createCanvas();
+                                MagicGestures.tab.gestureCanvas.context2D.beginPath();
+                                MagicGestures.tab.gestureCanvas.context2D.moveTo(event.clientX, event.clientY);
+                                window.requestAnimationFrame(MagicGestures.tab.mouseHandler.animationStroke);
+                                break;
+                            case "mousemove":
+                                MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
+                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture);
+                                break;
+                            case "mouseup":
+                                document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                MagicGestures.tab.destoryCanvas();
+                                if (MagicGestures.tab.gesture.points.length > 5) {
+                                    console.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
+                                    if (MagicGestures.tab.gesture.possibleNext.command) {
+                                        MagicGestures.runtime.speak("ACT  ", MagicGestures.tab.gesture.possibleNext.command);
+                                    }
+                                    document.oncontextmenu = function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        document.oncontextmenu = null;
+                                    };
+                                }
+                                MagicGestures.tab.gesture.reset();
+                                break;
+                            default:
+                                MagicGestures.logging.error("Mouse handler: Invaild event.");
+                                break;
+                        }
+                    }
+                }
+            })
         }
-    },
-    onresize: function(e){
-        MagicGestures.debug("Window resized!!!");
-        MagicGestures.tabs.clientWidth  = document.documentElement.clientWidth;
-        MagicGestures.tabs.clientHeight = document.documentElement.clientHeight;
-    }
-};
-
-MagicGestures.settings.init = function(callback){
-    MagicGestures.log("Initializing settings environment...");
-    MagicGestures.settings.storage.init(function(){
-        MagicGestures.settings.storage.get(["enable", "holdBtn", "lineWidth", "lineColor"], function(items){
-            MagicGestures.settings.enable    = items.enable;
-            MagicGestures.settings.holdBtn   = items.holdBtn;
-            MagicGestures.settings.lineWidth = items.lineWidth;
-            MagicGestures.settings.lineColor = items.lineColor;
-            MagicGestures.runtime.get("gestureTrie", function(item){
-                MagicGestures.runtime.gestureTrie = item.gestureTrie;
-                MagicGestures.gesture.locus.gestureTrie = item.gestureTrie;
-                if (callback !== undefined) { callback.call(null); }
-            });
-        });
-    });
-};
-
-MagicGestures.runtime.init = function(callback){
-    MagicGestures.log("Initializing runtime environment...");
-    MagicGestures.runtime.get("storage_backend", function(item){
-        if (item.storage_backend === "sync") {
-            MagicGestures.runtime.storage_backend = chrome.storage.sync;
-        } else if (item.storage_backend === "local") {
-            MagicGestures.runtime.storage_backend = chrome.storage.local;
-        }
-        if (callback !== undefined) { callback.call(null); }
-    });
-}
+    })
+});
 
 MagicGestures.init = function(){
-    MagicGestures.log("Initializing MagicGestures...");
-    MagicGestures.runtime.init(function(){
-        MagicGestures.settings.init(function(){
-            if (MagicGestures.settings.enable) {
-                MagicGestures.log("Initializing action listener...");
-                document.addEventListener("mousedown", MagicGestures.handler.mousedown, true);
-                document.addEventListener("mousemove", MagicGestures.handler.mousemove, true);
-                document.addEventListener("mouseup",   MagicGestures.handler.mouseup,   true);
-                window.addEventListener  ("resize",    MagicGestures.handler.onresize,  true);
-            }
+    MagicGestures.logging.log("Initializing MagicGestures...");
+    MagicGestures.runtime.init("content script", function(){
+        MagicGestures.tab.init();
+        MagicGestures.runtime.listener.add("SYNC", function(msg) {
+            MagicGestures.runtime.getCurrentProfile(function(result) {
+                MagicGestures.runtime.currentProfile = result;
+            });
         });
     });
 };

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.5
+ * @version 0.0.0.6
  */
 
 /*global MagicGestures: true */
@@ -9,6 +9,10 @@
 
 "use strict";
 
+/**
+ * Represents a gesture.
+ * @constructor
+ */
 MagicGestures.Gesture = function(gesture) {
     /**
      * Indicates gesture's direction.
@@ -38,7 +42,10 @@ MagicGestures.Gesture = function(gesture) {
     }
 };
 
-
+/**
+ * Represents a profile.
+ * @constructor
+ */
 MagicGestures.Profile = function(profile) {
     /**
      * Profile's ID.
@@ -89,9 +96,10 @@ MagicGestures.Profile = function(profile) {
     /**
      * Indicate the type of filter list,
      * Should be one of the Profile.Types.BLACKLIST or Profile.Types.WHITELIST.
+     * Default to value Profile.Types.BLACKLIST
      * @type {string}
      */
-    this.listType = "blacklist";
+    this.listType = 0xc02;
 
     /**
      * Indicate the content of filter list.
@@ -103,9 +111,10 @@ MagicGestures.Profile = function(profile) {
     /**
      * Indicate which button can trigger the gesture.
      * Value can be one of the Profile.Types.LEFT, Profile.Types.RIGHT or Profile.Types.MIDDLE
+     * Default to value Profile.Types.RIGHT
      * @type {string}
      */
-    this.triggerButton = "right";
+    this.triggerButton = 2;
 
     /**
      * Indicate whether disable gesture when alt pressed or not.
@@ -170,12 +179,12 @@ MagicGestures.Profile = function(profile) {
 
 /**
  * Types enum in Profile.
- * @enum {string}
+ * @enum {number}
  */
 MagicGestures.Profile.Types = {
-    BLACKLIST: "blacklist",
-    WHITELIST: "whitelist",
-    LEFT     : "left",
-    RIGHT    : "right",
-    MIDDLE   : "middle"
+    LEFT     : 0,
+    MIDDLE   : 1,
+    RIGHT    : 2,
+    WHITELIST: 0xc01,
+    BLACKLIST: 0xc02
 };

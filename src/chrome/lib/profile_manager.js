@@ -113,6 +113,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                             });
                         });
                     }
+                    callback();
                 });
 
             }
@@ -153,8 +154,8 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                 init: {
                     value: function() {
                         var MagicProfileManagerSyncCenter = this;
-                        chrome.runtime.onMessage.addListener(
-                            function(request) {
+                        chrome.runtime.onMessage.addListener(function(request) {
+                            if (typeof(request) != "string") {
                                 Object.getOwnPropertyNames(request).forEach(function(message) {
                                     if (message.indexOf("PMSC Sync: ") === 0) {
                                         if (message.substr(11) in MagicProfileManagerSyncCenter.watchMap) {
@@ -163,7 +164,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                                     }
                                 });
                             }
-                        );
+                        });
                     }
                 },
                 /**

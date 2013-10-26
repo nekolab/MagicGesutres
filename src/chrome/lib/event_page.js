@@ -24,17 +24,27 @@ MagicGestures.handler = {
     }
 };
 
-MagicGestures.init = function() {
+MagicGestures.init = function(isStartup) {
     MagicGestures.logging.log("Initializing MagicGestures...");
     MagicGestures.runtime.init("background", function() {
         MagicGestures.ProfileManager.init(function() {
             MagicGestures.logging.log("Initializing pageAction and onMessage listener...");
             //Show page action.
-            chrome.tabs.onUpdated.addListener(MagicGestures.handler.pageAction);
+            //chrome.tabs.onUpdated.addListener(MagicGestures.handler.pageAction);
             //Receive message from content scripts.
-            chrome.runtime.onMessage.addListener(MagicGestures.handler.tabMessage);
+            //chrome.runtime.onMessage.addListener(MagicGestures.handler.tabMessage);
+            MagicGestures.runtime.listener.add("ACT", function(msg, sendResponse, sender) {
+                MagicGestures.logging.debug(msg);
+                //alert(msg);
+                MagicGestures.Preset.Actions[msg].call(null, sender.tab);
+            });
         });
-    });
+    }, isStartup);
 };
 
-MagicGestures.init();
+MagicGestures.init(false);
+
+chrome.runtime.onStartup.addListener(function() {
+    MagicGestures.logging.debug("Stratup init");
+    //MagicGestures.init(true);
+});
