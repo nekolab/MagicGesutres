@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.5
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -9,42 +9,56 @@
 
 "use strict";
 
-MagicGestures.handler = {
-    pageAction: function(id, changeInfo, tab){
-        chrome.pageAction.show(id);
-    },
-    tabMessage: function(request, sender, sendResponse){
-        MagicGestures.debug(sender.tab ? "从页面" + sender.tab.url + "的内容脚本中收到消息" : "从扩展中收到消息");
-
-        if(sender.tab){
-            MagicGestures.debug(request.command);
-            MagicGestures.Preset.Actions[request.command].call(null, sender.tab);
+/**
+ * Definition of MagicGestures.Background.
+ */
+Object.defineProperty(MagicGestures, "Background", {
+    value: Object.create(null, {
+        onTabUpdated: {
+            value: function(tabId, changeInfo, tab) {
+                // ToDo: Check whether URL is in black/whitelist or not.
+                if (changeInfo.status === "loading" || changeInfo.url) {
+                    MagicGestures.logging.info("We have a new tab!!!");
+                    chrome.pageAction.show(tabId);
+                    chrome.tabs.executeScript(tabId, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
+                        chrome.tabs.executeScript(tabId, {file: "lib/gesture_engine.js",allFrames: true, runAt: "document_start"}, function() {
+                            chrome.tabs.executeScript(tabId, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"}, function() {
+                                MagicGestures.runtime.sendTabMessage(tabId, "distribute_current_profile", MagicGestures.ProfileManager.activedProfile);
+                            });
+                        });
+                    });
+                }
+            }
         }
-        sendResponse({status: "Your message has been receieved."});
+    })
+});
+
+/**
+ * Implement MagicGestures.runtime.messenger.action
+ */
+MagicGestures.runtime.messenger.action = function(type, msg, sender, sendResponse) {
+    switch(type) {
+        case "ACTION":
+            MagicGestures.logging.debug(msg);
+            MagicGestures.Preset.Actions[msg].call(null, sender.tab);
+            break;
+        default:
+            break;
     }
 };
 
-MagicGestures.init = function(isStartup) {
+MagicGestures.init = function() {
     MagicGestures.logging.log("Initializing MagicGestures...");
-    MagicGestures.runtime.init("background", function() {
-        MagicGestures.ProfileManager.init(function() {
-            MagicGestures.logging.log("Initializing pageAction and onMessage listener...");
-            //Show page action.
-            //chrome.tabs.onUpdated.addListener(MagicGestures.handler.pageAction);
-            //Receive message from content scripts.
-            //chrome.runtime.onMessage.addListener(MagicGestures.handler.tabMessage);
-            MagicGestures.runtime.listener.add("ACT", function(msg, sendResponse, sender) {
-                MagicGestures.logging.debug(msg);
-                //alert(msg);
-                MagicGestures.Preset.Actions[msg].call(null, sender.tab);
-            });
-        });
-    }, isStartup);
+    MagicGestures.runtime.init("background");
+    MagicGestures.ProfileManager.init();
+
+    chrome.tabs.onUpdated.addListener(MagicGestures.Background.onTabUpdated);
 };
 
-MagicGestures.init(false);
-
-chrome.runtime.onStartup.addListener(function() {
-    MagicGestures.logging.debug("Stratup init");
-    //MagicGestures.init(true);
+chrome.runtime.onInstalled.addListener(function() {
+    MagicGestures.logging.debug("MagicGestures onInstalled!!");
+    MagicGestures.runtime.runOnce();
+    MagicGestures.ProfileManager.runOnce();
 });
+
+MagicGestures.init();
