@@ -1,75 +1,64 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.3
+ * @version 0.0.1.5
  */
 
-MagicGestures.runtime.init = function(callback){
-    MagicGestures.log("Initializing runtime environment...");
-    chrome.storage.local.set({runtime: {}});
-    chrome.storage.local.get("settings", function(items) {
-        if ("settings" in items && "type" in items.settings) {
-            MagicGestures.runtime.storage_backend = (items.settings.type === "sync") ? chrome.storage.sync : chrome.storage.local;
-        }
-        if (callback !== undefined) { callback.call(null); }
-    });
-    return void(0);
-};
+/*global chrome: false, MagicGestures: true */
+/*jshint strict: true, globalstrict: true */
 
-MagicGestures.settings.storage.switchBackend = function(type, callback){
-    chrome.storage.local.get("settings", function(items){
-        items.settings.type = type;
-        chrome.storage.local.set(items, callback);
-    });
-    MagicGestures.settings.storage._backend = (type === "sync") ? chrome.storage.sync : chrome.storage.local;
-    return void(0);
-};
+"use strict";
 
-MagicGestures.settings.init = function(callback){
-    MagicGestures.log("Initializing settings environment...");
-    MagicGestures.settings.storage.init(function(){
-        var gestureTrie = Object.create(null);
-        for (var key in PRE_GESTURES.MagicGestures) {
-            var currentRoot = gestureTrie;
-            for(var i = 0 ; i < key.length ; i++){
-                var ch = key.charAt(i);
-                if (!(ch in currentRoot)) {currentRoot[ch] = Object.create(null);}
-                currentRoot = currentRoot[ch];
+/**
+ * Definition of MagicGestures.Background.
+ */
+Object.defineProperty(MagicGestures, "Background", {
+    value: Object.create(null, {
+        onTabUpdated: {
+            value: function(tabId, changeInfo, tab) {
+                // ToDo: Check whether URL is in black/whitelist or not.
+                if (changeInfo.status === "loading" || changeInfo.url) {
+                    MagicGestures.logging.info("We have a new tab!!!");
+                    chrome.pageAction.show(tabId);
+                    chrome.tabs.executeScript(tabId, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
+                        chrome.tabs.executeScript(tabId, {file: "lib/gesture_engine.js",allFrames: true, runAt: "document_start"}, function() {
+                            chrome.tabs.executeScript(tabId, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"}, function() {
+                                MagicGestures.runtime.sendTabMessage(tabId, "distribute_current_profile", MagicGestures.ProfileManager.activedProfile);
+                            });
+                        });
+                    });
+                }
             }
-            currentRoot.check = true;
-            currentRoot.command = PRE_GESTURES.MagicGestures[key];
         }
-        MagicGestures.runtime.gestureTrie = gestureTrie;
-        if (callback !== undefined) { callback.call(null); }
-    });
-};
+    })
+});
 
-MagicGestures.handler = {
-    pageAction: function(id, changeInfo, tab){
-        chrome.pageAction.show(id);
-    },
-    tabMessage: function(request, sender, sendResponse){
-        MagicGestures.debug(sender.tab ? "从页面" + sender.tab.url + "的内容脚本中收到消息" : "从扩展中收到消息");
-
-        if(sender.tab){
-            MagicGestures.debug(request.command);
-            PRE_ACTIONS[request.command].call(null, sender.tab);
-        }
-        sendResponse({status: "Your message has been receieved."});
+/**
+ * Implement MagicGestures.runtime.messenger.action
+ */
+MagicGestures.runtime.messenger.action = function(type, msg, sender, sendResponse) {
+    switch(type) {
+        case "ACTION":
+            MagicGestures.logging.debug(msg);
+            MagicGestures.Preset.Actions[msg].call(null, sender.tab);
+            break;
+        default:
+            break;
     }
 };
 
-MagicGestures.init = function(){
-    MagicGestures.log("Initializing MagicGestures...");
-    MagicGestures.runtime.init(function(){
-        MagicGestures.settings.init(function(){
-            MagicGestures.log("Initializing pageAction and onMessage listener...");
-            //Show page action.
-            chrome.tabs.onUpdated.addListener(MagicGestures.handler.pageAction);
-            //Receive message from content scripts.
-            chrome.runtime.onMessage.addListener(MagicGestures.handler.tabMessage);
-        });
-    });
+MagicGestures.init = function() {
+    MagicGestures.logging.log("Initializing MagicGestures...");
+    MagicGestures.runtime.init("background");
+    MagicGestures.ProfileManager.init();
+
+    chrome.tabs.onUpdated.addListener(MagicGestures.Background.onTabUpdated);
 };
+
+chrome.runtime.onInstalled.addListener(function() {
+    MagicGestures.logging.debug("MagicGestures onInstalled!!");
+    MagicGestures.runtime.runOnce();
+    MagicGestures.ProfileManager.runOnce();
+});
 
 MagicGestures.init();

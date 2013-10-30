@@ -1,258 +1,332 @@
 /**
- * @fileoverview Magic Gestures runtime and settings storage template.
+ * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.5
+ * @version 0.0.2.0
  */
 
-const ASSERT = true; const DEBUG = true;
-const ERROR  = true; const LOG   = true;
-const INFO   = true; const WARN  = true;
+/*global chrome: false */
+/*jshint devel: true, esnext: true, forin: false, curly: false, strict: true, globalstrict: true */
+
+"use strict";
+
+var DIR = true, DEBUG = true, INFO = true;
+var LOG = true, ERROR = true, WARN = true, ASSERT = true;
 
 var MagicGestures = Object.create(null);
 
+/**
+ * Definition of basic MagicGestures object.
+ * Inclueds:
+ *  - logging: Wrap the console log function and use constant to control visiable.
+ *  - runtime: Runtime is the object which provides communication between background
+                and content script and provides basic background runtime presistant.
+ */
 Object.defineProperties(MagicGestures, {
+    logging: {
+        value: Object.create(null)
+    },
     runtime: {
-        value: Object.create(null),
-        writable: true
-    },
-    settings: {
-        value: Object.create(null),
-        writable: true
-    },
+        value: Object.create(null)
+    }
+});
+
+/**
+ * Implemention of MagicGestures.logging module.
+ */
+Object.defineProperties(MagicGestures.logging, {
     assert: {
-        value: function(bool, msg){
-            if (ASSERT) console.assert(bool, msg);
-        },
-        writable: false
+        value: function() {
+            if (ASSERT)
+                console.assert.apply(console, arguments);
+        }
     },
     debug: {
-        value: function(msg){
-            if (DEBUG) console.debug(msg);
-        },
-        writable: false
+        value: function() {
+            if (DEBUG)
+                console.debug.apply(console, arguments);
+        }
+    },
+    dir: {
+        value: function(object) {
+            if (DIR)
+                console.dir(object);
+        }
     },
     error: {
-        value: function(msg){
-            if (ERROR) console.error(msg);
-        },
-        writable: false
+        value: function() {
+            if (ERROR)
+                console.error.apply(console, arguments);
+        }
     },
     log: {
-        value: function(msg){
-            if (LOG) console.log(msg);
-        },
-        writable: false
+        value: function() {
+            if (LOG)
+                console.log.apply(console, arguments);
+        }
     },
     info: {
-        value: function(msg){
-            if (INFO) console.info(msg);
-        },
-        writable: false
+        value: function() {
+            if (INFO)
+                console.info.apply(console, arguments);
+        }
     },
     warn: {
-        value: function(msg){
-            if (WARN) console.warn(msg);
-        },
-        writable: false
+        value: function() {
+            if (WARN)
+                console.warn.apply(console, arguments);
+        }
     }
 });
 
-// Runtime environment should be initialized only once...
+/**
+ * Implemention of MagicGestures.runtime module.
+ */
 Object.defineProperties(MagicGestures.runtime, {
-    gestureTrie: {
-        get: function(){return gestureTrie;},
-        set: function(value){
-            gestureTrie = value;
-            MagicGestures.runtime.set({gestureTrie: value});
-        }
-    },
-    storage_backend: {
-        get: function(){
-            if (typeof storage_backend !== "undefined") {
-                if (storage_backend === "sync") {
-                    return chrome.storage.sync;}
-                if (storage_backend === "local") {
-                    return chrome.storage.local;}
-            }
-            return undefined;
-        },
-        set: function(value){
-            storage_backend = (value === chrome.storage.sync) ? "sync" : "local";
-            MagicGestures.runtime.set({storage_backend: storage_backend});
-        }
-    },
-    get: {
-        value: function(keys, callback){
-            chrome.storage.local.get("runtime", function(items){
-                if (keys === null) {
-                    callback.call(null, items.runtime);
-                } else {
-                    var result = {};
-                    if (keys instanceof Array) {
-                        for (var i = keys.length - 1; i >= 0; i--) {
-                            result[keys[i]] = items.runtime[keys[i]];
-                        };
-                    } else {
-                        result[keys] = items.runtime[keys];
-                    }
-                    callback.call(null, result);
-                }
-            });
-            return void(0);
-        },
-        writable: false
-    },
-    set: {
-        value: function(items, callback){
-            chrome.storage.local.get("runtime", function(runtimeItems){
-                for (var k in items) {
-                    runtimeItems.runtime[k] = items[k];
-                };
-                chrome.storage.local.set(runtimeItems, callback);
-            });
-            return void(0);
-        },
-        writable: false
-    },
-    remove: {
-        value: function(key, callback){
-            chrome.storage.local.get("runtime", function(runtimeItems){
-                delete runtimeItems.runtime[key];
-                chrome.storage.local.set(runtimeItems, callback);
-            });
-            return void(0);
-        },
-        writable: false
-    }
-});
-
-Object.defineProperties(MagicGestures.settings, {
-    enable: {
-        get: function(){return enable;},
-        set: function(value){
-            enable = value;
-            MagicGestures.settings.storage.set({enable: value});
-        }
-    },
-    holdBtn: {
-        get: function(){return holdBtn;},
-        set: function(value){
-            holdBtn = value;
-            MagicGestures.settings.storage.set({holdBtn: value});
-        }
-    },
-    lineWidth: {
-        get: function(){return lineWidth;},
-        set: function(value){
-            lineWidth = value;
-            MagicGestures.settings.storage.set({lineWidth: value});
-        }
-    },
-    lineColor: {
-        get: function(){return lineColor;},
-        set: function(value){
-            lineColor = value;
-            MagicGestures.settings.storage.set({lineColor: value});
-        }
-    },
-    storage: {
-        value: Object.create(null),
+    /**
+     * Enviroment's name.
+     * Value should be either "content script" or "background".
+     * @type {string}
+     */
+    envName: {
+        value: "",
         writable: true
-    }
-});
+    },
 
-// Settings storage environment should be initialized only once.
-Object.defineProperties(MagicGestures.settings.storage, {
-    _backend: {
-        get: function(){
-            if (typeof _backend !== "undefined") { return _backend; }
-            if (MagicGestures.runtime.storage_backend) {
-                _backend = MagicGestures.runtime.storage_backend;
-                return MagicGestures.runtime.storage_backend;}
-            return undefined;
-        },
-        set: function(value){
-            MagicGestures.runtime.storage_backend = _backend = value;
+    /**
+     * Initialize runtime enviroment.
+     * THIS FUNCTION SHOULD BE INVOKED ONLY ONCE.
+     */
+    runOnce: {
+        value: function() {
+            MagicGestures.runtime.clear();
         }
     },
+
+    /**
+     * Initialize magicgesutres runtime.
+     * Initialize the commnuication function.
+     * @param {string} envName Enviroment's name. Should be one of the "content script", "background", "options" or "popup".
+     */
     init: {
-        value: function(callback){
-            MagicGestures.log("Initializing settings storage environment...");
-            if (! MagicGestures.runtime.storage_backend) {
-                chrome.storage.local.get("settings", function(items){
-                    if ("settings" in items) {
-                        if ("type" in items.settings && items.settings.type === "local") {
-                            MagicGestures.settings.storage._backend = chrome.storage.local;
-                        } else if ("type" in items.settings && items.settings.type === "sync") {
-                            MagicGestures.settings.storage._backend = chrome.storage.sync;
-                        } else {
-                            items.type = "local";
-                            chrome.storage.local.set(items);
-                            MagicGestures.settings.storage._backend = chrome.storage.local;
-                        }
-                        if (callback !== undefined) { callback.call(null); }
-                    } else {
-                        MagicGestures.settings.storage._backend = chrome.storage.local;
-                        chrome.storage.local.set({settings: {type: "local"}}, callback);
-                    }
-                });
-            } else {
-                MagicGestures.settings.storage._backend = MagicGestures.runtime.storage_backend;
-                if (callback !== undefined) { callback.call(null); }
+        value: function(envName) {
+            if (!(envName === "content script" || envName === "background" || envName === "options" || envName === "popup")) {
+                MagicGestures.logging.error("Wrong syntax \"" + envName + "\" for MagicGestures runtime init!!!");
+                return void(0);
             }
-            return void(0);
-        },
-        writable: false
+            MagicGestures.logging.info("Initializing MagicGestures runtime module for", envName, "...");
+
+            MagicGestures.runtime.envName = envName;
+            if (envName === "content script") {
+                delete MagicGestures.runtime.get;
+                delete MagicGestures.runtime.set;
+                delete MagicGestures.runtime.clear;
+                delete MagicGestures.runtime.remove;
+                delete MagicGestures.runtime.tabBroadcast;
+                delete MagicGestures.runtime.sendTabMessage;
+            }
+            chrome.runtime.onMessage.addListener(MagicGestures.runtime.messenger.messageReceiver);
+        }
     },
+
+    /**
+     * Message Packer is a packer to pack communication packet.
+     * @param {string} dest Packet destination.
+     * @param {string} type Packet type.
+     * @param {object} msg  Anything you want to carry in packet.
+     * @return {object} Packet.
+     */
+    msgPacker: {
+        value: function(dest, type, msg) {
+            if (dest !== "content script" && dest !== "background" && dest !== "options" && dest != "popup") {
+                throw "Not a vaild destination";
+            }
+            return {
+                dest: dest,
+                type: type,
+                msg : msg
+            };
+        }
+    },
+
+    /**
+     * Asynchronize function.
+     * Broadcast packet to every tab.
+     * This function will be disabled when magicgesture is initialized by content script.
+     * @param {string} type Message type.
+     * @param {any} msg Message content.
+     * @param {function} responseCallback Response callback will be invoked if peer wants to reply you.
+     */
+    tabBroadcast: {
+        value: function(type, msg, responseCallback) {
+            var tabMessage = MagicGestures.runtime.msgPacker("content script", type, msg);
+            chrome.tabs.query({}, function(result) {
+                result.forEach(function(tab) {
+                    chrome.tabs.sendMessage(tab.id, tabMessage, responseCallback);
+                });
+            });
+        },
+        configurable: true
+    },
+
+    /**
+     * Send message to specific tab.
+     * This function will be disabled when magicgesture is initialized by content script.
+     * @param {number} tabId ID of specific Tab.
+     * @param {string} type Message type.
+     * @param {any} msg Message content.
+     * @param {function} responseCallback Response callback will be invoked if peer wants to reply you.
+     */
+    sendTabMessage: {
+        value: function(tabId, type, msg, responseCallback) {
+            var tabMessage = MagicGestures.runtime.msgPacker("content script", type, msg);
+            chrome.tabs.sendMessage(tabId, tabMessage, responseCallback);
+        },
+        configurable: true
+    },
+
+    /**
+     * Send message to everywhere (without content script).
+     * This function can be used for every enviroment.
+     * @param {string} dest -
+     *      Destination of packet. Accept "content script", "background", "options" or "popup",
+     *      You can use | to specific two or more destination or use "*" to specific all destination.
+     * @param {string} type Message type.
+     * @param {any} msg Message content.
+     * @param {function} responseCallback Response callback will be invoked if peer wants to reply you. 
+     */
+    sendRuntimeMessage: {
+        value: function(dest, type, msg, responseCallback) {
+            var runtimeMessage = MagicGestures.runtime.msgPacker(dest, type, msg);
+            chrome.runtime.sendMessage(runtimeMessage, responseCallback);
+        }
+    },
+
+    /**
+     * Get one or more items storage in runtime storage.
+     * @param {(string|Array.<string>|Object.<string, string>|null)} keys -
+     *      A single key to get, list of keys to get or object to get which define default value.
+     *      Pass null will get the total content of runtime storage.
+     *
+     * @returns {Object} Object which contains query result.
+     */
     get: {
-        value: function(keys, callback){
-            this._backend.get("settings", function(items){
-                if (keys === null) {
-                    callback.call(null, items.settings);
-                } else {
-                    var result = {};
-                    if (keys instanceof Array) {
-                        for (var i = keys.length - 1; i >= 0; i--) {
-                            result[keys[i]] = items.settings[keys[i]];
-                        };
-                    } else {
-                        result[keys] = items.settings[keys];
+        value: function(keys) {
+            var runtimeItems = localStorage.getItem("runtime");
+            if (runtimeItems) {
+                runtimeItems = JSON.parse(runtimeItems);
+            } else {
+                return MagicGestures.logging.error("No runtime module in localstorage!!!");
+            }
+
+            var result = Object.create(null);
+            if (typeof keys === "undefined" || keys === null) {
+                result = runtimeItems;
+            } else if (Object.prototype.toString.call(keys) === "[object Object]") {
+                // Find one or more items in runtime object
+                for (var key in keys) {
+                    //Check own property
+                    if (keys.hasOwnProperty(key)) {
+                        result[key] = (key in runtimeItems) ? runtimeItems[key] : keys[key];
                     }
-                    callback.call(null, result);
                 }
-            });
-            return void(0);
+            } else {
+                // Convert string type key to array type keys
+                if (typeof keys === "string") {
+                    keys = [keys];
+                }
+                // Find one or more items in runtime object
+                for (var i = keys.length - 1; i >= 0; i--) {
+                    if(keys[i] in runtimeItems) {
+                        result[keys[i]] = runtimeItems[keys[i]];
+                    }
+                }
+            }
+            return result;
         },
-        writable: false
+        configurable: true
     },
+
+    /**
+     * Set one or more items from object into runtime storage.
+     * @param {object.<string, object>} items -
+     *      Object specifying items to augment storage with.
+     *      Values that cannot be serialized will be replaced as an empty object.
+     */
     set: {
-        value: function(items, callback){
-            var storage = this;
-            this._backend.get("settings", function(settingItems){
-                for (var k in items){
-                    settingItems.settings[k] = items[k];
-                };
-                storage._backend.set(settingItems, callback);
-            });
-            return void(0);
+        value: function(items) {
+            var runtimeItems = JSON.parse(localStorage.getItem("runtime"));
+            MagicGestures.logging.debug("Original items:", items);
+            MagicGestures.logging.debug("Original runtimeItems:", runtimeItems);
+
+            // Merge two objects
+            for (var item in items) {
+                runtimeItems[item] = items[item];
+            }
+
+            MagicGestures.logging.debug("After merge runtimeItems:", runtimeItems);
+            localStorage.setItem("runtime", JSON.stringify(runtimeItems));
         },
-        writable: false
+        configurable: true
     },
+
+    /**
+     * Remove one or more items from runtime storage.
+     * @param {(string|Array.<string>)} keys A single key or a list of keys for items to remove.
+     */
     remove: {
-        value: function(key, callback){
-            this._backend.get("settings", function(settingItems){
-                delete settingItems.settings[key];
-                this._backend.set(settingItems, callback);
-            });
-            return void(0);
+        value: function(keys) {
+            var runtimeItems = JSON.parse(localStorage.getItem("runtime"));
+            localStorage.removeItem("runtime");
+
+            // Convert string type key to array type keys
+            if (typeof keys === "string") {
+                keys = [keys];
+            }
+            // Delete keys from runtime storage.
+            for (var i = keys.length - 1; i >= 0; i--) {
+                delete runtimeItems[keys[i]];
+            }
+
+            localStorage.setItem("runtime", JSON.stringify(runtimeItems));
         },
-        writable: false
+        configurable: true
     },
+
+    /**
+     * Clear the runtime storage.
+     */
     clear: {
-        value: function(callback){
-            this._backend.set({settings: {}}, callback);
-            return void(0);
+        value: function() {
+            localStorage.setItem("runtime", "{}");
         },
-        writable: false
+        configurable: true
+    },
+
+    /**
+     * MagicGestures.runtime.messenger module is a module which provides basic message management.
+     * This messenger will check all message passed by chrome.runtime.onMessage and pick
+     * the message which destination is correct (or "*") and call action to handle it.
+     * MagicGestures.runtime.messenger.action is an interface and should be implement in any enviroment.
+     */
+    messenger: {
+        value: Object.create(null, {
+            messageReceiver: {
+                value: function(message, sender, sendResponse) {
+                    if (message && message.dest && (message.dest.indexOf(MagicGestures.runtime.envName) >= 0 || message.dest.dest === "*")) {
+                        MagicGestures.runtime.messenger.action(message.type, message.msg, sender, sendResponse);
+                    }
+                }
+            },
+
+            /**
+             * MagicGestures.runtime.messenger.action is an interface which is writable and should be implemented.
+             * Every message which destination is "*" or current enviroment's name will be send to here. 
+             */
+            action: {
+                value: function(type, msg, sender, sendResponse) {},
+                writable: true
+            }
+        })
     }
+
 });
