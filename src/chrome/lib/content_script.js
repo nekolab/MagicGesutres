@@ -240,10 +240,24 @@ Object.defineProperty(MagicGestures, "tab", {
                             case "mousedown":
                                 document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
                                 MagicGestures.tab.createCanvas();
                                 MagicGestures.tab.gestureCanvas.context2D.beginPath();
                                 MagicGestures.tab.gestureCanvas.context2D.moveTo(event.clientX, event.clientY);
                                 window.requestAnimationFrame(MagicGestures.tab.animationStroke);
+                                break;
+                            case "mousewheel":
+                                if (MagicGestures.tab.gesture.points.length <= 5) {
+                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie["w"];
+                                    var action = (event.wheelDelta > 0) ? wheelActions["U"] : wheelActions["D"];
+                                    MagicGestures.logging.log(action.command);
+                                    MagicGestures.runtime.sendRuntimeMessage("background", "ACTION", action.command);
+                                    document.oncontextmenu = function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        document.oncontextmenu = null;
+                                    };
+                                }
                                 break;
                             case "mousemove":
                                 MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
@@ -252,9 +266,10 @@ Object.defineProperty(MagicGestures, "tab", {
                             case "mouseup":
                                 document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
                                 MagicGestures.tab.destoryCanvas();
                                 if (MagicGestures.tab.gesture.points.length > 5) {
-                                    console.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
+                                    MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
                                     if (MagicGestures.tab.gesture.possibleNext.command) {
                                         MagicGestures.runtime.sendRuntimeMessage("background", "ACTION", MagicGestures.tab.gesture.possibleNext.command);
                                     }
@@ -267,7 +282,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                 MagicGestures.tab.gesture.reset();
                                 break;
                             default:
-                                MagicGestures.logging.error("Mouse handler: Invaild event.");
+                                MagicGestures.logging.error("Mouse handler: Invaild event.", event);
                                 break;
                         }
                     }
