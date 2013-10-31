@@ -14,22 +14,36 @@
  */
 Object.defineProperty(MagicGestures, "Background", {
     value: Object.create(null, {
-        onTabUpdated: {
-            value: function(tabId, changeInfo, tab) {
-                // ToDo: Check whether URL is in black/whitelist or not.
-                if (changeInfo.status === "loading" || changeInfo.url) {
-                    MagicGestures.logging.info("We have a new tab!!!");
-                    chrome.pageAction.show(tabId);
-                    chrome.tabs.executeScript(tabId, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
-                        chrome.tabs.executeScript(tabId, {file: "lib/gesture_engine.js",allFrames: true, runAt: "document_start"}, function() {
-                            chrome.tabs.executeScript(tabId, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"}, function() {
-                                MagicGestures.runtime.sendTabMessage(tabId, "distribute_current_profile", MagicGestures.ProfileManager.activedProfile);
+
+        /**
+         * Some event handler.
+         */
+        handler: {
+            value: Object.create(null, {
+
+                /**
+                 * Handle chrome.tabs.onUpdate event.
+                 * After update, I will inject some js and distribute config.
+                 */
+                onTabUpdated: {
+                    value: function(tabId, changeInfo, tab) {
+                        // ToDo: Check whether URL is in black/whitelist or not.
+                        if (changeInfo.status === "loading" || changeInfo.url) {
+                            MagicGestures.logging.info("We have a new tab!!!");
+                            chrome.pageAction.show(tabId);
+                            chrome.tabs.executeScript(tabId, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
+                                chrome.tabs.executeScript(tabId, {file: "lib/gesture_engine.js",allFrames: true, runAt: "document_start"}, function() {
+                                    chrome.tabs.executeScript(tabId, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"}, function() {
+                                        MagicGestures.runtime.sendTabMessage(tabId, "distribute_current_profile", MagicGestures.ProfileManager.activedProfile);
+                                    });
+                                });
                             });
-                        });
-                    });
+                        }
+                    }
                 }
-            }
+            })
         }
+
     })
 });
 
@@ -52,7 +66,7 @@ MagicGestures.init = function() {
     MagicGestures.runtime.init("background");
     MagicGestures.ProfileManager.init();
 
-    chrome.tabs.onUpdated.addListener(MagicGestures.Background.onTabUpdated);
+    chrome.tabs.onUpdated.addListener(MagicGestures.Background.handler.onTabUpdated);
 };
 
 chrome.runtime.onInstalled.addListener(function() {
