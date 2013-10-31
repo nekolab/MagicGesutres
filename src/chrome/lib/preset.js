@@ -722,6 +722,20 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         enumerable: true,
         configurable: false
     },
+    scroll_to_top: {
+        value: function(tab){
+            chrome.tabs.executeScript(tab.id, {code: "window.scroll(0, 0);"});
+        },
+        enumerable: true
+    },
+    scroll_to_bottom: {
+        value: function(tab){
+            chrome.tabs.executeScript(tab.id, {
+                code: "window.scrollTo(0, document.documentElement.scrollHeight);"
+            });
+        },
+        enumerable: true
+    },
     toggle_pin_tab: {
         value: function(tab){
             chrome.tabs.update(tab.id, {pinned: !tab.pinned});
