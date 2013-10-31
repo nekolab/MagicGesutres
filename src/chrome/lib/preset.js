@@ -11,23 +11,17 @@
 
 Object.defineProperty(MagicGestures, "Preset", {
     value: Object.create(null),
-    writable: false,
-    enumerable: true,
-    configurable: false
+    enumerable: true
 });
 
 Object.defineProperties(MagicGestures.Preset, {
     Profiles: {
         value: Object.create(null),
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     Actions: {
         value: Object.create(null),
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     }
 });
 
@@ -442,9 +436,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: function(tab){
             chrome.tabs.remove(tab.id);
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     close_other_tabs: {
         value: function(tab){
@@ -456,9 +448,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 }
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     close_tabs_to_the_left: {
         value: function(tab){
@@ -470,9 +460,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 }
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     close_tabs_to_the_right: {
         value: function(tab){
@@ -484,49 +472,37 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 }
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     close_window: {
         value: function(tab){
             chrome.windows.remove(tab.windowId);
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     duplicate_tab: {
         value: function(tab){
             chrome.tabs.duplicate(tab.id);
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     full_screen: {
         value: function(tab){
             chrome.windows.update(tab.windowId, {state: "fullscreen"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     history_back: {
         value: function(tab){
             chrome.tabs.executeScript(tab.id, {code: "history.back();"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     history_forward: {
         value: function(tab){
             chrome.tabs.executeScript(tab.id, {code: "history.forward();"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     maximize_window: {
         value: function(tab){
@@ -535,57 +511,43 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 chrome.windows.update(tab.windowId, {state: toggle[window.state]});
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     minimize_window: {
         value: function(tab){
             chrome.windows.update(tab.windowId, {state: "minimized"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     move_to_left: {
         value: function(tab){
             chrome.tabs.move(tab.id, {index: 0});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     move_to_right: {
         value: function(tab){
             chrome.tabs.move(tab.id, {index: -1});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     navigate_to_new_tab: {
         value: function(tab){
             chrome.tabs.update(tab.id, {url: "chrome://newtab"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     new_tab: {
         value: function(tab){
             chrome.tabs.create({index: tab.index + 1});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     new_window: {
         value: function(){
             chrome.windows.create({});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     next_tab: {
         value: function(tab){
@@ -593,49 +555,37 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 if (tabs.length !== 0) {chrome.tabs.update(tabs[0].id, {active: true});}
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     open_bookmarks: {
         value: function(tab){
             chrome.tabs.create({index: tab.index + 1, url: "chrome://bookmarks/"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     open_downloads: {
         value: function(tab){
             chrome.tabs.create({index: tab.index + 1, url: "chrome://downloads/"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     open_extensions: {
         value: function(tab){
             chrome.tabs.create({index: tab.index + 1, url: "chrome://extensions/"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     open_history: {
         value: function(tab){
             chrome.tabs.create({index: tab.index + 1, url: "chrome://history/"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     pin_tab: {
         value: function(tab){
             chrome.tabs.update(tab.id, {pinned: true});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     prev_tab: {
         value: function(tab){
@@ -643,17 +593,13 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 chrome.tabs.update(tabs[0].id, {active: true});
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     print_tab: {
         value: function(tab){
             chrome.tabs.executeScript(tab.id, {code: "window.print();"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     reload_all_tabs: {
         value: function(tab){
@@ -663,9 +609,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 }
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     reload_all_tabs_bypass_cache: {
         value: function(tab){
@@ -675,25 +619,19 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 }
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     reload_tab: {
         value: function(tab){
             chrome.tabs.reload(tab.id);
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     reload_tab_bypass_cache: {
         value: function(tab){
             chrome.tabs.reload(tab.id, {bypassCache: true});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     split_tabs: {
         value: function(tab){
@@ -710,40 +648,30 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
                 });
             });
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     stop_loading: {
         value: function(tab){
             chrome.tabs.executeScript(tab.id, {code: "window.stop();"});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     toggle_pin_tab: {
         value: function(tab){
             chrome.tabs.update(tab.id, {pinned: !tab.pinned});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     unpin_tab: {
         value: function(tab){
             chrome.tabs.update(tab.id, {pinned: false});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     },
     view_source: {
         value: function(tab){
             chrome.tabs.create({index: tab.index + 1, url: "view-source:" + tab.url, openerTabId: tab.id});
         },
-        writable: false,
-        enumerable: true,
-        configurable: false
+        enumerable: true
     }
 });
