@@ -40,7 +40,8 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                                 chrome.storage.local.set({active: "b8980ce9f43e35f2"});
                                 result.active = "b8980ce9f43e35f2";
                             }
-                            MagicGestures.runtime.set({activedProfile: profileMap[result.active], profileMap: profileMap}, callback);
+                            MagicGestures.runtime.set({activedProfile: profileMap[result.active], profileMap: profileMap});
+                            callback();
                         });
                     });
                 });
