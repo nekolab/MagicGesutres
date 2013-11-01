@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.5
+ * @version 0.0.1.6
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -21,26 +21,6 @@ Object.defineProperty(MagicGestures, "Background", {
         handler: {
             value: Object.create(null, {
 
-                /**
-                 * Handle chrome.tabs.onUpdate event.
-                 * After update, I will inject some js and distribute config.
-                 */
-                onTabUpdated: {
-                    value: function(tabId, changeInfo, tab) {
-                        // ToDo: Check whether URL is in black/whitelist or not.
-                        if (changeInfo.status === "loading" || changeInfo.url) {
-                            MagicGestures.logging.info("We have a new tab!!!");
-                            chrome.pageAction.show(tabId);
-                            chrome.tabs.executeScript(tabId, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
-                                chrome.tabs.executeScript(tabId, {file: "lib/gesture_engine.js",allFrames: true, runAt: "document_start"}, function() {
-                                    chrome.tabs.executeScript(tabId, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"}, function() {
-                                        MagicGestures.runtime.sendTabMessage(tabId, "distribute_current_profile", MagicGestures.ProfileManager.activedProfile);
-                                    });
-                                });
-                            });
-                        }
-                    }
-                }
             })
         }
 
@@ -52,15 +32,25 @@ Object.defineProperty(MagicGestures, "Background", {
  */
 MagicGestures.runtime.messenger.action = function(type, msg, sender, sendResponse) {
     switch(type) {
-        case "ACTION":
+        case "gesture ACTION":
             MagicGestures.logging.debug(msg);
             if (msg in MagicGestures.Preset.Actions) {
                 MagicGestures.Preset.Actions[msg].call(null, sender.tab);
             } else {
-                MagicGestures.logging.warn("Action", msg, "doesn't support yet");
+                MagicGestures.logging.warn("Gesture action", msg, "doesn't support yet");
+            }
+            break;
+        case "page_action ACTION":
+            switch(msg.command) {
+                case "show":
+                    chrome.pageAction.show(sender.tab ? sender.tab.id : 0);
+                    break;
+                default:
+                    break;
             }
             break;
         default:
+            MagicGestures.logging.debug("Cannot process", type, "type event.");
             break;
     }
 };
@@ -69,8 +59,6 @@ MagicGestures.init = function() {
     MagicGestures.logging.log("Initializing MagicGestures...");
     MagicGestures.runtime.init("background");
     MagicGestures.ProfileManager.init();
-
-    chrome.tabs.onUpdated.addListener(MagicGestures.Background.handler.onTabUpdated);
 };
 
 chrome.runtime.onInstalled.addListener(function() {

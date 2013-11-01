@@ -41,8 +41,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                                 result.active = "b8980ce9f43e35f2";
                             }
                             MagicGestures.runtime.set({activedProfile: profileMap[result.active], profileMap: profileMap});
-                            if (callback)
-                                callback();
+                            chrome.storage.local.set({activedProfileCache: profileMap[result.active]}, callback);
                         });
                     });
                 });

@@ -1,10 +1,10 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.5
+ * @version 0.0.1.6
  */
 
-/*global MagicGestures: true */
+/*global MagicGestures: true, chrome: false */
 /*jshint strict: true, globalstrict: true */
 
 "use strict";
@@ -251,7 +251,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                     var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie["w"];
                                     var action = (event.wheelDelta > 0) ? wheelActions["U"] : wheelActions["D"];
                                     MagicGestures.logging.log(action.command);
-                                    MagicGestures.runtime.sendRuntimeMessage("background", "ACTION", action.command);
+                                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", action.command);
                                     document.oncontextmenu = function(e) {
                                         e.preventDefault();
                                         e.stopPropagation();
@@ -271,7 +271,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                 if (MagicGestures.tab.gesture.points.length > 5) {
                                     MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
                                     if (MagicGestures.tab.gesture.possibleNext.command) {
-                                        MagicGestures.runtime.sendRuntimeMessage("background", "ACTION", MagicGestures.tab.gesture.possibleNext.command);
+                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", MagicGestures.tab.gesture.possibleNext.command);
                                     }
                                     document.oncontextmenu = function(e) {
                                         e.preventDefault();
@@ -293,26 +293,28 @@ Object.defineProperty(MagicGestures, "tab", {
 });
 
 /**
- * Implement MagicGestures.runtime.messenger.action
- */
-MagicGestures.runtime.messenger.action = function(type, msg, sender, sendResponse) {
-    switch(type) {
-        case "distribute_current_profile":
-            MagicGestures.runtime.currentProfile = msg;
-            MagicGestures.tab.gesture.possibleNext = msg.gestureTrie;
-            break;
-        default:
-            break;
-    }
-};
-
-/**
  * Initialize function of MagicGestures
  */
 MagicGestures.init = function(){
     MagicGestures.logging.log("Initializing MagicGestures...");
     MagicGestures.runtime.init("content script");
-    MagicGestures.tab.init();
+    // Load settings from storage.local.
+    chrome.storage.local.get("activedProfileCache", function(activedProfile) {
+        MagicGestures.runtime.currentProfile = activedProfile.activedProfileCache;
+        MagicGestures.tab.gesture.possibleNext = activedProfile.activedProfileCache.gestureTrie;
+        // Initialize MagicGestures.tab after load the profile.
+        MagicGestures.tab.init();
+        // Show page action for current tab.
+        MagicGestures.runtime.sendRuntimeMessage("background", "page_action ACTION", {command: "show"});
+
+        // Auto update when activedProfileCache changed.
+        chrome.storage.onChanged.addListener(function(changes, areaName) {
+            if (areaName == "local" && "activedProfileCache" in changes) {
+                MagicGestures.runtime.currentProfile = activedProfile.activedProfileCache;
+                MagicGestures.tab.gesture.possibleNext = activedProfile.activedProfileCache.gestureTrie;
+            }
+        });
+    });
 };
 
 MagicGestures.init();
