@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.6
+ * @version 0.0.1.7
  */
 
 /*global MagicGestures: true, chrome: false */
@@ -108,23 +108,6 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
-         * animationStroke is a auto draw manager.
-         * It can draw(stroke) then begin a new path.
-         * It will run forver until gesture canvas destoried.
-         */
-        animationStroke: {
-            value: function() {
-                if (MagicGestures.tab.gestureCanvas.context2D) {
-                    window.requestAnimationFrame(MagicGestures.tab.animationStroke);
-                    MagicGestures.tab.gestureCanvas.context2D.stroke();
-                    MagicGestures.tab.gestureCanvas.context2D.beginPath();
-                    var previousEvent = MagicGestures.tab.gesture.points.slice(-1)[0];
-                    MagicGestures.tab.gestureCanvas.context2D.moveTo(previousEvent.clientX, previousEvent.clientY);
-                }
-            }
-        },
-
-        /**
          * Current drawn gesture.
          */
         gesture: {
@@ -135,6 +118,13 @@ Object.defineProperty(MagicGestures, "tab", {
                  * @type {Array.<Object.<String, Number>>}
                  */
                 points: { value: [] },
+
+                /**
+                 * Direction points is an array of point like {x: xx, y:yy}
+                 * It stores points which used by direction engine.
+                 * @type {Array.<Object.<String, number>>}
+                 */
+                directionPoints: { value: [] },
 
                 /**
                  * Current gesture's code.
@@ -157,6 +147,12 @@ Object.defineProperty(MagicGestures, "tab", {
                 possibleNext: { value: undefined, writable: true },
 
                 /**
+                 * Last mouse event for draw use.
+                 * @type {Event}
+                 */
+                lastEvent: {value: undefined, writable: true},
+
+                /**
                  * Reset gesture object to empty.
                  */
                 reset: {
@@ -164,6 +160,8 @@ Object.defineProperty(MagicGestures, "tab", {
                         MagicGestures.tab.gesture.code = "";
                         MagicGestures.tab.gesture.distance = 0;
                         MagicGestures.tab.gesture.points.length = 0;
+                        MagicGestures.tab.gesture.lastEvent = undefined;
+                        MagicGestures.tab.gesture.directionPoints.length = 0;
                         MagicGestures.tab.gesture.possibleNext = MagicGestures.runtime.currentProfile.gestureTrie;
                     }
                 }
@@ -205,6 +203,23 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * animationStroke is a auto draw manager.
+         * It can draw(stroke) then begin a new path.
+         * It will run forver until gesture canvas destoried.
+         */
+        animationStroke: {
+            value: function() {
+                if (MagicGestures.tab.gestureCanvas.context2D) {
+                    window.requestAnimationFrame(MagicGestures.tab.animationStroke);
+                    MagicGestures.tab.gestureCanvas.context2D.stroke();
+                    MagicGestures.tab.gestureCanvas.context2D.beginPath();
+                    MagicGestures.tab.gestureCanvas.context2D.moveTo(
+                        MagicGestures.tab.gesture.lastEvent.clientX, MagicGestures.tab.gesture.lastEvent.clientY);
+                }
+            }
+        },
+
+        /**
          * Mouse handler handle every mouse event and process it.
          */
         mouseHandler: {
@@ -226,6 +241,7 @@ Object.defineProperty(MagicGestures, "tab", {
                     value: function(event) {
                         if (event.button == MagicGestures.runtime.currentProfile.triggerButton) {
                             MagicGestures.tab.gesture.points.push({clientX: event.clientX, clientY: event.clientY});
+                            MagicGestures.tab.gesture.lastEvent = event;
                             MagicGestures.tab.mouseHandler.handle(event);
                         }
                     }
@@ -241,6 +257,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                 document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
+                                MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
                                 MagicGestures.tab.createCanvas();
                                 MagicGestures.tab.gestureCanvas.context2D.beginPath();
                                 MagicGestures.tab.gestureCanvas.context2D.moveTo(event.clientX, event.clientY);
@@ -248,8 +265,8 @@ Object.defineProperty(MagicGestures, "tab", {
                                 break;
                             case "mousewheel":
                                 if (MagicGestures.tab.gesture.points.length <= 5) {
-                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie["w"];
-                                    var action = (event.wheelDelta > 0) ? wheelActions["U"] : wheelActions["D"];
+                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.w;
+                                    var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
                                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", action.command);
                                     document.oncontextmenu = function(e) {
@@ -261,9 +278,10 @@ Object.defineProperty(MagicGestures, "tab", {
                                 break;
                             case "mousemove":
                                 MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture);
+                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, false);
                                 break;
                             case "mouseup":
+                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, true);
                                 document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
