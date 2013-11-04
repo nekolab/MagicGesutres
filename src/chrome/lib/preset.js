@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.5
+ * @version 0.0.1.0
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -41,98 +41,118 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
         sync: false,
         readOnly: true,
         locusColor: [255, 0, 0, 1],
-        gestures: [
-            new MagicGestures.Gesture({
-                dir: "L",
-                name: "history_back"
-            }),
-            new MagicGestures.Gesture({
-                dir: "R",
-                name: "history_forward"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DR",
-                name: "close_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UD",
-                name: "reload_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LU",
-                name: "undo_close_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UDU",
-                name: "reload_tab_bypass_cache"
-            }),
-            new MagicGestures.Gesture({
-                dir: "URD",
-                name: "close_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UL",
-                name: "prev_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UR",
-                name: "next_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "RUD",
-                name: "minimize_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "RDU",
-                name: "maximize_window"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "DU",
-                name: "goto_parent_dir"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LDR",
-                name: "view_current_frame_only"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LDRU",
-                name: "view_current_frame_in_new_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lDU",
-                name: "open_in_newtab_background"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lU",
-                name: "open_in_newtab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "wU",
-                name: "scroll_to_top"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "wD",
-                name: "scroll_to_bottom"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "RDLUR",
-                name: "open_options"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "RDLD",
-                name: "open_status"
-            })
-        ]
+        gestureMap: {
+            "history_back": [
+                new MagicGestures.Gesture({
+                    dirStr: "L"
+                })
+            ],
+            "history_forward": [
+                new MagicGestures.Gesture({
+                    dirStr: "R"
+                })
+            ],
+            "close_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "DR"
+                })
+            ],
+            "reload_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UD"
+                })
+            ],
+            "undo_close_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LU"
+                })
+            ],
+            "reload_tab_bypass_cache": [
+                new MagicGestures.Gesture({
+                    dirStr: "UDU"
+                })
+            ],
+            "close_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "URD"
+                })
+            ],
+            "prev_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UL"
+                })
+            ],
+            "next_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UR"
+                })
+            ],
+            "minimize_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "RUD"
+                })
+            ],
+            "maximize_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "RDU"
+                })
+            ],
+            "goto_parent_dir": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "DU"
+                })
+            ],
+            "view_current_frame_only": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LDR"
+                })
+            ],
+            "view_current_frame_in_new_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LDRU"
+                })
+            ],
+            "open_in_newtab_background": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lDU"
+                })
+            ],
+            "open_in_newtab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lU"
+                })
+            ],
+            "scroll_to_top": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "wU"
+                })
+            ],
+            "scroll_to_bottom": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "wD"
+                })
+            ],
+            "open_options": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "RDLUR"
+                })
+            ],
+            "open_status": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "RDLD"
+                })
+            ]
+        }
     });
 };
 
@@ -145,63 +165,74 @@ MagicGestures.Preset.Profiles.Opera = function() {
         sync: false,
         readOnly: true,
         locusColor: [255, 255, 255, 1],
-        gestures: [
-            new MagicGestures.Gesture({
-                dir: "L",
-                name: "history_back"
-            }),
-            new MagicGestures.Gesture({
-                dir: "R",
-                name: "history_forward"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "UL",
-                name: "goto_parent_dir"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UD",
-                name: "reload_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "U",
-                name: "stop_loading"
-            }),
-            new MagicGestures.Gesture({
-                dir: "D",
-                name: "new_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DU",
-                name: "duplicate_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UR",
-                name: "maximize_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DL",
-                name: "minimize_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DR",
-                name: "close_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "RLR",
-                name: "close_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lD",
-                name: "open_in_newtab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lDU",
-                name: "open_in_newtab_background"
-            })
-        ]
+        gestureMap: {
+            "history_back": [
+                new MagicGestures.Gesture({
+                    dirStr: "L"
+                })
+            ],
+            "history_forward": [
+                new MagicGestures.Gesture({
+                    dirStr: "R"
+                })
+            ],
+            "goto_parent_dir": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "UL"
+                })
+            ],
+            "reload_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UD"
+                })
+            ],
+            "stop_loading": [
+                new MagicGestures.Gesture({
+                    dirStr: "U"
+                })
+            ],
+            "new_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "D"
+                })
+            ],
+            "duplicate_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "DU"
+                })
+            ],
+            "maximize_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "UR"
+                })
+            ],
+            "minimize_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "DL"
+                })
+            ],
+            "close_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "DR"
+                }),
+                new MagicGestures.Gesture({
+                    dirStr: "RLR"
+                })
+            ],
+            "open_in_newtab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lD"
+                })
+            ],
+            "open_in_newtab_background": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lDU"
+                })
+            ]
+        }
     });
 };
 
@@ -214,118 +245,142 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
         sync: false,
         readOnly: true,
         locusColor: [0, 255, 0, 1],
-        gestures: [
-            new MagicGestures.Gesture({
-                dir: "L",
-                name: "history_back"
-            }),
-            new MagicGestures.Gesture({
-                dir: "R",
-                name: "history_forward"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UD",
-                name: "reload_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UDU",
-                name: "reload_tab_bypass_cache"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "DU",
-                name: "goto_parent_dir"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DRU",
-                name: "new_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "URD",
-                name: "close_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "RUD",
-                name: "minimize_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "RDU",
-                name: "maximize_window"
-            }),
-            new MagicGestures.Gesture({
-                dir: "LR",
-                name: "new_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DR",
-                name: "close_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "RL",
-                name: "undo_close_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "UL",
-                name: "prev_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "UR",
-                name: "next_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LRU",
-                name: "zoom_in_text"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LRD",
-                name: "zoom_out_text"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LRUD",
-                name: "reset_text_zoom"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LU",
-                name: "scroll_to_top"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LD",
-                name: "scroll_to_bottom"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LDR",
-                name: "view_current_frame_only"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LDRU",
-                name: "view_current_frame_in_new_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lD",
-                name: "open_in_newtab_background"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lU",
-                name: "open_in_newtab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LDRUL",
-                name: "open_options"
-            })
-        ]
+        gestureMap: {
+            "history_back": [
+                new MagicGestures.Gesture({
+                    dirStr: "L"
+                })
+            ],
+            "history_forward": [
+                new MagicGestures.Gesture({
+                    dirStr: "R"
+                })
+            ],
+            "reload_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UD"
+                })
+            ],
+            "reload_tab_bypass_cache": [
+                new MagicGestures.Gesture({
+                    dirStr: "UDU"
+                })
+            ],
+            "goto_parent_dir": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "DU"
+                })
+            ],
+            "new_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "DRU"
+                })
+            ],
+            "close_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "URD"
+                })
+            ],
+            "minimize_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "RUD"
+                })
+            ],
+            "maximize_window": [
+                new MagicGestures.Gesture({
+                    dirStr: "RDU"
+                })
+            ],
+            "new_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "LR"
+                })
+            ],
+            "close_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "DR"
+                })
+            ],
+            "undo_close_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "RL"
+                })
+            ],
+            "prev_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "UL"
+                })
+            ],
+            "next_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "UR"
+                })
+            ],
+            "zoom_in_text": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LRU"
+                })
+            ],
+            "zoom_out_text": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LRD"
+                })
+            ],
+            "reset_text_zoom": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LRUD"
+                })
+            ],
+            "scroll_to_top": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LU"
+                })
+            ],
+            "scroll_to_bottom": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LD"
+                })
+            ],
+            "view_current_frame_only": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LDR"
+                })
+            ],
+            "view_current_frame_in_new_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LDRU"
+                })
+            ],
+            "open_in_newtab_background": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lD"
+                })
+            ],
+            "open_in_newtab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lU"
+                })
+            ],
+            "open_options": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LDRUL"
+                })
+            ]
+        }
     });
 };
 
@@ -338,101 +393,122 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
         sync: false,
         readOnly: true,
         locusColor: [255, 0, 0, 1],
-        gestures: [
-            new MagicGestures.Gesture({
-                dir: "U",
-                name: "new_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lU",
-                name: "open_in_newtab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "D",
-                name: "toggle_pin_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "L",
-                name: "history_back"
-            }),
-            new MagicGestures.Gesture({
-                dir: "R",
-                name: "history_forward"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UL",
-                name: "prev_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UR",
-                name: "next_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "wU",
-                name: "scroll_to_top"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "wD",
-                name: "scroll_to_bottom"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DR",
-                name: "close_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LU",
-                name: "undo_close_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "DU",
-                name: "duplicate_tab"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "lDU",
-                name: "open_in_newtab_background"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UD",
-                name: "reload_tab"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UDU",
-                name: "reload_tab_bypass_cache"
-            }),
-            new MagicGestures.Gesture({
-                dir: "URD",
-                name: "view_source"
-            }),
-            new MagicGestures.Gesture({
-                dir: "UDR",
-                name: "split_tabs"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "UDL",
-                name: "merge_tabs"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "LDR",
-                name: "list_cookies"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "RDLUR",
-                name: "open_options"
-            }),
-            new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
-                dir: "RDLD",
-                name: "open_status"
-            })
-        ]
+        gestureMap: {
+            "new_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "U"
+                })
+            ],
+            "open_in_newtab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lU"
+                })
+            ],
+            "toggle_pin_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "D"
+                })
+            ],
+            "history_back": [
+                new MagicGestures.Gesture({
+                    dirStr: "L"
+                })
+            ],
+            "history_forward": [
+                new MagicGestures.Gesture({
+                    dirStr: "R"
+                })
+            ],
+            "prev_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UL"
+                })
+            ],
+            "next_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UR"
+                })
+            ],
+            "scroll_to_top": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "wU"
+                })
+            ],
+            "scroll_to_bottom": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "wD"
+                })
+            ],
+            "close_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "DR"
+                })
+            ],
+            "undo_close_tab": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LU"
+                })
+            ],
+            "duplicate_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "DU"
+                })
+            ],
+            "open_in_newtab_background": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "lDU"
+                })
+            ],
+            "reload_tab": [
+                new MagicGestures.Gesture({
+                    dirStr: "UD"
+                })
+            ],
+            "reload_tab_bypass_cache": [
+                new MagicGestures.Gesture({
+                    dirStr: "UDU"
+                })
+            ],
+            "view_source": [
+                new MagicGestures.Gesture({
+                    dirStr: "URD"
+                })
+            ],
+            "split_tabs": [
+                new MagicGestures.Gesture({
+                    dirStr: "UDR"
+                })
+            ],
+            "merge_tabs": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "UDL"
+                })
+            ],
+            "list_cookies": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "LDR"
+                })
+            ],
+            "open_options": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "RDLUR"
+                })
+            ],
+            "open_status": [
+                new MagicGestures.Gesture({
+                    // ToDo: Not Supported Yet
+                    dirStr: "RDLD"
+                })
+            ]
+        }
     });
 };
 

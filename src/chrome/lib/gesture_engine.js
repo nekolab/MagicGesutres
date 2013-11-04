@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures direction engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.2
+ * @version 0.0.0.3
  */
 
 /*global MagicGestures: true */
@@ -38,6 +38,32 @@ Object.defineProperty(MagicGestures, "directionEngine", {
                     }
                 }
 
+            }
+        },
+
+        /**
+         * Useage: Generate gesture trie for specific profile.
+         * ToDo: Optimize this function's performance.
+         * @param {object} profile MagicGestures.Profile.
+         * @return {object} Gesture trie.
+         */
+        generateTrie: {
+            value: function(profile) {
+                var gestureTrie = Object.create(null);
+                for (var action in profile.gestureMap) {
+                    profile.gestureMap[action].forEach(function(gesture) {
+                        var currentRoot = gestureTrie;
+                        for (var i = 0; i < gesture.dirStr.length; i++) {
+                            var ch = gesture.dirStr.charAt(i);
+                            if (!(ch in currentRoot)) {
+                                currentRoot[ch] = Object.create(null);
+                            }
+                            currentRoot = currentRoot[ch];
+                        }
+                        currentRoot.command = action;
+                    });
+                }
+                return gestureTrie;
             }
         }
     })
