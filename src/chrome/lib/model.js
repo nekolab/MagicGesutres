@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.1
  */
 
 /*global MagicGestures: true */
@@ -14,6 +14,15 @@
  * @constructor
  */
 MagicGestures.Gesture = function(gesture) {
+
+    /**
+     * Indicates gesutre's dependency of other condition.
+     * Currently only accept either "wheel" or "link".
+     * Empty string indicates no dependency.
+     * @type {string}
+     */
+    this.dependency = "";
+
     /**
      * Indicates gesture's direction.
      * Use U(p), D(own), L(eft), R(ight) represent direction.

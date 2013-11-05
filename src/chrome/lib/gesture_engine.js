@@ -1,11 +1,11 @@
 /**
  * @fileoverview Magic Gestures direction engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.3
+ * @version 0.0.0.4
  */
 
 /*global MagicGestures: true */
-/*jshint strict: true, globalstrict: true */
+/*jshint strict: true, globalstrict: true, forin: false */
 
 "use strict";
 
@@ -50,19 +50,32 @@ Object.defineProperty(MagicGestures, "directionEngine", {
         generateTrie: {
             value: function(profile) {
                 var gestureTrie = Object.create(null);
-                for (var action in profile.gestureMap) {
-                    profile.gestureMap[action].forEach(function(gesture) {
-                        var currentRoot = gestureTrie;
-                        for (var i = 0; i < gesture.dirStr.length; i++) {
-                            var ch = gesture.dirStr.charAt(i);
-                            if (!(ch in currentRoot)) {
-                                currentRoot[ch] = Object.create(null);
-                            }
-                            currentRoot = currentRoot[ch];
+
+                var createSubTrie = function(gesture) {
+                    var currentRoot = gestureTrie;
+
+                    if (gesture.dependency === "wheel" || gesture.dependency === "link") {
+                        var prefix = gesture.dependency[0];
+                        if (!(prefix in currentRoot)) {
+                            currentRoot[prefix] = Object.create(null);
                         }
-                        currentRoot.command = action;
-                    });
+                        currentRoot = currentRoot[prefix];
+                    }
+
+                    for (var i = 0; i < gesture.dirStr.length; i++) {
+                        var ch = gesture.dirStr.charAt(i);
+                        if (!(ch in currentRoot)) {
+                            currentRoot[ch] = Object.create(null);
+                        }
+                        currentRoot = currentRoot[ch];
+                    }
+                    currentRoot.command = action;
+                };
+
+                for (var action in profile.gestureMap) {
+                    profile.gestureMap[action].forEach(createSubTrie);
                 }
+
                 return gestureTrie;
             }
         }

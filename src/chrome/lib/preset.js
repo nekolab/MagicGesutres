@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.1
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -119,25 +119,29 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lDU"
+                    dirStr: "DU",
+                    dependency: "link"
                 })
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lU"
+                    dirStr: "U",
+                    dependency: "link"
                 })
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "wU"
+                    dirStr: "U",
+                    dependency: "wheel"
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "wD"
+                    dirStr: "D",
+                    dependency: "wheel"
                 })
             ],
             "open_options": [
@@ -223,13 +227,15 @@ MagicGestures.Preset.Profiles.Opera = function() {
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lD"
+                    dirStr: "D",
+                    dependency: "link"
                 })
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lDU"
+                    dirStr: "DU",
+                    dependency: "link"
                 })
             ]
         }
@@ -365,13 +371,15 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lD"
+                    dirStr: "D",
+                    dependency: "link"
                 })
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lU"
+                    dirStr: "U",
+                    dependency: "link"
                 })
             ],
             "open_options": [
@@ -402,7 +410,8 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lU"
+                    dirStr: "U",
+                    dependency: "link"
                 })
             ],
             "toggle_pin_tab": [
@@ -433,13 +442,15 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "scroll_to_top": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "wU"
+                    dirStr: "U",
+                    dependency: "wheel"
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "wD"
+                    dirStr: "D",
+                    dependency: "wheel"
                 })
             ],
             "close_tab": [
@@ -461,7 +472,8 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "lDU"
+                    dirStr: "DU",
+                    dependency: "link"
                 })
             ],
             "reload_tab": [
