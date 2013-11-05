@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.8
+ * @version 0.0.1.9
  */
 
 /*global MagicGestures: true, chrome: false */
@@ -112,6 +112,13 @@ Object.defineProperty(MagicGestures, "tab", {
          */
         gesture: {
             value: Object.create(null, {
+
+                /**
+                 * Data which current gesture carries.
+                 * @type {any}
+                 */
+                data: { value: undefined, writable: true },
+
                 /**
                  * Points is an array of point like {x: xx, y:yy}
                  * Each point logged by mouse event will add into this list.
@@ -159,6 +166,7 @@ Object.defineProperty(MagicGestures, "tab", {
                     value: function() {
                         MagicGestures.tab.gesture.code = "";
                         MagicGestures.tab.gesture.distance = 0;
+                        MagicGestures.tab.gesture.data = undefined;
                         MagicGestures.tab.gesture.points.length = 0;
                         MagicGestures.tab.gesture.lastEvent = undefined;
                         MagicGestures.tab.gesture.directionPoints.length = 0;
@@ -257,7 +265,16 @@ Object.defineProperty(MagicGestures, "tab", {
                                 document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
+
+                                if (event.srcElement.tagName === "A" && "l" in MagicGestures.tab.gesture.possibleNext) {
+                                    MagicGestures.tab.gesture.code = "l";
+                                    MagicGestures.tab.gesture.data = {
+                                        href: event.srcElement.href
+                                    };
+                                    MagicGestures.tab.gesture.possibleNext = MagicGestures.tab.gesture.possibleNext.l;
+                                }
                                 MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
+                                
                                 MagicGestures.tab.createCanvas();
                                 MagicGestures.tab.gestureCanvas.context2D.beginPath();
                                 MagicGestures.tab.gestureCanvas.context2D.moveTo(event.clientX, event.clientY);
@@ -291,7 +308,10 @@ Object.defineProperty(MagicGestures, "tab", {
                                 if (MagicGestures.tab.gesture.points.length > 5) {
                                     MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
                                     if (MagicGestures.tab.gesture.possibleNext.command) {
-                                        var msg = {command: MagicGestures.tab.gesture.possibleNext.command}
+                                        var msg = {
+                                            data: MagicGestures.tab.gesture.data,
+                                            command: MagicGestures.tab.gesture.possibleNext.command
+                                        };
                                         MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                                     }
                                     document.oncontextmenu = function(e) {
