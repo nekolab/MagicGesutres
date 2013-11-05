@@ -89,8 +89,8 @@ Object.defineProperty(MagicGestures, "tab", {
                     MagicGestures.tab.gestureCanvas.context2D.lineCap = "round";
                     MagicGestures.tab.gestureCanvas.context2D.lineJoin = "round";
                     var lineColor = MagicGestures.runtime.currentProfile.locusColor;
-                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle="#" + lineColor[0].toString(16) +
-                        lineColor[1].toString(16) + lineColor[2].toString(16) + lineColor[3].toString(16);
+                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle = 
+                        "rgba(" + lineColor[0] + "," + lineColor[1] + "," + lineColor[2] + "," + lineColor[3] + ")";
                 }
             }
         },
