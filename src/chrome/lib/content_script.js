@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.7
+ * @version 0.0.1.8
  */
 
 /*global MagicGestures: true, chrome: false */
@@ -265,6 +265,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                 break;
                             case "mousewheel":
                                 if (MagicGestures.tab.gesture.points.length <= 5) {
+                                    document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                     var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.w;
                                     var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
@@ -274,6 +275,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                         e.stopPropagation();
                                         document.oncontextmenu = null;
                                     };
+                                    return false;
                                 }
                                 break;
                             case "mousemove":
