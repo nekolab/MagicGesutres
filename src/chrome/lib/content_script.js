@@ -269,7 +269,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                     var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.w;
                                     var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
-                                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", action.command);
+                                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
                                     document.oncontextmenu = function(e) {
                                         e.preventDefault();
                                         e.stopPropagation();
@@ -291,7 +291,8 @@ Object.defineProperty(MagicGestures, "tab", {
                                 if (MagicGestures.tab.gesture.points.length > 5) {
                                     MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
                                     if (MagicGestures.tab.gesture.possibleNext.command) {
-                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", MagicGestures.tab.gesture.possibleNext.command);
+                                        var msg = {command: MagicGestures.tab.gesture.possibleNext.command}
+                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                                     }
                                     document.oncontextmenu = function(e) {
                                         e.preventDefault();

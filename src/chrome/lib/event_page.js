@@ -34,10 +34,10 @@ MagicGestures.runtime.messenger.action = function(type, msg, sender, sendRespons
     switch(type) {
         case "gesture ACTION":
             MagicGestures.logging.debug(msg);
-            if (msg in MagicGestures.Preset.Actions) {
-                MagicGestures.Preset.Actions[msg].call(null, sender.tab);
+            if (msg.command in MagicGestures.Preset.Actions) {
+                MagicGestures.Preset.Actions[msg.command].call(null, sender.tab);
             } else {
-                MagicGestures.logging.warn("Gesture action", msg, "doesn't support yet");
+                MagicGestures.logging.warn("Gesture action", msg.command, "doesn't support yet");
             }
             break;
         case "page_action ACTION":
