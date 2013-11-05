@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.1
+ * @version 0.0.1.3
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -44,116 +44,174 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
         gestureMap: {
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L"
+                    dirStr: "L",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R"
+                    dirStr: "R",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR"
+                    dirStr: "DR",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD"
+                    dirStr: "UD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "undo_close_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LU"
+                    dirStr: "LU",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "reload_tab_bypass_cache": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDU"
+                    dirStr: "UDU",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "close_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "URD"
+                    dirStr: "URD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UL"
+                    dirStr: "UL",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR"
+                    dirStr: "UR",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "minimize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RUD"
+                    dirStr: "RUD",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "maximize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RDU"
+                    dirStr: "RDU",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "goto_parent_dir": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "DU"
+                    dirStr: "DU",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "view_current_frame_only": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDR"
+                    dirStr: "LDR",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "view_current_frame_in_new_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDRU"
+                    dirStr: "LDRU",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "DU",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "U",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "U",
-                    dependency: "wheel"
+                    dependency: "wheel",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "D",
-                    dependency: "wheel"
+                    dependency: "wheel",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "open_options": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLUR"
+                    dirStr: "RDLUR",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "open_status": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLD"
+                    dirStr: "RDLD",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ]
         }
@@ -172,70 +230,109 @@ MagicGestures.Preset.Profiles.Opera = function() {
         gestureMap: {
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L"
+                    dirStr: "L",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R"
+                    dirStr: "R",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "goto_parent_dir": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "UL"
+                    dirStr: "UL",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD"
+                    dirStr: "UD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "stop_loading": [
                 new MagicGestures.Gesture({
-                    dirStr: "U"
+                    dirStr: "U",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "new_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "D"
+                    dirStr: "D",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "duplicate_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU"
+                    dirStr: "DU",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "maximize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR"
+                    dirStr: "UR",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "minimize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "DL"
+                    dirStr: "DL",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR"
+                    dirStr: "DR",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 }),
                 new MagicGestures.Gesture({
-                    dirStr: "RLR"
+                    dirStr: "RLR",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "D",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "DU",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ]
         }
@@ -244,7 +341,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
 
 MagicGestures.Preset.Profiles.FireGestures = function() {
     return new MagicGestures.Profile({
-        id: "92bf41973bdb709e",
+        id: "c69b0a6f7786ef4e",
         name: "FireGestures",
         description: "FireGestures style profile.",
         enable: true,
@@ -254,138 +351,210 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
         gestureMap: {
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L"
+                    dirStr: "L",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R"
+                    dirStr: "R",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD"
+                    dirStr: "UD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "reload_tab_bypass_cache": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDU"
+                    dirStr: "UDU",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "goto_parent_dir": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "DU"
+                    dirStr: "DU",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "new_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "DRU"
+                    dirStr: "DRU",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "close_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "URD"
+                    dirStr: "URD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "minimize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RUD"
+                    dirStr: "RUD",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "maximize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RDU"
+                    dirStr: "RDU",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "new_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "LR"
+                    dirStr: "LR",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        , 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR"
+                    dirStr: "DR",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "undo_close_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RL"
+                    dirStr: "RL",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "UL"
+                    dirStr: "UL",
+                    featureVectors:[0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "UR"
+                    dirStr: "UR",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "zoom_in_text": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LRU"
+                    dirStr: "LRU",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "zoom_out_text": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LRD"
+                    dirStr: "LRD",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "reset_text_zoom": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LRUD"
+                    dirStr: "LRUD",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LU"
+                    dirStr: "LU",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LD"
+                    dirStr: "LD",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "view_current_frame_only": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDR"
+                    dirStr: "LDR",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "view_current_frame_in_new_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDRU"
+                    dirStr: "LDRU",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "D",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "U",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "open_options": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDRUL"
+                    dirStr: "LDRUL",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ]
         }
@@ -404,120 +573,181 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
         gestureMap: {
             "new_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "U"
+                    dirStr: "U",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "U",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "toggle_pin_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "D"
+                    dirStr: "D",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L"
+                    dirStr: "L",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R"
+                    dirStr: "R",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UL"
+                    dirStr: "UL",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR"
+                    dirStr: "UR",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "U",
-                    dependency: "wheel"
+                    dependency: "wheel",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "D",
-                    dependency: "wheel"
+                    dependency: "wheel",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR"
+                    dirStr: "DR",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "undo_close_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LU"
+                    dirStr: "LU",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "duplicate_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU"
+                    dirStr: "DU",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
                     dirStr: "DU",
-                    dependency: "link"
+                    dependency: "link",
+                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD"
+                    dirStr: "UD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "reload_tab_bypass_cache": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDU"
+                    dirStr: "UDU",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
                 })
             ],
             "view_source": [
                 new MagicGestures.Gesture({
-                    dirStr: "URD"
+                    dirStr: "URD",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ],
             "split_tabs": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDR"
+                    dirStr: "UDR",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "merge_tabs": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "UDL"
+                    dirStr: "UDL",
+                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1,
+                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
                 })
             ],
             "list_cookies": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDR"
+                    dirStr: "LDR",
+                    featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "open_options": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLUR"
+                    dirStr: "RDLUR",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0,
+                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 })
             ],
             "open_status": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLD"
+                    dirStr: "RDLD",
+                    featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1,
+                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
                 })
             ]
         }

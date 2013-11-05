@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.1
+ * @version 0.0.1.2
  */
 
 /*global MagicGestures: true */
@@ -40,6 +40,8 @@ MagicGestures.Gesture = function(gesture) {
         for (var item in gesture) {
             if (this.hasOwnProperty(item)) {
                 this[item] = gesture[item];
+            } else {
+                MagicGestures.logging.warn("Not a vaild gesture member:", item);
             }
         }
     }
@@ -175,6 +177,8 @@ MagicGestures.Profile = function(profile) {
         for (var item in profile) {
             if (this.hasOwnProperty(item)) {
                 this[item] = profile[item];
+            } else {
+                MagicGestures.logging.warn("Not a vaild profile member:", item);
             }
         }
     }
