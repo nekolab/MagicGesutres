@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.5
+ * @version 0.0.0.6
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -103,12 +103,10 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
                 name: "view_current_frame_in_new_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lDU",
                 name: "open_in_newtab_background"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lU",
                 name: "open_in_newtab"
             }),
@@ -192,12 +190,10 @@ MagicGestures.Preset.Profiles.Opera = function() {
                 name: "close_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lD",
                 name: "open_in_newtab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lDU",
                 name: "open_in_newtab_background"
             })
@@ -311,12 +307,10 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
                 name: "view_current_frame_in_new_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lD",
                 name: "open_in_newtab_background"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lU",
                 name: "open_in_newtab"
             }),
@@ -344,7 +338,6 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
                 name: "new_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lU",
                 name: "open_in_newtab"
             }),
@@ -392,7 +385,6 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
                 name: "duplicate_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "lDU",
                 name: "open_in_newtab_background"
             }),
@@ -606,6 +598,18 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
             chrome.tabs.create({index: tab.index + 1, url: "chrome://history/"});
         },
         enumerable: true
+    },
+
+    open_in_newtab: {
+        value: function(tab, data) {
+            chrome.tabs.create({index: tab.index + 1, url: data.href, openerTabId: tab.id});
+        }
+    },
+
+    open_in_newtab_background: {
+        value: function(tab, data) {
+            chrome.tabs.create({index: tab.index + 1, url: data.href, active: false, openerTabId: tab.id});
+        }
     },
 
     pin_tab: {
