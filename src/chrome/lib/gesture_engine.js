@@ -1,5 +1,5 @@
 /**
- * @fileoverview Magic Gestures direction engine.
+ * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
  * @version 0.0.0.5
  */
@@ -9,7 +9,7 @@
 
 "use strict";
 
-Object.defineProperty(MagicGestures, "directionEngine", {
+Object.defineProperty(MagicGestures, "DirectionEngine", {
     value: Object.create(null, {
         update: {
             value: function(gesturePtr, endForce) {
@@ -69,8 +69,8 @@ Object.defineProperty(MagicGestures, "directionEngine", {
                         currentRoot = currentRoot[prefix];
                     }
 
-                    for (var i = 0; i < gesture.dirStr.length; i++) {
-                        var ch = gesture.dirStr.charAt(i);
+                    for (var i = 0; i < gesture.code.length; i++) {
+                        var ch = gesture.code.charAt(i);
                         if (!(ch in currentRoot)) {
                             currentRoot[ch] = Object.create(null);
                         }

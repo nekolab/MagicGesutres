@@ -28,7 +28,7 @@ MagicGestures.Gesture = function(gesture) {
      * Use U(p), D(own), L(eft), R(ight) represent direction.
      * @type {string}
      */
-    this.dirStr = "";
+    this.code = "";
 
     /**
      * Store the point information for neural network use.

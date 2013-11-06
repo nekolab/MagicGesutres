@@ -74,7 +74,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                             MagicGestures.Preset.Profiles.Opera(),
                             MagicGestures.Preset.Profiles.SmoothGestures()
                         ].forEach(function(profile) {
-                            profile.gestureTrie = MagicGestures.directionEngine.generateTrie(profile);
+                            profile.gestureTrie = MagicGestures.DirectionEngine.generateTrie(profile);
                             profileMap[profile.id] = profile;
                         });
                         chrome.storage.local.set({profileMap: profileMap});

@@ -44,7 +44,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
         gestureMap: {
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L",
+                    code: "L",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -52,7 +52,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R",
+                    code: "R",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -60,7 +60,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR",
+                    code: "DR",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -68,7 +68,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD",
+                    code: "UD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -77,7 +77,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             "undo_close_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LU",
+                    code: "LU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -85,7 +85,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "reload_tab_bypass_cache": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDU",
+                    code: "UDU",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -93,7 +93,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "close_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "URD",
+                    code: "URD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -101,7 +101,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UL",
+                    code: "UL",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -109,7 +109,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR",
+                    code: "UR",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -117,7 +117,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "minimize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RUD",
+                    code: "RUD",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -125,7 +125,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "maximize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RDU",
+                    code: "RDU",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -134,7 +134,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             "goto_parent_dir": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "DU",
+                    code: "DU",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -143,7 +143,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             "view_current_frame_only": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDR",
+                    code: "LDR",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -152,7 +152,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             "view_current_frame_in_new_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDRU",
+                    code: "LDRU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -160,7 +160,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU",
+                    code: "DU",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -169,7 +169,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
+                    code: "U",
                     dependency: "link",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -178,26 +178,20 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
-                    dependency: "wheel",
-                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
-                        -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
-                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
+                    code: "U",
+                    dependency: "wheel"
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
-                    dirStr: "D",
-                    dependency: "wheel",
-                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-                        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+                    code: "D",
+                    dependency: "wheel"
                 })
             ],
             "open_options": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLUR",
+                    code: "RDLUR",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -206,7 +200,7 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             "open_status": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLD",
+                    code: "RDLD",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -228,7 +222,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
         gestureMap: {
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L",
+                    code: "L",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -236,7 +230,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R",
+                    code: "R",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -245,7 +239,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             "goto_parent_dir": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "UL",
+                    code: "UL",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -253,7 +247,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD",
+                    code: "UD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -261,7 +255,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "stop_loading": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
+                    code: "U",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -269,7 +263,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "new_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "D",
+                    code: "D",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -277,7 +271,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "duplicate_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU",
+                    code: "DU",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -285,7 +279,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "maximize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR",
+                    code: "UR",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -293,7 +287,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "minimize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "DL",
+                    code: "DL",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -301,13 +295,13 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR",
+                    code: "DR",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
                 }),
                 new MagicGestures.Gesture({
-                    dirStr: "RLR",
+                    code: "RLR",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -315,7 +309,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    dirStr: "D",
+                    code: "D",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
@@ -324,7 +318,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU",
+                    code: "DU",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -347,7 +341,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
         gestureMap: {
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L",
+                    code: "L",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -355,7 +349,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R",
+                    code: "R",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -363,7 +357,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD",
+                    code: "UD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -371,7 +365,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "reload_tab_bypass_cache": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDU",
+                    code: "UDU",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -380,7 +374,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "goto_parent_dir": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "DU",
+                    code: "DU",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -388,7 +382,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "new_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "DRU",
+                    code: "DRU",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -396,7 +390,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "close_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "URD",
+                    code: "URD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -404,7 +398,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "minimize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RUD",
+                    code: "RUD",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -412,7 +406,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "maximize_window": [
                 new MagicGestures.Gesture({
-                    dirStr: "RDU",
+                    code: "RDU",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -420,7 +414,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "new_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "LR",
+                    code: "LR",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         , 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -428,7 +422,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR",
+                    code: "DR",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -437,7 +431,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "undo_close_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RL",
+                    code: "RL",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -445,7 +439,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UL",
+                    code: "UL",
                     featureVectors:[0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -453,7 +447,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR",
+                    code: "UR",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -462,7 +456,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "zoom_in_text": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LRU",
+                    code: "LRU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -471,7 +465,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "zoom_out_text": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LRD",
+                    code: "LRD",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -480,7 +474,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "reset_text_zoom": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LRUD",
+                    code: "LRUD",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -488,7 +482,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
-                    dirStr: "LU",
+                    code: "LU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -496,7 +490,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
-                    dirStr: "LD",
+                    code: "LD",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -505,7 +499,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "view_current_frame_only": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDR",
+                    code: "LDR",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -514,7 +508,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "view_current_frame_in_new_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDRU",
+                    code: "LDRU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -522,7 +516,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    dirStr: "D",
+                    code: "D",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
@@ -531,7 +525,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
+                    code: "U",
                     dependency: "link",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -541,7 +535,7 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             "open_options": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDRUL",
+                    code: "LDRUL",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -563,7 +557,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
         gestureMap: {
             "new_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
+                    code: "U",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -571,7 +565,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
+                    code: "U",
                     dependency: "link",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -580,7 +574,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "toggle_pin_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "D",
+                    code: "D",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1]
@@ -588,7 +582,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "history_back": [
                 new MagicGestures.Gesture({
-                    dirStr: "L",
+                    code: "L",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -596,7 +590,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "history_forward": [
                 new MagicGestures.Gesture({
-                    dirStr: "R",
+                    code: "R",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0]
@@ -604,7 +598,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UL",
+                    code: "UL",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -612,7 +606,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UR",
+                    code: "UR",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -620,25 +614,19 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
-                    dirStr: "U",
-                    dependency: "wheel",
-                    featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
-                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
-                        0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
+                    code: "U",
+                    dependency: "wheel"
                 })
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
-                    dirStr: "D",
-                    dependency: "wheel",
-                    featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-                        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-                        1, 0, 1, 0, 1, 0, 1, 0, 1]
+                    code: "D",
+                    dependency: "wheel"
                 })
             ],
             "close_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DR",
+                    code: "DR",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -647,7 +635,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "undo_close_tab": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LU",
+                    code: "LU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -655,7 +643,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "duplicate_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU",
+                    code: "DU",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -663,7 +651,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    dirStr: "DU",
+                    code: "DU",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
@@ -672,7 +660,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "reload_tab": [
                 new MagicGestures.Gesture({
-                    dirStr: "UD",
+                    code: "UD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -680,7 +668,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "reload_tab_bypass_cache": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDU",
+                    code: "UDU",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1]
@@ -688,7 +676,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "view_source": [
                 new MagicGestures.Gesture({
-                    dirStr: "URD",
+                    code: "URD",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
@@ -696,7 +684,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "split_tabs": [
                 new MagicGestures.Gesture({
-                    dirStr: "UDR",
+                    code: "UDR",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -705,7 +693,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "merge_tabs": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "UDL",
+                    code: "UDL",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0]
@@ -714,7 +702,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "list_cookies": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "LDR",
+                    code: "LDR",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -723,7 +711,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "open_options": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLUR",
+                    code: "RDLUR",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0,
                         1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
@@ -732,7 +720,7 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             "open_status": [
                 new MagicGestures.Gesture({
                     // ToDo: Not Supported Yet
-                    dirStr: "RDLD",
+                    code: "RDLD",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, 1]

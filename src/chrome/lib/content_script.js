@@ -297,10 +297,10 @@ Object.defineProperty(MagicGestures, "tab", {
                                 break;
                             case "mousemove":
                                 MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, false);
+                                MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
                                 break;
                             case "mouseup":
-                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, true);
+                                MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
                                 document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
