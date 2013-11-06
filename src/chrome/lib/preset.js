@@ -59,7 +59,6 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
                 name: "reload_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "LU",
                 name: "undo_close_tab"
             }),
@@ -257,7 +256,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
                 name: "close_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "RL",
                 name: "undo_close_tab"
             }),
@@ -376,7 +374,6 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
                 name: "close_tab"
             }),
             new MagicGestures.Gesture({
-                // ToDo: Not Supported Yet
                 dir: "LU",
                 name: "undo_close_tab"
             }),
@@ -715,6 +712,19 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
     toggle_pin_tab: {
         value: function(tab) {
             chrome.tabs.update(tab.id, {pinned: !tab.pinned});
+        },
+        enumerable: true
+    },
+
+    undo_close_tab: {
+        value: function(tab) {
+            // Currently, chrome.sessions is only avaliable in Dev Channel (v32).
+            chrome.sessions.getRecentlyClosed(function(sessions) {
+                if (sessions[0]) {
+                    var item = (sessions[0].tab) || (sessions[0].window);
+                    chrome.sessions.restore(item.sessionId);
+                }
+            });
         },
         enumerable: true
     },
