@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.6
+ * @version 0.0.1.9
  */
 
 /*global MagicGestures: true, chrome: false */
@@ -89,8 +89,8 @@ Object.defineProperty(MagicGestures, "tab", {
                     MagicGestures.tab.gestureCanvas.context2D.lineCap = "round";
                     MagicGestures.tab.gestureCanvas.context2D.lineJoin = "round";
                     var lineColor = MagicGestures.runtime.currentProfile.locusColor;
-                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle="#" + lineColor[0].toString(16) +
-                        lineColor[1].toString(16) + lineColor[2].toString(16) + lineColor[3].toString(16);
+                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle = 
+                        "rgba(" + lineColor[0] + "," + lineColor[1] + "," + lineColor[2] + "," + lineColor[3] + ")";
                 }
             }
         },
@@ -108,33 +108,30 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
-         * animationStroke is a auto draw manager.
-         * It can draw(stroke) then begin a new path.
-         * It will run forver until gesture canvas destoried.
-         */
-        animationStroke: {
-            value: function() {
-                if (MagicGestures.tab.gestureCanvas.context2D) {
-                    window.requestAnimationFrame(MagicGestures.tab.animationStroke);
-                    MagicGestures.tab.gestureCanvas.context2D.stroke();
-                    MagicGestures.tab.gestureCanvas.context2D.beginPath();
-                    var previousEvent = MagicGestures.tab.gesture.points.slice(-1)[0];
-                    MagicGestures.tab.gestureCanvas.context2D.moveTo(previousEvent.clientX, previousEvent.clientY);
-                }
-            }
-        },
-
-        /**
          * Current drawn gesture.
          */
         gesture: {
             value: Object.create(null, {
+
+                /**
+                 * Data which current gesture carries.
+                 * @type {any}
+                 */
+                data: { value: undefined, writable: true },
+
                 /**
                  * Points is an array of point like {x: xx, y:yy}
                  * Each point logged by mouse event will add into this list.
                  * @type {Array.<Object.<String, Number>>}
                  */
                 points: { value: [] },
+
+                /**
+                 * Direction points is an array of point like {x: xx, y:yy}
+                 * It stores points which used by direction engine.
+                 * @type {Array.<Object.<String, number>>}
+                 */
+                directionPoints: { value: [] },
 
                 /**
                  * Current gesture's code.
@@ -157,13 +154,22 @@ Object.defineProperty(MagicGestures, "tab", {
                 possibleNext: { value: undefined, writable: true },
 
                 /**
+                 * Last mouse event for draw use.
+                 * @type {Event}
+                 */
+                lastEvent: {value: undefined, writable: true},
+
+                /**
                  * Reset gesture object to empty.
                  */
                 reset: {
                     value: function() {
                         MagicGestures.tab.gesture.code = "";
                         MagicGestures.tab.gesture.distance = 0;
+                        MagicGestures.tab.gesture.data = undefined;
                         MagicGestures.tab.gesture.points.length = 0;
+                        MagicGestures.tab.gesture.lastEvent = undefined;
+                        MagicGestures.tab.gesture.directionPoints.length = 0;
                         MagicGestures.tab.gesture.possibleNext = MagicGestures.runtime.currentProfile.gestureTrie;
                     }
                 }
@@ -205,6 +211,23 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * animationStroke is a auto draw manager.
+         * It can draw(stroke) then begin a new path.
+         * It will run forver until gesture canvas destoried.
+         */
+        animationStroke: {
+            value: function() {
+                if (MagicGestures.tab.gestureCanvas.context2D) {
+                    window.requestAnimationFrame(MagicGestures.tab.animationStroke);
+                    MagicGestures.tab.gestureCanvas.context2D.stroke();
+                    MagicGestures.tab.gestureCanvas.context2D.beginPath();
+                    MagicGestures.tab.gestureCanvas.context2D.moveTo(
+                        MagicGestures.tab.gesture.lastEvent.clientX, MagicGestures.tab.gesture.lastEvent.clientY);
+                }
+            }
+        },
+
+        /**
          * Mouse handler handle every mouse event and process it.
          */
         mouseHandler: {
@@ -226,6 +249,7 @@ Object.defineProperty(MagicGestures, "tab", {
                     value: function(event) {
                         if (event.button == MagicGestures.runtime.currentProfile.triggerButton) {
                             MagicGestures.tab.gesture.points.push({clientX: event.clientX, clientY: event.clientY});
+                            MagicGestures.tab.gesture.lastEvent = event;
                             MagicGestures.tab.mouseHandler.handle(event);
                         }
                     }
@@ -241,6 +265,16 @@ Object.defineProperty(MagicGestures, "tab", {
                                 document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
+
+                                if (event.srcElement.tagName === "A" && "l" in MagicGestures.tab.gesture.possibleNext) {
+                                    MagicGestures.tab.gesture.code = "l";
+                                    MagicGestures.tab.gesture.data = {
+                                        href: event.srcElement.href
+                                    };
+                                    MagicGestures.tab.gesture.possibleNext = MagicGestures.tab.gesture.possibleNext.l;
+                                }
+                                MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
+                                
                                 MagicGestures.tab.createCanvas();
                                 MagicGestures.tab.gestureCanvas.context2D.beginPath();
                                 MagicGestures.tab.gestureCanvas.context2D.moveTo(event.clientX, event.clientY);
@@ -248,22 +282,25 @@ Object.defineProperty(MagicGestures, "tab", {
                                 break;
                             case "mousewheel":
                                 if (MagicGestures.tab.gesture.points.length <= 5) {
-                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie["w"];
-                                    var action = (event.wheelDelta > 0) ? wheelActions["U"] : wheelActions["D"];
+                                    document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.w;
+                                    var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
-                                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", action.command);
+                                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
                                     document.oncontextmenu = function(e) {
                                         e.preventDefault();
                                         e.stopPropagation();
                                         document.oncontextmenu = null;
                                     };
+                                    return false;
                                 }
                                 break;
                             case "mousemove":
                                 MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture);
+                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, false);
                                 break;
                             case "mouseup":
+                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, true);
                                 document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
@@ -271,7 +308,11 @@ Object.defineProperty(MagicGestures, "tab", {
                                 if (MagicGestures.tab.gesture.points.length > 5) {
                                     MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
                                     if (MagicGestures.tab.gesture.possibleNext.command) {
-                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", MagicGestures.tab.gesture.possibleNext.command);
+                                        var msg = {
+                                            data: MagicGestures.tab.gesture.data,
+                                            command: MagicGestures.tab.gesture.possibleNext.command
+                                        };
+                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                                     }
                                     document.oncontextmenu = function(e) {
                                         e.preventDefault();

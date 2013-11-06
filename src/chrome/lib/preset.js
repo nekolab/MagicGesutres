@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.3
+ * @version 0.0.1.4
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -160,7 +160,6 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "DU",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
@@ -170,7 +169,6 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "U",
                     dependency: "link",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
@@ -317,7 +315,6 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "D",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
@@ -327,7 +324,6 @@ MagicGestures.Preset.Profiles.Opera = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "DU",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
@@ -449,7 +445,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "prev_tab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "UL",
                     featureVectors:[0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -458,7 +453,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "next_tab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "UR",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
                         0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
@@ -494,7 +488,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "scroll_to_top": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "LU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -503,7 +496,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "scroll_to_bottom": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "LD",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
@@ -530,7 +522,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "D",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
@@ -540,7 +531,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "U",
                     dependency: "link",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -581,7 +571,6 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "open_in_newtab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "U",
                     dependency: "link",
                     featureVectors: [0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -674,7 +663,6 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "open_in_newtab_background": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     dirStr: "DU",
                     dependency: "link",
                     featureVectors: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
@@ -924,6 +912,18 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
             chrome.tabs.create({index: tab.index + 1, url: "chrome://history/"});
         },
         enumerable: true
+    },
+
+    open_in_newtab: {
+        value: function(tab, data) {
+            chrome.tabs.create({index: tab.index + 1, url: data.href, openerTabId: tab.id});
+        }
+    },
+
+    open_in_newtab_background: {
+        value: function(tab, data) {
+            chrome.tabs.create({index: tab.index + 1, url: data.href, active: false, openerTabId: tab.id});
+        }
     },
 
     pin_tab: {

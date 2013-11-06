@@ -12,24 +12,31 @@
 Object.defineProperty(MagicGestures, "directionEngine", {
     value: Object.create(null, {
         update: {
-            value: function(gesturePtr) {
-                var last2point = gesturePtr.points.slice(-2);
+            value: function(gesturePtr, endForce) {
+                var previousPoint = gesturePtr.directionPoints[gesturePtr.directionPoints.length - 1];
+                var lastPoint = gesturePtr.lastEvent;
 
-                var deltaX = last2point[1].clientX - last2point[0].clientX;
-                var deltaY = last2point[1].clientY - last2point[0].clientY;
+                var deltaX = lastPoint.clientX - previousPoint.clientX;
+                var deltaY = lastPoint.clientY - previousPoint.clientY;
+
                 var prevDir = (gesturePtr.code === "") ? "" : gesturePtr.code[gesturePtr.code.length - 1];
+                
                 var currentDir;
-
-                if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+                if (Math.abs(deltaX) >= (endForce ? 1 : 2) * Math.abs(deltaY)) {
                     currentDir = (deltaX > 0) ? "R" : "L";
-                } else if (Math.abs(deltaX) < Math.abs(deltaY)) {
+                } else if ((endForce ? 1 : 2) * Math.abs(deltaX) < Math.abs(deltaY)) {
                     currentDir = (deltaY > 0) ? "D" : "U";
                 }
 
                 //gesturePtr.distance += Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                if ((Math.abs(deltaX) > 15 || Math.abs(deltaY) > 15) && (currentDir !== prevDir)) {
+                if (currentDir && currentDir === prevDir) {
+                    gesturePtr.directionPoints[gesturePtr.directionPoints.length - 1] = {clientX: lastPoint.clientX, clientY: lastPoint.clientY};
+                }
+
+                if ((Math.abs(deltaX) > 15 || Math.abs(deltaY) > 15) && (currentDir && currentDir !== prevDir)) {
                     gesturePtr.code += currentDir;
+                    gesturePtr.directionPoints.push({clientX: lastPoint.clientX, clientY: lastPoint.clientY});
 
                     if (currentDir in gesturePtr.possibleNext) {
                         gesturePtr.possibleNext = gesturePtr.possibleNext[currentDir];
