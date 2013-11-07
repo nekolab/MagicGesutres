@@ -61,12 +61,11 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                 var createSubTrie = function(gesture) {
                     var currentRoot = gestureTrie;
 
-                    if (gesture.dependency === "wheel" || gesture.dependency === "link") {
-                        var prefix = gesture.dependency[0];
-                        if (!(prefix in currentRoot)) {
-                            currentRoot[prefix] = Object.create(null);
+                    if (gesture.dependency === "wheel") {
+                        if (!(gesture.dependency in currentRoot)) {
+                            currentRoot[gesture.dependency] = Object.create(null);
                         }
-                        currentRoot = currentRoot[prefix];
+                        currentRoot = currentRoot[gesture.dependency];
                     }
 
                     for (var i = 0; i < gesture.code.length; i++) {
@@ -75,6 +74,11 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                             currentRoot[ch] = Object.create(null);
                         }
                         currentRoot = currentRoot[ch];
+                    }
+                    
+                    if (gesture.dependency === "link") {
+                        currentRoot.link = Object.create(null);
+                        currentRoot = currentRoot.link;
                     }
                     currentRoot.command = action;
                 };

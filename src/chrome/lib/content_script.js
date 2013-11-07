@@ -127,6 +127,13 @@ Object.defineProperty(MagicGestures, "tab", {
                 points: { value: [] },
 
                 /**
+                 * Gesture's dependency.
+                 * Currently we accept "wheel" or "link".
+                 * @type {string}
+                 */
+                dependency: {value: undefined, writable: true },
+
+                /**
                  * Direction points is an array of point like {x: xx, y:yy}
                  * It stores points which used by direction engine.
                  * @type {Array.<Object.<String, number>>}
@@ -169,6 +176,7 @@ Object.defineProperty(MagicGestures, "tab", {
                         MagicGestures.tab.gesture.data = undefined;
                         MagicGestures.tab.gesture.points.length = 0;
                         MagicGestures.tab.gesture.lastEvent = undefined;
+                        MagicGestures.tab.gesture.dependency = undefined;
                         MagicGestures.tab.gesture.directionPoints.length = 0;
                         MagicGestures.tab.gesture.possibleNext = MagicGestures.runtime.currentProfile.gestureTrie;
                     }
@@ -266,12 +274,12 @@ Object.defineProperty(MagicGestures, "tab", {
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
 
-                                if (event.srcElement.tagName === "A" && "l" in MagicGestures.tab.gesture.possibleNext) {
-                                    MagicGestures.tab.gesture.code = "l";
+                                if (event.srcElement.tagName === "A") {
+                                    //MagicGestures.tab.gesture.code = "l";
+                                    MagicGestures.tab.gesture.dependency = "link";
                                     MagicGestures.tab.gesture.data = {
                                         href: event.srcElement.href
                                     };
-                                    MagicGestures.tab.gesture.possibleNext = MagicGestures.tab.gesture.possibleNext.l;
                                 }
                                 MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
                                 
@@ -283,7 +291,8 @@ Object.defineProperty(MagicGestures, "tab", {
                             case "mousewheel":
                                 if (MagicGestures.tab.gesture.points.length <= 5) {
                                     document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.w;
+                                    MagicGestures.tab.gesture.dependency = "wheel";
+                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
                                     var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
                                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
@@ -307,6 +316,10 @@ Object.defineProperty(MagicGestures, "tab", {
                                 MagicGestures.tab.destoryCanvas();
                                 if (MagicGestures.tab.gesture.points.length > 5) {
                                     MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
+                                    if (MagicGestures.tab.gesture.dependency in MagicGestures.tab.gesture.possibleNext) {
+                                        MagicGestures.tab.gesture.possibleNext = 
+                                            MagicGestures.tab.gesture.possibleNext[MagicGestures.tab.gesture.dependency];
+                                    }
                                     if (MagicGestures.tab.gesture.possibleNext.command) {
                                         var msg = {
                                             data: MagicGestures.tab.gesture.data,
