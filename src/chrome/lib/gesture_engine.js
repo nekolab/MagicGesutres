@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.5
+ * @version 0.0.0.6
  */
 
 /*global MagicGestures: true */
@@ -95,49 +95,55 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
 
 Object.defineProperty(MagicGestures, "NeuralNetEngine", {
     value: Object.create(null, {
-        rebuildNetwork: function(neunetInfo) {
-            var Network = function(details) {
-                this.inputCount = details.inputCount;
-                this.hiddenCount = details.hiddenCount;
-                this.outputCount = details.outputCount;
-                this.hiddenWeights = details.hiddenWeights;
-                this.outputWeights = details.outputWeights;
-                this.outputActions = details.outputActions;
+        rebuildNetwork: {
+        	value: function(neunetInfo) {
+	            var Network = function(details) {
+	                this.inputCount = details.inputCount;
+	                this.hiddenCount = details.hiddenCount;
+	                this.outputCount = details.outputCount;
+	                this.hiddenWeights = details.hiddenWeights;
+	                this.outputWeights = details.outputWeights;
+	                this.outputActions = details.outputActions;
 
-                this.think = function(inputs) {
+	                var sigmoid = function(activation, response) {
+	                    return (1 / (1 + Math.exp(-activation / response)));
+	                };
 
-                    //Check length
-                    if (inputs.length !== this.inputCount)
-                        throw "Not a vaild input for neural network engine.";
+	                this.think = function(inputs) {
 
-                    //Calculate hidden output
-                    var i, j;
-                    var hiddenOutputs = [];
-                    for (i = this.hiddenCount - 1; i >= 0; --i) {
-                        var hiddenOutput = 0;
-                        hiddenOutput += this.hiddenWeights[(i + 1) * (this.inputCount + 1) - 1] * -1;
-                        for (j = this.inputCount - 1; j >= 0; --j) {
-                            hiddenOutput += this.hiddenWeights[i * (this.inputCount + 1) + j] * inputs[j];
-                        }
-                        hiddenOutputs.append(hiddenOutput);
-                    }
+	                    //Check length
+	                    if (inputs.length !== this.inputCount)
+	                        throw "Not a vaild input for neural network engine.";
 
-                    //Calculate final output
-                    var outputOutputs = [];
-                    for (i = this.outputCount - 1; i >= 0; --i) {
-                        var outputOutput = 0;
-                        outputOutput += this.outputWeights[(i + 1) * (this.hiddenCount + 1) - 1] * -1;
-                        for (j = this.hiddenCount - 1; j >= 0; --j) {
-                            outputOutput += this.outputWeights[i * (this.hiddenCount + 1) + j] * hiddenOutputs[j];
-                        }
-                        outputOutputs.append(outputOutput);
-                    }
+	                    //Calculate hidden output
+	                    var i, j;
+	                    var hiddenOutputs = [];
+	                    for (i = this.hiddenCount - 1; i >= 0; --i) {
+	                        var hiddenOutput = this.hiddenWeights[(i + 1) * (this.inputCount + 1) - 1] * -1;
+	                        for (j = this.inputCount - 1; j >= 0; --j) {
+	                            hiddenOutput += this.hiddenWeights[i * (this.inputCount + 1) + j] * inputs[j];
+	                        }
+	                        hiddenOutput = sigmoid(hiddenOutput, 1);
+	                        hiddenOutputs.unshift(hiddenOutput);
+	                    }
 
-                    return this.outputActions[outputOutputs.indexOf(Math.max(outputOutputs))];
-                };
-            };
+	                    //Calculate final output
+	                    var outputOutputs = [];
+	                    for (i = this.outputCount - 1; i >= 0; --i) {
+	                        var outputOutput = this.outputWeights[(i + 1) * (this.hiddenCount + 1) - 1] * -1;
+	                        for (j = this.hiddenCount - 1; j >= 0; --j) {
+	                            outputOutput += this.outputWeights[i * (this.hiddenCount + 1) + j] * hiddenOutputs[j];
+	                        }
+	                        outputOutput = sigmoid(outputOutput, 1);
+	                        outputOutputs.unshift(outputOutput);
+	                    }
+	                    return outputOutputs;
+	                    //return this.outputActions[outputOutputs.indexOf(Math.max(outputOutputs))];
+	                };
+	            };
             
-            return new Network(neunetInfo);
+            	return new Network(neunetInfo);
+        	}
         }
     })
 });
