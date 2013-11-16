@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.0
+ * @version 0.0.2.1
  */
 
 /*global chrome: false */
@@ -19,14 +19,45 @@ var MagicGestures = Object.create(null);
  * Inclueds:
  *  - logging: Wrap the console log function and use constant to control visiable.
  *  - runtime: Runtime is the object which provides communication between background
-                and content script and provides basic background runtime presistant.
+ *              and content script and provides basic background runtime presistant.
  */
 Object.defineProperties(MagicGestures, {
+    
     logging: {
         value: Object.create(null)
     },
+
     runtime: {
         value: Object.create(null)
+    },
+
+    /**
+     * Indicate current operate system's type,
+     * could be "windows", "MacOS" or "Linux",
+     * if not detected, will be "Unknow OS".
+     *
+     * @type {string}
+     */
+    osType: {
+        value: (function() {
+            var osType="Unknown OS";
+            if (navigator.appVersion.indexOf("Win")!=-1) osType="Windows";
+            if (navigator.appVersion.indexOf("Mac")!=-1) osType="MacOS";
+            if (navigator.appVersion.indexOf("Linux")!=-1) osType="Linux";
+            return osType;
+        }())
+    },
+
+    /**
+     * Due to GTK version Chrome have some weird behavior,
+     * so we need to detect it and make some .
+     *
+     * @type {boolean}
+     */
+    isGTKChrome: {
+        value: (function() {
+            return navigator.appVersion.indexOf("Mac")!=-1 || navigator.appVersion.indexOf("Linux")!=-1;
+        }())
     }
 });
 

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.9
+ * @version 0.0.2.0
  */
 
 /*global MagicGestures: true, chrome: false */
@@ -60,8 +60,17 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * A timestamp record the last right click event,
+         * which will be used on GTK chrome to enable compatibility right click mode.
+         * @type {number}
+         */
+        lastRightClick: {
+            value: 0,
+            writable: true
+        },
+
+        /**
          * Initialize MagicGestures.tab
-         * 
          */
         init: {
             value: function() {
@@ -177,6 +186,17 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * Function which can disable context menu once.
+         */
+        disableContextMenu: {
+            value: function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document.oncontextmenu = null;
+            }
+        },
+
+        /**
          * Event handler handle every event in MagicGestures.tab except mouse event.
          */
         eventHandler: {
@@ -262,6 +282,14 @@ Object.defineProperty(MagicGestures, "tab", {
                     value: function(event) {
                         switch(event.type) {
                             case "mousedown":
+                                if (MagicGestures.isGTKChrome && new Date().getTime() - MagicGestures.tab.lastRightClick <= 300) {
+                                    MagicGestures.tab.lastRightClick = new Date().getTime();
+                                    break;
+                                } else if (MagicGestures.isGTKChrome) {
+                                    document.oncontextmenu = MagicGestures.tab.disableContextMenu;
+                                    MagicGestures.tab.lastRightClick = new Date().getTime();
+                                }
+
                                 document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
@@ -287,11 +315,8 @@ Object.defineProperty(MagicGestures, "tab", {
                                     var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
                                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
-                                    document.oncontextmenu = function(e) {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        document.oncontextmenu = null;
-                                    };
+                                    if (!MagicGestures.isGTKChrome)
+                                        document.oncontextmenu = MagicGestures.tab.disableContextMenu;
                                     return false;
                                 }
                                 break;
@@ -314,11 +339,8 @@ Object.defineProperty(MagicGestures, "tab", {
                                         };
                                         MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                                     }
-                                    document.oncontextmenu = function(e) {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        document.oncontextmenu = null;
-                                    };
+                                    if (!MagicGestures.isGTKChrome)
+                                        document.oncontextmenu = MagicGestures.tab.disableContextMenu;
                                 }
                                 MagicGestures.tab.gesture.reset();
                                 break;
