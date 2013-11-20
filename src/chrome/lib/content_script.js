@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.9
+ * @version 0.0.3.0
  */
 
 /*global MagicGestures: true, chrome: false */
@@ -120,9 +120,9 @@ Object.defineProperty(MagicGestures, "tab", {
                 data: { value: undefined, writable: true },
 
                 /**
-                 * Points is an array of point like {x: xx, y:yy}
+                 * Points is an array of point like [x,y,x,y,....,x,y].
                  * Each point logged by mouse event will add into this list.
-                 * @type {Array.<Object.<String, Number>>}
+                 * @type {Array.<Number>}
                  */
                 points: { value: [] },
 
@@ -256,7 +256,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 eventAdapter: {
                     value: function(event) {
                         if (event.button == MagicGestures.runtime.currentProfile.triggerButton) {
-                            MagicGestures.tab.gesture.points.push({clientX: event.clientX, clientY: event.clientY});
+                            MagicGestures.tab.gesture.points.push(event.clientX, event.clientY);
                             MagicGestures.tab.gesture.lastEvent = event;
                             MagicGestures.tab.mouseHandler.handle(event);
                         }
@@ -289,7 +289,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                 window.requestAnimationFrame(MagicGestures.tab.animationStroke);
                                 break;
                             case "mousewheel":
-                                if (MagicGestures.tab.gesture.points.length <= 5) {
+                                if (MagicGestures.tab.gesture.points.length <= 10) {
                                     document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                     MagicGestures.tab.gesture.dependency = "wheel";
                                     var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
@@ -309,13 +309,15 @@ Object.defineProperty(MagicGestures, "tab", {
                                 MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
                                 break;
                             case "mouseup":
+                                MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
                                 MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
                                 document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
                                 MagicGestures.tab.destoryCanvas();
-                                if (MagicGestures.tab.gesture.points.length > 5) {
+                                if (MagicGestures.tab.gesture.points.length > 10) {
                                     MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
+                                    MagicGestures.NeuralNetEngine.pointFilter(MagicGestures.tab.gesture.points);
                                     if (MagicGestures.tab.gesture.dependency in MagicGestures.tab.gesture.possibleNext) {
                                         MagicGestures.tab.gesture.possibleNext = 
                                             MagicGestures.tab.gesture.possibleNext[MagicGestures.tab.gesture.dependency];
