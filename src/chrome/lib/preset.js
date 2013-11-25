@@ -548,7 +548,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
 
     new_tab: {
         value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1});
+            chrome.tabs.create({index: tab.index + 1, url: "chrome://newtab"});
         },
         enumerable: true
     },
