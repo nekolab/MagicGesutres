@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.1
  */
 
 /*global MagicGestures: true */
@@ -223,12 +223,12 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
         rebuildNetwork: {
             value: function(neunetInfo) {
                 var Network = function(details) {
+                    this.actionList    = details.actionList;
                     this.inputCount    = details.inputCount;
                     this.hiddenCount   = details.hiddenCount;
                     this.outputCount   = details.outputCount;
                     this.hiddenWeights = details.hiddenWeights;
                     this.outputWeights = details.outputWeights;
-                    this.outputActions = details.outputActions;
 
                     var sigmoid = function(activation, response) {
                         return (1 / (1 + Math.exp(-activation / response)));
@@ -262,8 +262,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             outputOutput = sigmoid(outputOutput, 1);
                             outputOutputs.unshift(outputOutput);
                         }
-                        return outputOutputs;
-                        //return this.outputActions[outputOutputs.indexOf(Math.max(outputOutputs))];
+                        return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs)];
                     };
                 };
             
