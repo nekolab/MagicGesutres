@@ -119,7 +119,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
 
                     for (var i = 0; i < pointsArray.length / 2 - 1; ++i) {
                         distanceArray.push(Math.sqrt(
-                            Math.pow(pointsArray[2 * (i + 1)] - pointsArray[2 * i], 2) + 
+                            Math.pow(pointsArray[2 * (i + 1)] - pointsArray[2 * i], 2) +
                             Math.pow(pointsArray[2 * (i + 1) + 1] - pointsArray[2 * i + 1], 2)
                         ));
                     }
@@ -148,7 +148,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                     if (pointsPtr.length <= 62) {
                         var maxDistance = Math.max.apply(null, distanceArray);
                         var maxAt = distanceArray.indexOf(maxDistance);
-                        pointsPtr.splice(2 * maxAt + 2, 0, 
+                        pointsPtr.splice(2 * maxAt + 2, 0,
                             (pointsPtr[2 * maxAt] + pointsPtr[2 * maxAt + 2]) / 2,
                             (pointsPtr[2 * maxAt + 1] + pointsPtr[2 * maxAt + 3]) / 2
                         );
@@ -170,7 +170,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                                 Math.pow(pointsPtr[pointsLength - 1] - pointsPtr[pointsLength - 3], 2)
                             ));
                         } else {
-                            pointsPtr.splice(2 * minAt, 4, 
+                            pointsPtr.splice(2 * minAt, 4,
                                 (pointsPtr[2 * minAt] + pointsPtr[2 * minAt + 2]) / 2,
                                 (pointsPtr[2 * minAt + 1] + pointsPtr[2 * minAt + 3]) /2
                             );
@@ -260,8 +260,14 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                                 outputOutput += this.outputWeights[i * (this.hiddenCount + 1) + j] * hiddenOutputs[j];
                             }
                             outputOutput = sigmoid(outputOutput, 1);
+                            // outputOutput = Math.exp(outputOutput);
                             outputOutputs.unshift(outputOutput);
                         }
+                        // var reduce_sum = function(pv, cv) { return pv + cv; };
+                        // var expTot = outputOutputs.reduce(reduce_sum, 0);
+                        // var map_output = function(output) { return output / expTot; };
+                        // outputOutputs = outputOutputs.map(map_output);
+
                         return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs)];
                     };
                 };

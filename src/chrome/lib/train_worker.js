@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.3
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
@@ -15,9 +15,10 @@ var Utils = {
 };
 
 var Constants = {
-    LEARN_RATE: 0.5,
+    LEARN_RATE: 0.3,
     RESPONSE: 1,
-    SSE_THRESHOLD: 0.003
+    SSE_THRESHOLD: 0.001,
+    MOMENTUM: 0.9
 };
 
 var sigmoid = function(activation) {
@@ -41,68 +42,77 @@ var generateChecksum = function(vectors) {
     return checksum;
 };
 
-var Network = function(gestureMap) {
-    
-    this.gestureMap  = gestureMap;
+var prepareGestures = function(outputCount, gestureMap) {
+    var actionList = Object.keys(gestureMap);
+    var preparedInputs = [], preparedExpectedOutputs = [];
 
-    this.inputCount = 66;
-    this.outputCount = Object.keys(gestureMap).length;
-    this.hiddenCount = Math.round(Math.sqrt(this.inputCount + this.outputCount) + 2);
+    var checksumMap = Object.create(null);
+
+    actionList.forEach(function(action) {
+        gestureMap[action].forEach(function(gesture) {
+            if (gesture.featureVectors.length !== 0) {
+                var inputsContent = gesture.featureVectors.slice();
+                inputsContent.push(0, (gesture.dependency == "link") ? 1 : 0);
+                var checksum = generateChecksum(inputsContent);
+
+                if (checksum in checksumMap) {
+                    preparedExpectedOutputs[checksumMap[checksum]] = generateOutputs(outputCount, actionList.indexOf(action));
+                } else if (gesture.dependency) {
+                    preparedInputs.push(inputsContent.slice());
+                    preparedExpectedOutputs.push(generateOutputs(outputCount, actionList.indexOf(action)));
+                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
+                    inputsContent.splice(-1, 1, 0);
+                    preparedInputs.push(inputsContent.slice());
+                    preparedExpectedOutputs.push(generateOutputs(outputCount));
+                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
+                } else {
+                    preparedInputs.push(inputsContent.slice());
+                    preparedExpectedOutputs.push(generateOutputs(outputCount, actionList.indexOf(action)));
+                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
+                    inputsContent.splice(-1, 1, 1);
+                    preparedInputs.push(inputsContent.slice());
+                    preparedExpectedOutputs.push(generateOutputs(outputCount, actionList.indexOf(action)));
+                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
+                }
+            }
+        });
+    });
+    
+    return [preparedInputs, preparedExpectedOutputs];
+};
+
+var Network = function(inputCount, outputCount, gestureMap, hiddenCount) {
+
+    this.inputCount  = inputCount;
+    this.outputCount = outputCount;
+    this.actionList  = Object.keys(gestureMap);
+    this.hiddenCount = (hiddenCount) ? hiddenCount : Math.round(Math.sqrt(this.inputCount + this.outputCount) + 2);
 
     this.hiddenWeights = [];
     this.outputWeights = [];
 
     var i;
     for (i = (this.inputCount + 1) * this.hiddenCount - 1; i >= 0; --i) {
-        this.hiddenWeights[i] = Utils.randWeight();
+        this.hiddenWeights.push(Utils.randWeight());
     }
     for (i = (this.hiddenCount + 1) * this.outputCount - 1; i >= 0; --i) {
-        this.outputWeights[i] = Utils.randWeight();
+        this.outputWeights.push(Utils.randWeight());
     }
-
-    this.prepareGestures = function() {
-        this.actionList = Object.keys(this.gestureMap);
-        this.preparedInputs = [];
-        this.preparedExpectedOutputs = [];
-
-        var checksumMap = Object.create(null);
-
-        var NetworkThis = this;
-        this.actionList.forEach(function(action) {
-            NetworkThis.gestureMap[action].forEach(function(gesture) {
-                if (gesture.featureVectors.length !== 0) {
-                    var inputsContent = gesture.featureVectors.slice();
-                    inputsContent.push(0, (gesture.dependency == "link") ? 1 : 0);
-                    var checksum = generateChecksum(inputsContent);
-
-                    if (checksum in checksumMap) {
-                        NetworkThis.preparedExpectedOutputs[checksumMap[checksum]] = generateOutputs(
-                            NetworkThis.outputCount, NetworkThis.actionList.indexOf(action));
-                    } else if (gesture.dependency) {
-                        NetworkThis.preparedInputs.push(inputsContent.slice());
-                        NetworkThis.preparedExpectedOutputs.push(generateOutputs(NetworkThis.outputCount, NetworkThis.actionList.indexOf(action)));
-                        checksumMap[generateChecksum(inputsContent)] = NetworkThis.preparedInputs.length - 1;
-                        inputsContent.splice(-1, 1, 0);
-                        NetworkThis.preparedInputs.push(inputsContent.slice());
-                        NetworkThis.preparedExpectedOutputs.push(generateOutputs(NetworkThis.outputCount));
-                        checksumMap[generateChecksum(inputsContent)] = NetworkThis.preparedInputs.length - 1;
-                    } else {
-                        NetworkThis.preparedInputs.push(inputsContent.slice());
-                        NetworkThis.preparedExpectedOutputs.push(generateOutputs(NetworkThis.outputCount, NetworkThis.actionList.indexOf(action)));
-                        checksumMap[generateChecksum(inputsContent)] = NetworkThis.preparedInputs.length - 1;
-                        inputsContent.splice(-1, 1, 1);
-                        NetworkThis.preparedInputs.push(inputsContent.slice());
-                        NetworkThis.preparedExpectedOutputs.push(generateOutputs(NetworkThis.outputCount, NetworkThis.actionList.indexOf(action)));
-                        checksumMap[generateChecksum(inputsContent)] = NetworkThis.preparedInputs.length - 1;
-                    }
-                }
-            });
-        });
-    };
 
     this.train = function(inputs, expectedOutputs) {
 
+        var c, hiddenPrevWeights = [], outputPrevWeights = [];
+        for (c = (this.inputCount + 1) * this.hiddenCount - 1; c >= 0; --c) {
+            hiddenPrevWeights.push(0);
+        }
+        for (c = (this.hiddenCount + 1) * this.outputCount - 1; c >= 0; --c) {
+            outputPrevWeights.push(0);
+        }
+
         var ipt_index = 0, sse, max_sse;
+        // var expTot;
+        // var reduce_sum = function(pv, cv) { return pv + cv; };
+        // var map_output = function(output) { return output / expTot; };
 
         do {
             if (ipt_index === 0)
@@ -131,11 +141,14 @@ var Network = function(gestureMap) {
                 for (j = this.hiddenCount - 1; j >= 0; --j) {
                     outputOutput += this.outputWeights[i * (this.hiddenCount + 1) + j] * hiddenOutputs[j];
                 }
+                // outputOutput = Math.exp(outputOutput);
                 outputOutput = sigmoid(outputOutput);
                 outputOutputs.unshift(outputOutput);
             }
+            // expTot = outputOutputs.reduce(reduce_sum, 0);
+            // outputOutputs = outputOutputs.map(map_output);
 
-            var EkList = [];
+            var weightUpdate, EkList = [];
             sse = 0;
 
             // Adjust output layer.
@@ -144,10 +157,18 @@ var Network = function(gestureMap) {
                 var Ek = (expectedOutputs[ipt_index][k] - ok) * (ok - ok * ok);
                 sse += (expectedOutputs[ipt_index][k] - ok) * (expectedOutputs[ipt_index][k] - ok);
                 EkList.unshift(Ek);
+
                 // Adjust weights per output neural.
-                this.outputWeights[k * (this.hiddenCount + 1) + this.hiddenCount] += Constants.LEARN_RATE * Ek * -1;
+                weightUpdate = Constants.LEARN_RATE * Ek * -1;
+                this.outputWeights[k * (this.hiddenCount + 1) + this.hiddenCount] += weightUpdate +
+                    outputPrevWeights[k * (this.hiddenCount + 1) + this.hiddenCount] * Constants.MOMENTUM;
+                outputPrevWeights[k * (this.hiddenCount + 1) + this.hiddenCount] = weightUpdate;
+
                 for (j = this.hiddenCount - 1; j >= 0; --j) {
-                    this.outputWeights[k * (this.hiddenCount + 1) + j] += Constants.LEARN_RATE *  Ek * hiddenOutputs[j];
+                    weightUpdate = Constants.LEARN_RATE *  Ek * hiddenOutputs[j];
+                    this.outputWeights[k * (this.hiddenCount + 1) + j] += weightUpdate +
+                        outputPrevWeights[k * (this.hiddenCount + 1) + j] * Constants.MOMENTUM;
+                    outputPrevWeights[k * (this.hiddenCount + 1) + j] = weightUpdate;
                 }
             }
 
@@ -160,10 +181,18 @@ var Network = function(gestureMap) {
                     Ej += EkList[k] * this.outputWeights[k * (this.hiddenCount + 1) + j];
                 }
                 Ej *= oj * (1 - oj);
+
                 // Adjust weights per hidden neural.
-                this.hiddenWeights[j * (this.inputCount + 1) + this.inputCount] += Constants.LEARN_RATE * Ej * -1;
+                weightUpdate = Constants.LEARN_RATE * Ej * -1;
+                this.hiddenWeights[j * (this.inputCount + 1) + this.inputCount] += weightUpdate +
+                    hiddenPrevWeights[j * (this.inputCount + 1) + this.inputCount] * Constants.MOMENTUM;
+                hiddenPrevWeights[j * (this.inputCount + 1) + this.inputCount] = weightUpdate;
+
                 for (i = this.inputCount - 1; i >= 0; --i) {
-                    this.hiddenWeights[j * (this.inputCount + 1) + i] += Constants.LEARN_RATE * Ej * inputs[ipt_index][i];
+                    weightUpdate = Constants.LEARN_RATE * Ej * inputs[ipt_index][i];
+                    this.hiddenWeights[j * (this.inputCount + 1) + i] += weightUpdate +
+                        hiddenPrevWeights[j * (this.inputCount + 1) + i] * Constants.MOMENTUM;
+                    hiddenPrevWeights[j * (this.inputCount + 1) + i] = weightUpdate;
                 }
             }
 
@@ -178,13 +207,13 @@ var Network = function(gestureMap) {
 };
 
 
-self.addEventListener('message', function(e) {
+self.addEventListener("message", function(e) {
     switch(e.data && e.data.command) {
         case "train":
             var networkInfo = e.data.networkInfo;
-            var network = new Network(networkInfo.gestureMap);
-            network.prepareGestures();
-            network.train(network.preparedInputs, network.preparedExpectedOutputs);
+            var preparedTrainInfo = prepareGestures(Object.keys(networkInfo.gestureMap).length, networkInfo.gestureMap);
+            var network = new Network(66, Object.keys(networkInfo.gestureMap).length, networkInfo.gestureMap);
+            network.train(preparedTrainInfo[0], preparedTrainInfo[1]);
             self.postMessage({
                 actionList: network.actionList,
                 inputCount: network.inputCount,
