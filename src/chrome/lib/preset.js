@@ -76,7 +76,6 @@ MagicGestures.Preset.Profiles.MagicGestures = function() {
             ],
             "undo_close_tab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     code: "LU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -430,7 +429,6 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
             ],
             "undo_close_tab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     code: "RL",
                     featureVectors: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
                         0, 1, 0, 1, 0, 1, 0, 1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
@@ -634,7 +632,6 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
             ],
             "undo_close_tab": [
                 new MagicGestures.Gesture({
-                    // ToDo: Not Supported Yet
                     code: "LU",
                     featureVectors: [-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
                         -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1,
@@ -853,7 +850,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
 
     new_tab: {
         value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1});
+            chrome.tabs.create({index: tab.index + 1, url: "chrome://newtab"});
         },
         enumerable: true
     },
@@ -1017,6 +1014,19 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
     toggle_pin_tab: {
         value: function(tab) {
             chrome.tabs.update(tab.id, {pinned: !tab.pinned});
+        },
+        enumerable: true
+    },
+
+    undo_close_tab: {
+        value: function(tab) {
+            // Currently, chrome.sessions is only avaliable in Dev Channel (v32).
+            chrome.sessions.getRecentlyClosed(function(sessions) {
+                if (sessions[0]) {
+                    var item = (sessions[0].tab) || (sessions[0].window);
+                    chrome.sessions.restore(item.sessionId);
+                }
+            });
         },
         enumerable: true
     },
