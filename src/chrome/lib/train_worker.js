@@ -1,24 +1,24 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.3
+ * @version 0.0.1.5
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
 
 "use strict";
 
-var Utils = {
-    randWeight: function() {
-        return Math.random() * 2 - 1;
-    }
-};
-
 var Constants = {
     LEARN_RATE: 0.3,
     RESPONSE: 1,
     SSE_THRESHOLD: 0.001,
     MOMENTUM: 0.9
+};
+
+var Utils = {
+    randWeight: function() {
+        return Math.random() * 2 - 1;
+    }
 };
 
 var sigmoid = function(activation) {
@@ -35,15 +35,11 @@ var generateOutputs = function(length, index) {
 };
 
 var generateChecksum = function(vectors) {
-    var checksum = 0;
-    for (var i = vectors.length - 1; i >= 0; --i) {
-        checksum += vectors[i] * (i + 1);
-    }
-    return checksum;
+    return vectors.toString();
 };
 
-var prepareGestures = function(outputCount, gestureMap) {
-    var actionList = Object.keys(gestureMap);
+var prepareGestures = function(actionList, gestureMap) {
+    var outputCount = actionList.length;
     var preparedInputs = [], preparedExpectedOutputs = [];
 
     var checksumMap = Object.create(null);
@@ -81,11 +77,11 @@ var prepareGestures = function(outputCount, gestureMap) {
     return [preparedInputs, preparedExpectedOutputs];
 };
 
-var Network = function(inputCount, outputCount, gestureMap, hiddenCount) {
+var Network = function(inputCount, outputCount, actionList, hiddenCount) {
 
     this.inputCount  = inputCount;
     this.outputCount = outputCount;
-    this.actionList  = Object.keys(gestureMap);
+    this.actionList  = actionList;
     this.hiddenCount = (hiddenCount) ? hiddenCount : Math.round(Math.sqrt(this.inputCount + this.outputCount) + 2);
 
     this.hiddenWeights = [];
@@ -199,10 +195,8 @@ var Network = function(inputCount, outputCount, gestureMap, hiddenCount) {
             ipt_index = (++ipt_index) % inputs.length;
 
             max_sse = (sse > max_sse) ? sse : max_sse;
-            if (ipt_index !== 0)
-                continue;
 
-        } while(max_sse >= Constants.SSE_THRESHOLD);
+        } while(ipt_index !== 0 || max_sse >= Constants.SSE_THRESHOLD);
     };
 };
 
@@ -211,8 +205,9 @@ self.addEventListener("message", function(e) {
     switch(e.data && e.data.command) {
         case "train":
             var networkInfo = e.data.networkInfo;
-            var preparedTrainInfo = prepareGestures(Object.keys(networkInfo.gestureMap).length, networkInfo.gestureMap);
-            var network = new Network(66, Object.keys(networkInfo.gestureMap).length, networkInfo.gestureMap);
+            var actionList = Object.keys(networkInfo.gestureMap);
+            var preparedTrainInfo = prepareGestures(actionList, networkInfo.gestureMap);
+            var network = new Network(66, actionList.length, actionList);
             network.train(preparedTrainInfo[0], preparedTrainInfo[1]);
             self.postMessage({
                 actionList: network.actionList,

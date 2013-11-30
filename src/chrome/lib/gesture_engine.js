@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.1
+ * @version 0.0.1.3
  */
 
 /*global MagicGestures: true */
@@ -127,7 +127,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                     return distanceArray;
                 };
 
-                while (pointsPtr.length >= 128) {
+                while (pointsPtr.length >= 132) {
                     if (pointsPtr.length % 4 !== 0)
                         pointsPtr.push(pointsPtr[pointsPtr.length - 2], pointsPtr[pointsPtr.length - 1]);
 
@@ -144,8 +144,8 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                 }
 
                 var distanceArray = getDistanceArray(pointsPtr);
-                while (pointsPtr.length >= 40 && pointsPtr.length != 64) {
-                    if (pointsPtr.length <= 62) {
+                while (pointsPtr.length >= 4 && pointsPtr.length != 66) {
+                    if (pointsPtr.length <= 64) {
                         var maxDistance = Math.max.apply(null, distanceArray);
                         var maxAt = distanceArray.indexOf(maxDistance);
                         pointsPtr.splice(2 * maxAt + 2, 0,
@@ -208,7 +208,15 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                 for (var i = 0; i < pointsPtr.length - 2; i += 2) {
                     var vectorX = pointsPtr[i + 2] - pointsPtr[i], vectorY = pointsPtr[i + 3] - pointsPtr[i + 1];
                     var invSqrt = 1 / Math.sqrt(vectorX * vectorX + vectorY * vectorY);
-                    normalizedVectors.push(vectorX * invSqrt, vectorY * invSqrt);
+                    // Check if two points are same
+                    if (invSqrt !== Infinity){
+                        normalizedVectors.push(vectorX * invSqrt, vectorY * invSqrt);
+                    } else {
+                        normalizedVectors.push(
+                            normalizedVectors[normalizedVectors.length - 2],
+                            normalizedVectors[normalizedVectors.length - 1]
+                        );
+                    }
                 }
 
                 return normalizedVectors;
@@ -268,7 +276,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                         // var map_output = function(output) { return output / expTot; };
                         // outputOutputs = outputOutputs.map(map_output);
 
-                        return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs)];
+                        return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs), outputOutputs];
                     };
                 };
             
