@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.5
+ * @version 0.0.1.6
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
@@ -106,9 +106,6 @@ var Network = function(inputCount, outputCount, actionList, hiddenCount) {
         }
 
         var ipt_index = 0, sse, max_sse;
-        // var expTot;
-        // var reduce_sum = function(pv, cv) { return pv + cv; };
-        // var map_output = function(output) { return output / expTot; };
 
         do {
             if (ipt_index === 0)
@@ -131,18 +128,19 @@ var Network = function(inputCount, outputCount, actionList, hiddenCount) {
             }
 
             // Calculate final output
-            var outputOutputs = [];
+            var outputOutputs = []/*, expTot = 0*/;
             for (i = this.outputCount - 1; i >= 0; --i) {
                 var outputOutput = this.outputWeights[(i + 1) * (this.hiddenCount + 1) - 1] * -1;
                 for (j = this.hiddenCount - 1; j >= 0; --j) {
                     outputOutput += this.outputWeights[i * (this.hiddenCount + 1) + j] * hiddenOutputs[j];
                 }
                 // outputOutput = Math.exp(outputOutput);
+                // expTot += outputOutput;
                 outputOutput = sigmoid(outputOutput);
                 outputOutputs.unshift(outputOutput);
             }
-            // expTot = outputOutputs.reduce(reduce_sum, 0);
-            // outputOutputs = outputOutputs.map(map_output);
+            // for (i = this.outputCount - 1; i >= 0; --i)
+            //     outputOutputs[i] /= expTot;
 
             var weightUpdate, EkList = [];
             sse = 0;
