@@ -1,11 +1,11 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.0
+ * @version 0.0.3.2
  */
 
-/*global MagicGestures: true, chrome: false */
-/*jshint strict: true, globalstrict: true */
+/* global MagicGestures: true, chrome: false */
+/* jshint strict: true, globalstrict: true */
 
 "use strict";
 
@@ -98,7 +98,7 @@ Object.defineProperty(MagicGestures, "tab", {
                     MagicGestures.tab.gestureCanvas.context2D.lineCap = "round";
                     MagicGestures.tab.gestureCanvas.context2D.lineJoin = "round";
                     var lineColor = MagicGestures.runtime.currentProfile.locusColor;
-                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle = 
+                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle =
                         "rgba(" + lineColor[0] + "," + lineColor[1] + "," + lineColor[2] + "," + lineColor[3] + ")";
                 }
             }
@@ -112,7 +112,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 if (this.gestureCanvas) {
                     document.body.removeChild(MagicGestures.tab.gestureCanvas.element);
                     MagicGestures.tab.gestureCanvas.context2D = MagicGestures.tab.gestureCanvas.element = undefined;
-                }               
+                }
             }
         },
 
@@ -129,11 +129,18 @@ Object.defineProperty(MagicGestures, "tab", {
                 data: { value: undefined, writable: true },
 
                 /**
-                 * Points is an array of point like {x: xx, y:yy}
+                 * Points is an array of point like [x,y,x,y,....,x,y].
                  * Each point logged by mouse event will add into this list.
-                 * @type {Array.<Object.<String, Number>>}
+                 * @type {Array.<Number>}
                  */
                 points: { value: [] },
+
+                /**
+                 * Gesture's dependency.
+                 * Currently we accept "wheel" or "link".
+                 * @type {string}
+                 */
+                dependency: {value: undefined, writable: true },
 
                 /**
                  * Direction points is an array of point like {x: xx, y:yy}
@@ -146,7 +153,7 @@ Object.defineProperty(MagicGestures, "tab", {
                  * Current gesture's code.
                  * Code is a group of character which indicate the direction of gesture.
                  * @type {String}
-                 */ 
+                 */
                 code: { value: "", writable: true },
 
                 /**
@@ -169,6 +176,12 @@ Object.defineProperty(MagicGestures, "tab", {
                 lastEvent: {value: undefined, writable: true},
 
                 /**
+                 * Neural network.
+                 * @type {Network}
+                 */
+                neuralNetwork: {value: undefined, writable: true},
+
+                /**
                  * Reset gesture object to empty.
                  */
                 reset: {
@@ -178,6 +191,7 @@ Object.defineProperty(MagicGestures, "tab", {
                         MagicGestures.tab.gesture.data = undefined;
                         MagicGestures.tab.gesture.points.length = 0;
                         MagicGestures.tab.gesture.lastEvent = undefined;
+                        MagicGestures.tab.gesture.dependency = undefined;
                         MagicGestures.tab.gesture.directionPoints.length = 0;
                         MagicGestures.tab.gesture.possibleNext = MagicGestures.runtime.currentProfile.gestureTrie;
                     }
@@ -268,7 +282,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 eventAdapter: {
                     value: function(event) {
                         if (event.button == MagicGestures.runtime.currentProfile.triggerButton) {
-                            MagicGestures.tab.gesture.points.push({clientX: event.clientX, clientY: event.clientY});
+                            MagicGestures.tab.gesture.points.push(event.clientX, event.clientY);
                             MagicGestures.tab.gesture.lastEvent = event;
                             MagicGestures.tab.mouseHandler.handle(event);
                         }
@@ -294,12 +308,12 @@ Object.defineProperty(MagicGestures, "tab", {
                                 document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
 
-                                if (event.srcElement.tagName === "A" && "l" in MagicGestures.tab.gesture.possibleNext) {
-                                    MagicGestures.tab.gesture.code = "l";
+                                if (event.srcElement.tagName === "A") {
+                                    //MagicGestures.tab.gesture.code = "l";
+                                    MagicGestures.tab.gesture.dependency = "link";
                                     MagicGestures.tab.gesture.data = {
                                         href: event.srcElement.href
                                     };
-                                    MagicGestures.tab.gesture.possibleNext = MagicGestures.tab.gesture.possibleNext.l;
                                 }
                                 MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
                                 
@@ -309,9 +323,10 @@ Object.defineProperty(MagicGestures, "tab", {
                                 window.requestAnimationFrame(MagicGestures.tab.animationStroke);
                                 break;
                             case "mousewheel":
-                                if (MagicGestures.tab.gesture.points.length <= 5) {
+                                if (MagicGestures.tab.gesture.points.length <= 10) {
                                     document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.w;
+                                    MagicGestures.tab.gesture.dependency = "wheel";
+                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
                                     var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                     MagicGestures.logging.log(action.command);
                                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
@@ -322,23 +337,18 @@ Object.defineProperty(MagicGestures, "tab", {
                                 break;
                             case "mousemove":
                                 MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, false);
+                                MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
                                 break;
                             case "mouseup":
-                                MagicGestures.directionEngine.update(MagicGestures.tab.gesture, true);
+                                MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
+                                MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
                                 document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                 window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
                                 MagicGestures.tab.destoryCanvas();
-                                if (MagicGestures.tab.gesture.points.length > 5) {
-                                    MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
-                                    if (MagicGestures.tab.gesture.possibleNext.command) {
-                                        var msg = {
-                                            data: MagicGestures.tab.gesture.data,
-                                            command: MagicGestures.tab.gesture.possibleNext.command
-                                        };
-                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
-                                    }
+                                if (MagicGestures.tab.gesture.points.length > 10) {
+                                    MagicGestures.GestureEngine.recognize();
+
                                     if (!MagicGestures.isGTKChrome)
                                         document.oncontextmenu = MagicGestures.tab.disableContextMenu;
                                 }
@@ -363,8 +373,10 @@ MagicGestures.init = function(){
     MagicGestures.runtime.init("content script");
     // Load settings from storage.local.
     chrome.storage.local.get("activedProfileCache", function(activedProfile) {
-        MagicGestures.runtime.currentProfile = activedProfile.activedProfileCache;
-        MagicGestures.tab.gesture.possibleNext = activedProfile.activedProfileCache.gestureTrie;
+        activedProfile = activedProfile.activedProfileCache;
+        MagicGestures.runtime.currentProfile = activedProfile;
+        MagicGestures.tab.gesture.possibleNext = activedProfile.gestureTrie;
+        MagicGestures.tab.gesture.neuralNetwork = MagicGestures.NeuralNetEngine.rebuildNetwork(activedProfile.neuralNetInfo);
         // Initialize MagicGestures.tab after load the profile.
         MagicGestures.tab.init();
         // Show page action for current tab.

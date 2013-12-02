@@ -22,28 +22,6 @@ Object.defineProperty(MagicGestures, "Util", {
                 };
                 return s4() + s4() + s4() + s4();
             }
-        },
-        /**
-         * Useage: Generate gesture trie for specific profile.
-         * @param {object} profile MagicGestures.Profile.
-         * @return {object} Gesture trie.
-         */
-        generateTrie: {
-            value: function(profile) {
-                var gestureTrie = Object.create(null);
-                profile.gestures.forEach(function(gesture) {
-                    var currentRoot = gestureTrie;
-                    for (var i = 0; i < gesture.dir.length; i++) {
-                        var ch = gesture.dir.charAt(i);
-                        if (!(ch in currentRoot)) {
-                            currentRoot[ch] = Object.create(null);
-                        }
-                        currentRoot = currentRoot[ch];
-                    }
-                    currentRoot.command = gesture.name;
-                });
-                return gestureTrie;
-            }
         }
     }),
     enumerable: true

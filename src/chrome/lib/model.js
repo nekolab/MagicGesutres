@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.0.6
+ * @version 0.0.1.2
  */
 
 /*global MagicGestures: true */
@@ -14,29 +14,34 @@
  * @constructor
  */
 MagicGestures.Gesture = function(gesture) {
+
+    /**
+     * Indicates gesutre's dependency of other condition.
+     * Currently only accept either "wheel" or "link".
+     * Empty string indicates no dependency.
+     * @type {string}
+     */
+    this.dependency = "";
+
     /**
      * Indicates gesture's direction.
      * Use U(p), D(own), L(eft), R(ight) represent direction.
      * @type {string}
      */
-    this.dir = "";
+    this.code = "";
 
     /**
-     * Indicates gesture's name.
-     * @type {string}
+     * Store the point information for neural network use.
+     * @type {Array.<Array.<number>>}
      */
-    this.name = "";
-
-    /**
-     * Store the point information for furture use.
-     * @type {Array.<Array.<number>, Array.<number>>}
-     */
-    this.pointInfo = [];
+    this.featureVectors = [];
 
     if (gesture) {
         for (var item in gesture) {
             if (this.hasOwnProperty(item)) {
                 this[item] = gesture[item];
+            } else {
+                MagicGestures.logging.warn("Not a vaild gesture member:", item);
             }
         }
     }
@@ -151,10 +156,10 @@ MagicGestures.Profile = function(profile) {
     this.ttl = 0;
 
     /**
-     * Varible gesutres store a list of gesture.
-     * @type {Array.<MagicGestures.Gesture>}
+     * A map which store the map reference between action name and gestures.
+     * @type {Object.<string, Array.<MagicGestures.Gesture>>}
      */
-    this.gestures = [];
+    this.gestureMap = Object.create(null);
 
     /**
      * This varible is the place to cache the gesture tire which complied from gestures. 
@@ -166,12 +171,14 @@ MagicGestures.Profile = function(profile) {
      * NeuralNet is the object which stores info about neural network.
      * @type {object}
      */
-    this.neuralNet = undefined;
+    this.neuralNetInfo = undefined;
 
     if (profile) {
         for (var item in profile) {
             if (this.hasOwnProperty(item)) {
                 this[item] = profile[item];
+            } else {
+                MagicGestures.logging.warn("Not a vaild profile member:", item);
             }
         }
     }
