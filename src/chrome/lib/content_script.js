@@ -1,11 +1,11 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.0
+ * @version 0.0.3.2
  */
 
-/*global MagicGestures: true, chrome: false */
-/*jshint strict: true, globalstrict: true */
+/* global MagicGestures: true, chrome: false */
+/* jshint strict: true, globalstrict: true */
 
 "use strict";
 
@@ -98,7 +98,7 @@ Object.defineProperty(MagicGestures, "tab", {
                     MagicGestures.tab.gestureCanvas.context2D.lineCap = "round";
                     MagicGestures.tab.gestureCanvas.context2D.lineJoin = "round";
                     var lineColor = MagicGestures.runtime.currentProfile.locusColor;
-                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle = 
+                    MagicGestures.tab.gestureCanvas.context2D.strokeStyle =
                         "rgba(" + lineColor[0] + "," + lineColor[1] + "," + lineColor[2] + "," + lineColor[3] + ")";
                 }
             }
@@ -112,7 +112,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 if (this.gestureCanvas) {
                     document.body.removeChild(MagicGestures.tab.gestureCanvas.element);
                     MagicGestures.tab.gestureCanvas.context2D = MagicGestures.tab.gestureCanvas.element = undefined;
-                }               
+                }
             }
         },
 
@@ -153,7 +153,7 @@ Object.defineProperty(MagicGestures, "tab", {
                  * Current gesture's code.
                  * Code is a group of character which indicate the direction of gesture.
                  * @type {String}
-                 */ 
+                 */
                 code: { value: "", writable: true },
 
                 /**
@@ -174,6 +174,12 @@ Object.defineProperty(MagicGestures, "tab", {
                  * @type {Event}
                  */
                 lastEvent: {value: undefined, writable: true},
+
+                /**
+                 * Neural network.
+                 * @type {Network}
+                 */
+                neuralNetwork: {value: undefined, writable: true},
 
                 /**
                  * Reset gesture object to empty.
@@ -341,19 +347,8 @@ Object.defineProperty(MagicGestures, "tab", {
                                 window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
                                 MagicGestures.tab.destoryCanvas();
                                 if (MagicGestures.tab.gesture.points.length > 10) {
-                                    MagicGestures.logging.log(MagicGestures.tab.gesture, MagicGestures.tab.gesture.possibleNext.command);
-                                    MagicGestures.NeuralNetEngine.pointFilter(MagicGestures.tab.gesture.points);
-                                    if (MagicGestures.tab.gesture.dependency in MagicGestures.tab.gesture.possibleNext) {
-                                        MagicGestures.tab.gesture.possibleNext = 
-                                            MagicGestures.tab.gesture.possibleNext[MagicGestures.tab.gesture.dependency];
-                                    }
-                                    if (MagicGestures.tab.gesture.possibleNext.command) {
-                                        var msg = {
-                                            data: MagicGestures.tab.gesture.data,
-                                            command: MagicGestures.tab.gesture.possibleNext.command
-                                        };
-                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
-                                    }
+                                    MagicGestures.GestureEngine.recognize();
+
                                     if (!MagicGestures.isGTKChrome)
                                         document.oncontextmenu = MagicGestures.tab.disableContextMenu;
                                 }
@@ -378,8 +373,10 @@ MagicGestures.init = function(){
     MagicGestures.runtime.init("content script");
     // Load settings from storage.local.
     chrome.storage.local.get("activedProfileCache", function(activedProfile) {
-        MagicGestures.runtime.currentProfile = activedProfile.activedProfileCache;
-        MagicGestures.tab.gesture.possibleNext = activedProfile.activedProfileCache.gestureTrie;
+        activedProfile = activedProfile.activedProfileCache;
+        MagicGestures.runtime.currentProfile = activedProfile;
+        MagicGestures.tab.gesture.possibleNext = activedProfile.gestureTrie;
+        MagicGestures.tab.gesture.neuralNetwork = MagicGestures.NeuralNetEngine.rebuildNetwork(activedProfile.neuralNetInfo);
         // Initialize MagicGestures.tab after load the profile.
         MagicGestures.tab.init();
         // Show page action for current tab.

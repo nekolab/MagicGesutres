@@ -1,13 +1,53 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.4
+ * @version 0.0.2.0
  */
 
-/*global MagicGestures: true */
-/*jshint strict: true, globalstrict: true, forin: false */
+/* global MagicGestures: true */
+/* jshint strict: true, globalstrict: true, forin: false, debug: true */
 
 "use strict";
+
+Object.defineProperty(MagicGestures, "GestureEngine", {
+    value: Object.create(null, {
+        
+        /**
+         * Recongize gesture which user input.
+         * Currently, we use a conservative strategy to balance the direction engine and neural network.
+         */
+        recognize: {
+            value: function() {
+                MagicGestures.NeuralNetEngine.pointFilter(MagicGestures.tab.gesture.points);
+                var normalizedPoints = MagicGestures.NeuralNetEngine.normalize(MagicGestures.tab.gesture.points);
+                normalizedPoints.push(0, MagicGestures.tab.gesture.dependency === "link" ? 1 : 0);
+                var neuralNetworkResult = MagicGestures.tab.gesture.neuralNetwork.think(normalizedPoints);
+
+                if (MagicGestures.tab.gesture.dependency in MagicGestures.tab.gesture.possibleNext) {
+                    MagicGestures.tab.gesture.possibleNext =
+                        MagicGestures.tab.gesture.possibleNext[MagicGestures.tab.gesture.dependency];
+                }
+
+                var msg;
+                if (neuralNetworkResult[1] >= 0.98) {
+                    msg = {
+                        data: MagicGestures.tab.gesture.data,
+                        command: neuralNetworkResult[0]
+                    };
+                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
+                    MagicGestures.logging.debug("Recognized by neural network:", neuralNetworkResult, msg);
+                } else if (MagicGestures.tab.gesture.possibleNext.command) {
+                    msg = {
+                        data: MagicGestures.tab.gesture.data,
+                        command: MagicGestures.tab.gesture.possibleNext.command
+                    };
+                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
+                    MagicGestures.logging.debug("Recognized by direction engine:", msg);
+                }
+            }
+        }
+    })
+});
 
 Object.defineProperty(MagicGestures, "DirectionEngine", {
     value: Object.create(null, {
@@ -108,12 +148,12 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
          * Filter point to a fixed length (64).
          * Need to be invoked after gesture end.
          * @param {Array.<Number>} pointsPtr Pointer point to MagicGestures.tab.gesture.points object.
-         * No returns, changes will be effected on MagicGestures.tab.gesutre.points.
+         * No returns, changes will be effected on MagicGestures.tab.gesture.points.
          */
         pointFilter: {
             value: function(pointsPtr) {
 
-                var loopCount = 0;
+                var i, loopCount = 0;
                 var getDistanceArray = function(pointsArray) {
                     var distanceArray = [];
 
@@ -131,7 +171,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                     if (pointsPtr.length % 4 !== 0)
                         pointsPtr.push(pointsPtr[pointsPtr.length - 2], pointsPtr[pointsPtr.length - 1]);
 
-                    for (var i = 0; i < pointsPtr.length / 2; i += 2) {
+                    for (i = 0; i < pointsPtr.length / 2; i += 2) {
                         pointsPtr[i] = (pointsPtr[2 * i] + pointsPtr[2 * (i + 1)]) / 2;
                         pointsPtr[i + 1] = (pointsPtr[2 * i + 1] + pointsPtr[2 * i + 3]) / 2;
                     }
@@ -139,10 +179,38 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                     
                     if (++loopCount > 60) {
                         MagicGestures.logging.error("Infinite loop detected!!!!");
+                        debugger;
                         break;
                     }
                 }
 
+                loopCount = 0;
+                for(i = pointsPtr.length / 2 - 1; i >= 1; --i) {
+                    if (pointsPtr[i * 2] === pointsPtr[i * 2 - 2] && pointsPtr[i * 2 + 1] === pointsPtr[i * 2 - 1]) {
+                        if (i !== 1) {
+                            if (pointsPtr[i * 2] === pointsPtr[i * 2 - 4] && pointsPtr[i * 2 + 1] === pointsPtr[i * 2 - 3]) {
+                                pointsPtr.splice(2 * i - 2, 2);
+                            } else {
+                                pointsPtr.splice(2 * i - 2, 2,
+                                    (pointsPtr[2 * i] + pointsPtr[2 * i - 4]) / 2,
+                                    (pointsPtr[2 * i + 1] + pointsPtr[2 * i - 3]) / 2
+                                );
+                            }
+                            ++i;
+                            continue;
+                        } else {
+                            pointsPtr.splice(0, 2);
+                        }
+                    }
+
+                    if (++loopCount > 200) {
+                        MagicGestures.logging.error("Infinite loop detected!!!!");
+                        debugger;
+                        break;
+                    }
+                }
+
+                loopCount = 0;
                 var distanceArray = getDistanceArray(pointsPtr);
                 while (pointsPtr.length >= 4 && pointsPtr.length != 66) {
                     if (pointsPtr.length <= 64) {
@@ -187,8 +255,9 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                         }
                     }
 
-                    if (++loopCount > 100) {
+                    if (++loopCount > 60) {
                         MagicGestures.logging.error("Infinite loop detected!!!!");
+                        debugger;
                         break;
                     }
                 }
@@ -257,6 +326,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                                 hiddenOutput += this.hiddenWeights[i * (this.inputCount + 1) + j] * inputs[j];
                             }
                             hiddenOutput = sigmoid(hiddenOutput, 1);
+                            if (isNaN(hiddenOutput)) {debugger;}
                             hiddenOutputs.unshift(hiddenOutput);
                         }
 
@@ -268,6 +338,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                                 outputOutput += this.outputWeights[i * (this.hiddenCount + 1) + j] * hiddenOutputs[j];
                             }
                             outputOutput = sigmoid(outputOutput, 1);
+                            if (isNaN(outputOutput)) {debugger;}
                             // outputOutput = Math.exp(outputOutput);
                             // expTot += outputOutput;
                             outputOutputs.unshift(outputOutput);
@@ -275,11 +346,11 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                         // for (i = this.outputCount - 1; i >= 0; --i)
                         //     outputOutputs[i] /= expTot;
 
-                        return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs), outputOutputs];
+                        return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs)/*, outputOutputs*/];
                     };
                 };
-            
-                return new Network(neunetInfo);
+                
+                return new Network((typeof neunetInfo === "string") ? JSON.parse(neunetInfo) : neunetInfo);
             }
         }
     })
