@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.2
+ * @version 0.0.3.5
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -284,78 +284,142 @@ Object.defineProperty(MagicGestures, "tab", {
                         if (event.button == MagicGestures.runtime.currentProfile.triggerButton) {
                             MagicGestures.tab.gesture.points.push(event.clientX, event.clientY);
                             MagicGestures.tab.gesture.lastEvent = event;
-                            MagicGestures.tab.mouseHandler.handle(event);
+                            MagicGestures.tab.mouseHandler.transition(event);
                         }
                     }
                 },
 
                 /**
-                 * Handel every type of mouse event.
+                 * Current FSM state, default to free.
                  */
-                handle: {
+                currentState: {
+                    value: "free",
+                    writable: true
+                },
+
+                /**
+                 * Transit FSM state
+                 */
+                transition: {
                     value: function(event) {
-                        switch(event.type) {
-                            case "mousedown":
-                                if (MagicGestures.isGTKChrome && new Date().getTime() - MagicGestures.tab.lastRightClick <= 300) {
-                                    MagicGestures.tab.lastRightClick = new Date().getTime();
-                                    break;
-                                } else if (MagicGestures.isGTKChrome) {
-                                    document.oncontextmenu = MagicGestures.tab.disableContextMenu;
-                                    MagicGestures.tab.lastRightClick = new Date().getTime();
-                                }
-
-                                document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
-
-                                if (event.srcElement.tagName === "A") {
-                                    //MagicGestures.tab.gesture.code = "l";
-                                    MagicGestures.tab.gesture.dependency = "link";
-                                    MagicGestures.tab.gesture.data = {
-                                        href: event.srcElement.href
-                                    };
-                                }
-                                MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
-                                
-                                MagicGestures.tab.createCanvas();
-                                MagicGestures.tab.gestureCanvas.context2D.beginPath();
-                                MagicGestures.tab.gestureCanvas.context2D.moveTo(event.clientX, event.clientY);
-                                window.requestAnimationFrame(MagicGestures.tab.animationStroke);
-                                break;
-                            case "mousewheel":
-                                if (MagicGestures.tab.gesture.points.length <= 10) {
-                                    document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                    MagicGestures.tab.gesture.dependency = "wheel";
-                                    var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
-                                    var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
-                                    MagicGestures.logging.log(action.command);
-                                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
-                                    if (!MagicGestures.isGTKChrome)
+                        switch(MagicGestures.tab.mouseHandler.currentState) {
+                            case "free":
+                                if (event.type == "mousedown") {
+                                    if (MagicGestures.isGTKChrome && new Date().getTime() - MagicGestures.tab.lastRightClick <= 300) {
+                                        MagicGestures.tab.lastRightClick = new Date().getTime();
+                                        break;
+                                    } else if (MagicGestures.isGTKChrome) {
                                         document.oncontextmenu = MagicGestures.tab.disableContextMenu;
-                                    return false;
-                                }
-                                break;
-                            case "mousemove":
-                                MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
-                                break;
-                            case "mouseup":
-                                MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
-                                document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
-                                window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.handle, false);
-                                MagicGestures.tab.destoryCanvas();
-                                if (MagicGestures.tab.gesture.points.length > 10) {
-                                    MagicGestures.GestureEngine.recognize();
+                                        MagicGestures.tab.lastRightClick = new Date().getTime();
+                                    }
 
-                                    if (!MagicGestures.isGTKChrome)
-                                        document.oncontextmenu = MagicGestures.tab.disableContextMenu;
+                                    document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                    document.addEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                    window.addEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
+
+                                    if (event.srcElement.tagName === "A") {
+                                        //MagicGestures.tab.gesture.code = "l";
+                                        MagicGestures.tab.gesture.dependency = "link";
+                                        MagicGestures.tab.gesture.data = {
+                                            href: event.srcElement.href
+                                        };
+                                    }
+                                    MagicGestures.tab.gesture.directionPoints.push({clientX:event.clientX, clientY:event.clientY});
+
+                                    MagicGestures.tab.mouseHandler.currentState = "pushed";
+                                } else {
+                                    MagicGestures.logging.error("FSM: Invaild event while free:", event);
                                 }
-                                MagicGestures.tab.gesture.reset();
+                                break;
+                            case "pushed":
+                                switch(event.type) {
+                                    case "mousewheel":
+                                        event.preventDefault();
+                                        MagicGestures.tab.gesture.dependency = "wheel";
+                                        var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
+                                        var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
+                                        MagicGestures.logging.log(action.command);
+                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
+                                        if (!MagicGestures.isGTKChrome)
+                                            document.oncontextmenu = MagicGestures.tab.disableContextMenu;
+                                        break;
+                                    case "mouseup":
+                                        document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                        document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                        window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
+                                        MagicGestures.tab.gesture.reset();
+
+                                        MagicGestures.tab.mouseHandler.currentState = "free";
+                                        break;
+                                    case "mousemove":
+                                        // Workaround for chrome-side issue 5598. (See http://crbug.com/5598)
+                                        if (event.clientX != MagicGestures.tab.gesture.points[0] &&
+                                                event.clientY != MagicGestures.tab.gesture.points[1]) {
+                                            window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
+                                            MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
+                                            MagicGestures.tab.mouseHandler.currentState = "ready";
+                                        }
+                                        
+                                        break;
+                                    default:
+                                        MagicGestures.logging.error("FSM: Invaild event while pushed:", event);
+                                        break;
+                                }
+                                break;
+                            case "ready":
+                                switch (event.type) {
+                                    case "mousemove":
+                                        MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
+                                        if (MagicGestures.tab.gesture.points.length > 10) {
+                                            MagicGestures.tab.createCanvas();
+                                            MagicGestures.tab.gestureCanvas.context2D.beginPath();
+                                            var firstPoint = MagicGestures.tab.gesture.points;
+                                            MagicGestures.tab.gestureCanvas.context2D.moveTo(firstPoint[0], firstPoint[1]);
+                                            MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
+                                            window.requestAnimationFrame(MagicGestures.tab.animationStroke);
+                                            MagicGestures.tab.mouseHandler.currentState = "working";
+                                        }
+                                        break;
+                                    case "mouseup":
+                                        document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                        document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                        window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
+                                        MagicGestures.tab.gesture.reset();
+
+                                        MagicGestures.tab.mouseHandler.currentState = "free";
+                                        break;
+                                    default:
+                                        MagicGestures.logging.error("FSM: Invaild event while ready:", event);
+                                        break;
+                                }
+                                break;
+                            case "working":
+                                switch (event.type) {
+                                    case "mousemove":
+                                        MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
+                                        MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, false);
+                                        break;
+                                    case "mouseup":
+                                        MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
+                                        MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
+                                        document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                        document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                                        window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
+                                        MagicGestures.tab.destoryCanvas();
+                                        MagicGestures.GestureEngine.recognize();
+
+                                        if (!MagicGestures.isGTKChrome)
+                                            document.oncontextmenu = MagicGestures.tab.disableContextMenu;
+                                        MagicGestures.tab.gesture.reset();
+                                        MagicGestures.tab.mouseHandler.currentState = "free";
+                                        break;
+                                    default:
+                                        MagicGestures.logging.error("FSM: Invaild event while working:", event);
+                                        break;
+                                }
                                 break;
                             default:
-                                MagicGestures.logging.error("Mouse handler: Invaild event.", event);
+                                MagicGestures.logging.error("FSM: Invaild state:", MagicGestures.tab.mouseHandler.currentState);
                                 break;
                         }
                     }
