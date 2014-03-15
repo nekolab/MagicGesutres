@@ -16,6 +16,7 @@ Object.defineProperty(MagicGestures, "tab", {
     value: Object.create(null, {
         
         /**
+         * MagicGestures.tab.clientWidth
          * Browser window width
          * @type {Number}
          */
@@ -25,6 +26,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.clientHeight
          * Browser window height
          * @type {Number}
          */
@@ -34,12 +36,14 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.gestureCanvas
          * Gesture canvas object
          * @type {Object}
          */
         gestureCanvas: {
             value: Object.create(null, {
                 /**
+                 * MagicGestures.tab.gestureCanvas.element
                  * Current canvas element
                  * @type {HTMLDOMElement}
                  */
@@ -49,6 +53,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 },
 
                 /**
+                 * MagicGestures.tab.gestureCanvas.context2D
                  * Current canvas's contenxt
                  * @type {CanvasRenderingContext2D}
                  */
@@ -60,6 +65,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.lastRightClick
          * A timestamp record the last right click event,
          * which will be used on GTK chrome to enable compatibility right click mode.
          * @type {number}
@@ -70,6 +76,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.init
          * Initialize MagicGestures.tab
          */
         init: {
@@ -80,6 +87,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.createCanvas
          * Create a canvas and insert it into web context.
          */
         createCanvas: {
@@ -105,6 +113,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.destoryCanvas
          * Remove canvas from web context and destory it.
          */
         destoryCanvas: {
@@ -117,18 +126,21 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.gesture
          * Current drawn gesture.
          */
         gesture: {
             value: Object.create(null, {
 
                 /**
+                 * MagicGestures.tab.gesture.data
                  * Data which current gesture carries.
                  * @type {any}
                  */
                 data: { value: undefined, writable: true },
 
                 /**
+                 * MagicGestures.tab.gesture.points
                  * Points is an array of point like [x,y,x,y,....,x,y].
                  * Each point logged by mouse event will add into this list.
                  * @type {Array.<Number>}
@@ -136,6 +148,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 points: { value: [] },
 
                 /**
+                 * MagicGestures.tab.gesture.dependency
                  * Gesture's dependency.
                  * Currently we accept "wheel" or "link".
                  * @type {string}
@@ -143,6 +156,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 dependency: {value: undefined, writable: true },
 
                 /**
+                 * MagicGestures.tab.gesture.directionPoints
                  * Direction points is an array of point like {x: xx, y:yy}
                  * It stores points which used by direction engine.
                  * @type {Array.<Object.<String, number>>}
@@ -150,6 +164,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 directionPoints: { value: [] },
 
                 /**
+                 * MagicGestures.tab.gesture.code
                  * Current gesture's code.
                  * Code is a group of character which indicate the direction of gesture.
                  * @type {String}
@@ -157,6 +172,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 code: { value: "", writable: true },
 
                 /**
+                 * MagicGestures.tab.gesture.distance
                  * Distance of current gesture.
                  * This is reserved for furture use.
                  * @type {Number}
@@ -164,24 +180,28 @@ Object.defineProperty(MagicGestures, "tab", {
                 distance: { value: 0, writable: true },
 
                 /**
+                 * MagicGestures.tab.gesture.possibleNext
                  * Possible next is a part of gesture tire which can indicate next possible direction or action.
                  * @type {Object}
                  */
                 possibleNext: { value: undefined, writable: true },
 
                 /**
+                 * MagicGestures.tab.gesture.lastEvent
                  * Last mouse event for draw use.
                  * @type {Event}
                  */
                 lastEvent: {value: undefined, writable: true},
 
                 /**
+                 * MagicGestures.tab.gesture.neuralNetwork
                  * Neural network.
                  * @type {Network}
                  */
                 neuralNetwork: {value: undefined, writable: true},
 
                 /**
+                 * MagicGestures.tab.gesture.reset
                  * Reset gesture object to empty.
                  */
                 reset: {
@@ -200,6 +220,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.disableContextMenu
          * Function which can disable context menu once.
          */
         disableContextMenu: {
@@ -211,11 +232,13 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.eventHandler
          * Event handler handle every event in MagicGestures.tab except mouse event.
          */
         eventHandler: {
             value: Object.create(null, {
                 /**
+                 * MagicGestures.tab.eventHandler.init
                  * Register the event listener.
                  */
                 init: {
@@ -225,6 +248,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 },
 
                 /**
+                 * MagicGestures.tab.eventHandler.handle
                  * Handle function, all event will send to here.
                  */
                 handle: {
@@ -245,6 +269,7 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.animationStroke
          * animationStroke is a auto draw manager.
          * It can draw(stroke) then begin a new path.
          * It will run forver until gesture canvas destoried.
@@ -262,11 +287,13 @@ Object.defineProperty(MagicGestures, "tab", {
         },
 
         /**
+         * MagicGestures.tab.mouseHandler
          * Mouse handler handle every mouse event and process it.
          */
         mouseHandler: {
             value: Object.create(null, {
                 /**
+                 * MagicGestures.tab.mouseHandler.init
                  * Register event listeners and redirect event to event Adapter.
                  */
                 init: {
@@ -276,7 +303,8 @@ Object.defineProperty(MagicGestures, "tab", {
                 },
 
                 /**
-                 * Event adapter filter mouse event, only trigger button will be send to handle function.
+                 * MagicGestures.tab.mouseHandler.eventAdapter
+                 * Event adapter filter mouse event, only trigger button will be send to transition function.
                  * Also, event adapter will add points to current gesture's points.
                  */
                 eventAdapter: {
@@ -290,7 +318,9 @@ Object.defineProperty(MagicGestures, "tab", {
                 },
 
                 /**
+                 * MagicGestures.tab.mouseHandler.currentState
                  * Current FSM state, default to free.
+                 * @type {string}
                  */
                 currentState: {
                     value: "free",
@@ -298,6 +328,7 @@ Object.defineProperty(MagicGestures, "tab", {
                 },
 
                 /**
+                 * MagicGestures.tab.mouseHandler.transition
                  * Transit FSM state
                  */
                 transition: {
@@ -430,7 +461,7 @@ Object.defineProperty(MagicGestures, "tab", {
 });
 
 /**
- * Initialize function of MagicGestures
+ * Initialize MagicGestures on each page.
  */
 MagicGestures.init = function(){
     MagicGestures.logging.log("Initializing MagicGestures...");

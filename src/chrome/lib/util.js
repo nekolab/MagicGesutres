@@ -12,6 +12,7 @@
 Object.defineProperty(MagicGestures, "Util", {
     value: Object.create(null, {
         /**
+         * MagicGestures.Util.generateId
          * Useage: Generate hexdigital 16-character length random string.
          * @return {string} ID string. 
          */

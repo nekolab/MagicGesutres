@@ -10,24 +10,6 @@
 "use strict";
 
 /**
- * Definition of MagicGestures.Background.
- */
-Object.defineProperty(MagicGestures, "Background", {
-    value: Object.create(null, {
-
-        /**
-         * Some event handler.
-         */
-        handler: {
-            value: Object.create(null, {
-
-            })
-        }
-
-    })
-});
-
-/**
  * Implement MagicGestures.runtime.messenger.action
  */
 MagicGestures.runtime.messenger.action = function(type, msg, sender, sendResponse) {

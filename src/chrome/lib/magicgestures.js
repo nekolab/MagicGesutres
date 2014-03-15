@@ -32,6 +32,7 @@ Object.defineProperties(MagicGestures, {
     },
 
     /**
+     * MagicGestures.osType
      * Indicate current operate system's type,
      * could be "windows", "MacOS" or "Linux",
      * if not detected, will be "Unknow OS".
@@ -41,22 +42,23 @@ Object.defineProperties(MagicGestures, {
     osType: {
         value: (function() {
             var osType="Unknown OS";
-            if (navigator.appVersion.indexOf("Win")!=-1) osType="Windows";
-            if (navigator.appVersion.indexOf("Mac")!=-1) osType="MacOS";
-            if (navigator.appVersion.indexOf("Linux")!=-1) osType="Linux";
+            if (navigator.appVersion.indexOf("Win") !=-1 ) osType = "Windows";
+            if (navigator.appVersion.indexOf("Mac") !=-1 ) osType = "MacOS";
+            if (navigator.appVersion.indexOf("Linux") !=-1 ) osType = "Linux";
             return osType;
         }())
     },
 
     /**
-     * Due to GTK version Chrome have some weird behavior,
-     * so we need to detect it and make some .
+     * MagicGestures.isGTKChrome
+     * Due to GTK version Chrome have some wired behavior,
+     * so we need to detect it and add some workaround.
      *
      * @type {boolean}
      */
     isGTKChrome: {
         value: (function() {
-            return navigator.appVersion.indexOf("Mac")!=-1 || navigator.appVersion.indexOf("Linux")!=-1;
+            return navigator.appVersion.indexOf("Mac") != -1 || navigator.appVersion.indexOf("Linux") != -1;
         }())
     }
 });
@@ -114,6 +116,7 @@ Object.defineProperties(MagicGestures.logging, {
  */
 Object.defineProperties(MagicGestures.runtime, {
     /**
+     * MagicGestures.runtime.envName
      * Enviroment's name.
      * Value should be either "content script" or "background".
      * @type {string}
@@ -124,6 +127,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.runOnce
      * Initialize runtime enviroment.
      * THIS FUNCTION SHOULD BE INVOKED ONLY ONCE.
      */
@@ -134,6 +138,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.init
      * Initialize magicgesutres runtime.
      * Initialize the commnuication function.
      * @param {string} envName Enviroment's name. Should be one of the "content script", "background", "options" or "popup".
@@ -160,6 +165,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.msgPacker
      * Message Packer is a packer to pack communication packet.
      * @param {string} dest Packet destination.
      * @param {string} type Packet type.
@@ -180,6 +186,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.tabBroadcast
      * Asynchronize function.
      * Broadcast packet to every tab.
      * This function will be disabled when magicgesture is initialized by content script.
@@ -200,6 +207,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.sendTabMessage
      * Send message to specific tab.
      * This function will be disabled when magicgesture is initialized by content script.
      * @param {number} tabId ID of specific Tab.
@@ -216,6 +224,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.sendRuntimeMessage
      * Send message to everywhere (without content script).
      * This function can be used for every enviroment.
      * @param {string} dest -
@@ -233,6 +242,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.get
      * Get one or more items storage in runtime storage.
      * @param {(string|Array.<string>|Object.<string, string>|null)} keys -
      *      A single key to get, list of keys to get or object to get which define default value.
@@ -278,6 +288,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.set
      * Set one or more items from object into runtime storage.
      * @param {object.<string, object>} items -
      *      Object specifying items to augment storage with.
@@ -301,6 +312,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.remove
      * Remove one or more items from runtime storage.
      * @param {(string|Array.<string>)} keys A single key or a list of keys for items to remove.
      */
@@ -324,6 +336,7 @@ Object.defineProperties(MagicGestures.runtime, {
     },
 
     /**
+     * MagicGestures.runtime.clear
      * Clear the runtime storage.
      */
     clear: {

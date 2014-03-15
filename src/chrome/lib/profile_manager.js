@@ -14,19 +14,38 @@
  */
 Object.defineProperty(MagicGestures, "ProfileManager", {
     value: Object.create(null, {
+        
+        /**
+         * MagicGestures.ProfileManager.active
+         * Use this function to active one profile.
+         * @param {string} profileId Profile's id should be actived.
+         */
+        active: {
+            value: function(profileId) {
+            }
+        },
 
+        /**
+         * MagicGestures.ProfileManager.activedProfile
+         */
         activedProfile: {
             get: function() {
                 return MagicGestures.runtime.get("activedProfile").activedProfile;
             }
         },
 
+        /**
+         * MagicGestures.ProfileManager.profileMap
+         */
         profileMap: {
             get: function() {
                 return MagicGestures.runtime.get("profileMap").profileMap;
             }
         },
 
+        /**
+         * MagicGestures.ProfileManager.runOnce
+         */
         runOnce: {
             value: function(callback) {
 
@@ -49,8 +68,8 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
         },
 
         /**
+         * MagicGestures.ProfileManager.init
          * Function which initialzie MagicGestures Profile Mananger.
-         *
          */ 
         init: {
             value: function() {
@@ -59,6 +78,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
         },
 
         /**
+         * MagicGestures.ProfileManager.loadLocalProfile
          * Load profile from chrome.storage.local.
          * If there is no profile in chrome.storage.local, will generate some.
          */
@@ -91,6 +111,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
         },
 
         /**
+         * MagicGestures.ProfileManager.loadSyncedProfile
          * Load profile from chrome.storage.sync
          */
         loadSyncedProfile: {
@@ -107,19 +128,12 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
         },
 
         /**
+         * MagicGestures.ProfileManager.mergeManager
          * Merge manager is a feature for furture use.
          */ 
         mergeManager: {
             value: function(localVersion, syncVersion) {
                 return syncVersion;
-            }
-        },
-        /**
-         * Use this function to active one profile.
-         * @param {string} profileId Profile's id should be actived.
-         */
-        active: {
-            value: function(profileId) {
             }
         }
     })

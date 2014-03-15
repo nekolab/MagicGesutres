@@ -13,7 +13,8 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
     value: Object.create(null, {
         
         /**
-         * Recongize gesture which user input.
+         * MagicGestures.GestureEngine.recognize
+         * Recognize gesture which user input.
          * Currently, we use a conservative strategy to balance the direction engine and neural network.
          */
         recognize: {
@@ -53,6 +54,7 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
     value: Object.create(null, {
 
         /**
+         * MagicGestures.DirectionEngine.update
          * Update from current point list.
          * Need to be invoked per mouse move.
          * @param {object} gesturePtr Pointer point to MagicGesture.tab.gesture object.
@@ -97,6 +99,7 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
         },
 
         /**
+         * MagicGestures.DirectionEngine.generateTrie
          * Useage: Generate gesture trie for specific profile.
          * ToDo: Optimize this function's performance.
          * @param {object} profile MagicGestures.Profile.
@@ -145,6 +148,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
     value: Object.create(null, {
 
         /**
+         * MagicGestures.NeuralNetEngine.pointFilter
          * Filter point to a fixed length (64).
          * Need to be invoked after gesture end.
          * @param {Array.<Number>} pointsPtr Pointer point to MagicGestures.tab.gesture.points object.
@@ -265,6 +269,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
         },
 
         /**
+         * MagicGestures.NeuralNetEngine.normalize
          * Normalize points to unit vector
          * @param {Array.<Number>} pointsPtr Point points to points array.
          * 
@@ -293,6 +298,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
         },
 
         /**
+         * MagicGestures.NeuralNetEngine.rebuildNetwork
          * Rebuild neural network by using neural network information.
          * @param {object} neunetInfo Neural network information.
          * @return {Network}
