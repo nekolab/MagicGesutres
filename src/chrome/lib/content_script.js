@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.5
+ * @version 0.0.3.6
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -17,22 +17,24 @@ Object.defineProperty(MagicGestures, "tab", {
         
         /**
          * MagicGestures.tab.clientWidth
-         * Browser window width
-         * @type {Number}
+         * Return browser window width
+         * @return {Number}
          */
         clientWidth: {
-            value: document.documentElement.clientWidth,
-            writable: true
+            get: function() {
+                return document.documentElement.clientWidth;  
+            }
         },
 
         /**
          * MagicGestures.tab.clientHeight
-         * Browser window height
-         * @type {Number}
+         * Return browser window height
+         * @return {Number}
          */
         clientHeight: {
-            value: document.documentElement.clientHeight,
-            writable: true
+            get: function() {
+                return document.documentElement.clientHeight;  
+            }
         },
 
         /**
@@ -81,7 +83,6 @@ Object.defineProperty(MagicGestures, "tab", {
          */
         init: {
             value: function() {
-                MagicGestures.tab.eventHandler.init();
                 MagicGestures.tab.mouseHandler.init();
             }
         },
@@ -229,43 +230,6 @@ Object.defineProperty(MagicGestures, "tab", {
                 e.stopPropagation();
                 document.oncontextmenu = null;
             }
-        },
-
-        /**
-         * MagicGestures.tab.eventHandler
-         * Event handler handle every event in MagicGestures.tab except mouse event.
-         */
-        eventHandler: {
-            value: Object.create(null, {
-                /**
-                 * MagicGestures.tab.eventHandler.init
-                 * Register the event listener.
-                 */
-                init: {
-                    value: function() {
-                        window.addEventListener("resize", MagicGestures.tab.eventHandler.handle, true);
-                    }
-                },
-
-                /**
-                 * MagicGestures.tab.eventHandler.handle
-                 * Handle function, all event will send to here.
-                 */
-                handle: {
-                    value: function(event) {
-                        switch(event.type) {
-                            case "resize":
-                                MagicGestures.logging.debug("Window resized!!!");
-                                MagicGestures.tab.clientWidth  = document.documentElement.clientWidth;
-                                MagicGestures.tab.clientHeight = document.documentElement.clientHeight;
-                                break;
-                            default:
-                                MagicGestures.logging.error("Event handler: Invaild event.");
-                                break;
-                        }
-                    }
-                }
-            })
         },
 
         /**
