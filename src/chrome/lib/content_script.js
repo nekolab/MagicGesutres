@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.6
+ * @version 0.0.3.7
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -119,7 +119,7 @@ Object.defineProperty(MagicGestures, "tab", {
          */
         destoryCanvas: {
             value: function() {
-                if (this.gestureCanvas) {
+                if (MagicGestures.tab.gestureCanvas.element) {
                     document.body.removeChild(MagicGestures.tab.gestureCanvas.element);
                     MagicGestures.tab.gestureCanvas.context2D = MagicGestures.tab.gestureCanvas.element = undefined;
                 }
@@ -151,10 +151,10 @@ Object.defineProperty(MagicGestures, "tab", {
                 /**
                  * MagicGestures.tab.gesture.dependency
                  * Gesture's dependency.
-                 * Currently we accept "wheel" or "link".
+                 * Currently we accept "wheel", "link" or "".
                  * @type {string}
                  */
-                dependency: {value: undefined, writable: true },
+                dependency: {value: "", writable: true },
 
                 /**
                  * MagicGestures.tab.gesture.directionPoints
@@ -209,10 +209,10 @@ Object.defineProperty(MagicGestures, "tab", {
                     value: function() {
                         MagicGestures.tab.gesture.code = "";
                         MagicGestures.tab.gesture.distance = 0;
+                        MagicGestures.tab.gesture.dependency = "";
                         MagicGestures.tab.gesture.data = undefined;
                         MagicGestures.tab.gesture.points.length = 0;
                         MagicGestures.tab.gesture.lastEvent = undefined;
-                        MagicGestures.tab.gesture.dependency = undefined;
                         MagicGestures.tab.gesture.directionPoints.length = 0;
                         MagicGestures.tab.gesture.possibleNext = MagicGestures.runtime.currentProfile.gestureTrie;
                     }
@@ -292,6 +292,21 @@ Object.defineProperty(MagicGestures, "tab", {
                 },
 
                 /**
+                 * MagicGestures.tab.mouseHandler.resetFSM
+                 * Clear gestrue states, remove canvas and reset FSM states when invaild event happend.
+                 */
+                resetFSM: {
+                    value: function() {
+                        document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                        document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
+                        window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
+                        MagicGestures.tab.gesture.reset();
+                        MagicGestures.tab.destoryCanvas();
+                        MagicGestures.tab.mouseHandler.currentState = "free";
+                    }
+                },
+
+                /**
                  * MagicGestures.tab.mouseHandler.transition
                  * Transit FSM state
                  */
@@ -324,6 +339,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                     MagicGestures.tab.mouseHandler.currentState = "pushed";
                                 } else {
                                     MagicGestures.logging.error("FSM: Invaild event while free:", event);
+                                    MagicGestures.tab.mouseHandler.resetFSM();
                                 }
                                 break;
                             case "pushed":
@@ -358,6 +374,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                         break;
                                     default:
                                         MagicGestures.logging.error("FSM: Invaild event while pushed:", event);
+                                        MagicGestures.tab.mouseHandler.resetFSM();
                                         break;
                                 }
                                 break;
@@ -385,6 +402,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                         break;
                                     default:
                                         MagicGestures.logging.error("FSM: Invaild event while ready:", event);
+                                        MagicGestures.tab.mouseHandler.resetFSM();
                                         break;
                                 }
                                 break;
@@ -410,6 +428,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                         break;
                                     default:
                                         MagicGestures.logging.error("FSM: Invaild event while working:", event);
+                                        MagicGestures.tab.mouseHandler.resetFSM();
                                         break;
                                 }
                                 break;

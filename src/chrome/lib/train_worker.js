@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.6
+ * @version 0.0.2.0
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
@@ -34,54 +34,28 @@ var generateOutputs = function(length, index) {
     return template;
 };
 
-var generateChecksum = function(vectors) {
-    return vectors.toString();
-};
+var prepareGestures = function(gestures) {
 
-var prepareGestures = function(actionList, gestureMap) {
-    var outputCount = actionList.length;
-    var preparedInputs = [], preparedExpectedOutputs = [];
-
-    var checksumMap = Object.create(null);
-
-    actionList.forEach(function(action) {
-        gestureMap[action].forEach(function(gesture) {
-            if (gesture.featureVectors.length !== 0) {
-                var inputsContent = gesture.featureVectors.slice();
-                inputsContent.push(0, (gesture.dependency == "link") ? 1 : 0);
-                var checksum = generateChecksum(inputsContent);
-
-                if (checksum in checksumMap) {
-                    preparedExpectedOutputs[checksumMap[checksum]] = generateOutputs(outputCount, actionList.indexOf(action));
-                } else if (gesture.dependency) {
-                    preparedInputs.push(inputsContent.slice());
-                    preparedExpectedOutputs.push(generateOutputs(outputCount, actionList.indexOf(action)));
-                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
-                    inputsContent.splice(-1, 1, 0);
-                    preparedInputs.push(inputsContent.slice());
-                    preparedExpectedOutputs.push(generateOutputs(outputCount));
-                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
-                } else {
-                    preparedInputs.push(inputsContent.slice());
-                    preparedExpectedOutputs.push(generateOutputs(outputCount, actionList.indexOf(action)));
-                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
-                    inputsContent.splice(-1, 1, 1);
-                    preparedInputs.push(inputsContent.slice());
-                    preparedExpectedOutputs.push(generateOutputs(outputCount, actionList.indexOf(action)));
-                    checksumMap[generateChecksum(inputsContent)] = preparedInputs.length - 1;
-                }
-            }
-        });
+    var networkGestures = gestures.filter(function(gesture) {
+        return gesture.featureVectors.length;
     });
+
+    var outputCount = networkGestures.length;
+    var preparedInputs = [], preparedExpectedOutputs = [], actionsList = [];
+
+    for (var index = 0; index < networkGestures.length; ++index) {
+        actionsList.push(networkGestures[index].actions);
+        preparedInputs.push(networkGestures[index].featureVectors);
+        preparedExpectedOutputs.push(generateOutputs(outputCount, index));
+    }
     
-    return [preparedInputs, preparedExpectedOutputs];
+    return [preparedInputs, preparedExpectedOutputs, actionsList];
 };
 
-var Network = function(inputCount, outputCount, actionList, hiddenCount) {
+var Network = function(inputCount, outputCount, hiddenCount) {
 
     this.inputCount  = inputCount;
     this.outputCount = outputCount;
-    this.actionList  = actionList;
     this.hiddenCount = (hiddenCount) ? hiddenCount : Math.round(Math.sqrt(this.inputCount + this.outputCount) + 2);
 
     this.hiddenWeights = [];
@@ -203,17 +177,16 @@ self.addEventListener("message", function(e) {
     switch(e.data && e.data.command) {
         case "train":
             var networkInfo = e.data.networkInfo;
-            var actionList = Object.keys(networkInfo.gestureMap);
-            var preparedTrainInfo = prepareGestures(actionList, networkInfo.gestureMap);
-            var network = new Network(66, actionList.length, actionList);
+            var preparedTrainInfo = prepareGestures(networkInfo.gestures);
+            var network = new Network(64, preparedTrainInfo[2].length);
             network.train(preparedTrainInfo[0], preparedTrainInfo[1]);
             self.postMessage({
-                actionList: network.actionList,
-                inputCount: network.inputCount,
-                hiddenCount: network.hiddenCount,
-                outputCount: network.outputCount,
-                hiddenWeights: network.hiddenWeights,
-                outputWeights: network.outputWeights
+                inputCount:     network.inputCount,
+                hiddenCount:    network.hiddenCount,
+                outputCount:    network.outputCount,
+                actionsList:    preparedTrainInfo[2],
+                hiddenWeights:  network.hiddenWeights,
+                outputWeights:  network.outputWeights
             });
             break;
         default:

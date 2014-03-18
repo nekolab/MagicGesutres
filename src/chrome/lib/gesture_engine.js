@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.0
+ * @version 0.0.2.1
  */
 
 /* global MagicGestures: true */
@@ -21,8 +21,7 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
             value: function() {
                 MagicGestures.NeuralNetEngine.pointFilter(MagicGestures.tab.gesture.points);
                 var normalizedPoints = MagicGestures.NeuralNetEngine.normalize(MagicGestures.tab.gesture.points);
-                normalizedPoints.push(0, MagicGestures.tab.gesture.dependency === "link" ? 1 : 0);
-                var neuralNetworkResult = MagicGestures.tab.gesture.neuralNetwork.think(normalizedPoints);
+                var neuralNetworkResult = MagicGestures.tab.gesture.neuralNetwork.think(normalizedPoints, MagicGestures.tab.gesture.dependency);
 
                 if (MagicGestures.tab.gesture.dependency in MagicGestures.tab.gesture.possibleNext) {
                     MagicGestures.tab.gesture.possibleNext =
@@ -35,16 +34,15 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                         data: MagicGestures.tab.gesture.data,
                         command: neuralNetworkResult[0]
                     };
-                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                     MagicGestures.logging.debug("Recognized by neural network:", neuralNetworkResult, msg);
                 } else if (MagicGestures.tab.gesture.possibleNext.command) {
                     msg = {
                         data: MagicGestures.tab.gesture.data,
                         command: MagicGestures.tab.gesture.possibleNext.command
                     };
-                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
-                    MagicGestures.logging.debug("Recognized by direction engine:", msg);
+                    MagicGestures.logging.debug("Recognized by direction engine:", msg, "Neural Network:", neuralNetworkResult);
                 }
+                MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
             }
         }
     })
@@ -109,14 +107,14 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
             value: function(profile) {
                 var gestureTrie = Object.create(null);
 
-                var createSubTrie = function(gesture) {
+                var createSubTrie = function(action) {
                     var currentRoot = gestureTrie;
 
-                    if (gesture.dependency === "wheel") {
-                        if (!(gesture.dependency in currentRoot)) {
-                            currentRoot[gesture.dependency] = Object.create(null);
+                    if (action.dependency === "wheel") {
+                        if (!("wheel" in currentRoot)) {
+                            currentRoot.wheel = Object.create(null);
                         }
-                        currentRoot = currentRoot[gesture.dependency];
+                        currentRoot = currentRoot.wheel;
                     }
 
                     for (var i = 0; i < gesture.code.length; i++) {
@@ -127,15 +125,16 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                         currentRoot = currentRoot[ch];
                     }
                     
-                    if (gesture.dependency === "link") {
+                    if (action.dependency === "link") {
                         currentRoot.link = Object.create(null);
                         currentRoot = currentRoot.link;
                     }
-                    currentRoot.command = action;
+                    currentRoot.command = action.name;
                 };
 
-                for (var action in profile.gestureMap) {
-                    profile.gestureMap[action].forEach(createSubTrie);
+                for (var gesture in profile.gestures) {
+                    gesture = profile.gestures[gesture];
+                    gesture.actions.forEach(createSubTrie);
                 }
 
                 return gestureTrie;
@@ -306,8 +305,8 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
         rebuildNetwork: {
             value: function(neunetInfo) {
                 var Network = function(details) {
-                    this.actionList    = details.actionList;
                     this.inputCount    = details.inputCount;
+                    this.actionsList   = details.actionsList;
                     this.hiddenCount   = details.hiddenCount;
                     this.outputCount   = details.outputCount;
                     this.hiddenWeights = details.hiddenWeights;
@@ -317,11 +316,11 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                         return (1 / (1 + Math.exp(-activation / response)));
                     };
 
-                    this.think = function(inputs) {
+                    this.think = function(inputs, dependency) {
 
                         //Check length
                         if (inputs.length !== this.inputCount)
-                            throw "Not a vaild input for neural network engine.";
+                            MagicGestures.logging.error("Not a vaild input for neural network engine.", inputs);
 
                         //Calculate hidden output
                         var i, j;
@@ -352,7 +351,26 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                         // for (i = this.outputCount - 1; i >= 0; --i)
                         //     outputOutputs[i] /= expTot;
 
-                        return [this.actionList[outputOutputs.indexOf(Math.max.apply(null, outputOutputs))], Math.max.apply(null, outputOutputs)/*, outputOutputs*/];
+                        // Check if answer not exist.
+                        var actions_index = outputOutputs.indexOf(Math.max.apply(null, outputOutputs));
+                        if (actions_index === -1)
+                            return ["", 0];
+
+                        var actions = this.actionsList[actions_index], action_index;
+                        for (action_index = 0; action_index < actions.length; ++action_index) {
+                            if (actions[action_index].dependency === dependency) {
+                                return [actions[action_index].name, Math.max.apply(null, outputOutputs)];
+                            }
+                        }
+
+                        // Backward compatible
+                        for (action_index = 0; action_index < actions.length; ++action_index) {
+                            if (dependency === "link" && actions[action_index].dependency === "") {
+                                return [actions[action_index].name, Math.max.apply(null, outputOutputs)];
+                            }
+                        }
+
+                        return ["", 0];
                     };
                 };
                 

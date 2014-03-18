@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.1
+ * @version 0.0.2.2
  */
 
 /*global chrome: false */
@@ -70,13 +70,13 @@ Object.defineProperties(MagicGestures.logging, {
     assert: {
         value: function() {
             if (ASSERT)
-                console.assert.apply(console, arguments);
+                console.assert.apply(console, arguments);console.trace();
         }
     },
     debug: {
         value: function() {
             if (DEBUG)
-                console.debug.apply(console, arguments);
+                console.debug.apply(console, arguments);console.trace();
         }
     },
     dir: {
@@ -88,7 +88,7 @@ Object.defineProperties(MagicGestures.logging, {
     error: {
         value: function() {
             if (ERROR)
-                console.error.apply(console, arguments);
+                console.error.apply(console, arguments);console.trace();
         }
     },
     log: {
@@ -106,7 +106,7 @@ Object.defineProperties(MagicGestures.logging, {
     warn: {
         value: function() {
             if (WARN)
-                console.warn.apply(console, arguments);
+                console.warn.apply(console, arguments);console.trace();
         }
     }
 });

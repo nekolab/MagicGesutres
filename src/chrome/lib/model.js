@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.2
+ * @version 0.0.2.0
  */
 
 /*global MagicGestures: true */
@@ -10,10 +10,16 @@
 "use strict";
 
 /**
- * Represents a gesture.
+ * Represents an action.
  * @constructor
  */
-MagicGestures.Gesture = function(gesture) {
+MagicGestures.Action = function(action) {
+
+    /**
+     * Indicates action's name
+     * @type {string}
+     */
+    this.name = "";
 
     /**
      * Indicates gesutre's dependency of other condition.
@@ -22,6 +28,23 @@ MagicGestures.Gesture = function(gesture) {
      * @type {string}
      */
     this.dependency = "";
+
+    if (action) {
+        for (var item in action) {
+            if (this.hasOwnProperty(item)) {
+                this[item] = action[item];
+            } else {
+                MagicGestures.logging.warn("Not a vaild action member:", item);
+            }
+        }
+    }
+};
+
+/**
+ * Represents a gesture.
+ * @constructor
+ */
+MagicGestures.Gesture = function(gesture) {
 
     /**
      * Indicates gesture's direction.
@@ -35,6 +58,13 @@ MagicGestures.Gesture = function(gesture) {
      * @type {Array.<Array.<number>>}
      */
     this.featureVectors = [];
+
+    /**
+     * Store each action in gesture.
+     * Each dependency has ONLY one action.
+     * @type {Array.<MagicGestures.Action>}
+     */
+    this.actions = [];
 
     if (gesture) {
         for (var item in gesture) {
@@ -156,10 +186,10 @@ MagicGestures.Profile = function(profile) {
     this.ttl = 0;
 
     /**
-     * A map which store the map reference between action name and gestures.
-     * @type {Object.<string, Array.<MagicGestures.Gesture>>}
+     * An array which store gestures.
+     * @type {Array.<MagicGestures.Gesture>}
      */
-    this.gestureMap = Object.create(null);
+    this.gestures = [];
 
     /**
      * This varible is the place to cache the gesture tire which complied from gestures. 
