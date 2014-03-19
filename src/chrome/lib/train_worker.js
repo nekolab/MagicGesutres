@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.0
+ * @version 0.0.3.0
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
@@ -9,10 +9,13 @@
 "use strict";
 
 var Constants = {
-    LEARN_RATE: 0.3,
+    LEARN_RATE: 0.2,
     RESPONSE: 1,
-    SSE_THRESHOLD: 0.001,
-    MOMENTUM: 0.9
+    SSE_THRESHOLD: 0.0001,
+    MOMENTUM: 0.9,
+    MINANGLE: -1 * (Math.PI / 180),
+    MAXANGLE: 1 * (Math.PI / 180),
+    SAMPLESCOUNT: 200
 };
 
 var Utils = {
@@ -34,6 +37,16 @@ var generateOutputs = function(length, index) {
     return template;
 };
 
+var generateFeatureVectorSamples = function(featureVectors) {
+    var newVector = [];
+    for (var index = 0; index < featureVectors.length; index += 2) {
+        var angle = (Constants.MAXANGLE - Constants.MINANGLE) * Math.random() + Constants.MINANGLE;
+        newVector.push(featureVectors[index] * Math.cos(angle) + featureVectors[index + 1] * Math.sin(angle));
+        newVector.push(-featureVectors[index] * Math.sin(angle) + featureVectors[index + 1] * Math.cos(angle));
+    }
+    return newVector;
+};
+
 var prepareGestures = function(gestures) {
 
     var networkGestures = gestures.filter(function(gesture) {
@@ -48,6 +61,13 @@ var prepareGestures = function(gestures) {
         preparedInputs.push(networkGestures[index].featureVectors);
         preparedExpectedOutputs.push(generateOutputs(outputCount, index));
     }
+
+    for (var count = Constants.SAMPLESCOUNT; count >= 0; --count) {
+        for (index = 0; index < networkGestures.length; ++index) {
+            preparedInputs.push(generateFeatureVectorSamples(networkGestures[index].featureVectors));
+            preparedExpectedOutputs.push(generateOutputs(outputCount, index));
+        }
+    }
     
     return [preparedInputs, preparedExpectedOutputs, actionsList];
 };
@@ -56,7 +76,7 @@ var Network = function(inputCount, outputCount, hiddenCount) {
 
     this.inputCount  = inputCount;
     this.outputCount = outputCount;
-    this.hiddenCount = (hiddenCount) ? hiddenCount : Math.round(Math.sqrt(this.inputCount + this.outputCount) + 2);
+    this.hiddenCount = (hiddenCount) ? hiddenCount : Math.round(Math.sqrt(this.inputCount + this.outputCount) + 6);
 
     this.hiddenWeights = [];
     this.outputWeights = [];
@@ -79,7 +99,7 @@ var Network = function(inputCount, outputCount, hiddenCount) {
             outputPrevWeights.push(0);
         }
 
-        var ipt_index = 0, sse, max_sse;
+        var ipt_index = 0, percent = 0, sse, max_sse, sse_delta;
 
         do {
             if (ipt_index === 0)
@@ -164,9 +184,16 @@ var Network = function(inputCount, outputCount, hiddenCount) {
                 }
             }
 
-            ipt_index = (++ipt_index) % inputs.length;
-
             max_sse = (sse > max_sse) ? sse : max_sse;
+
+            if ((ipt_index = (++ipt_index) % inputs.length) === 0) {
+                if (!sse_delta && max_sse < 30 * Constants.SSE_THRESHOLD)
+                    sse_delta = max_sse - Constants.SSE_THRESHOLD;
+                if (percent < Math.floor((sse_delta + Constants.SSE_THRESHOLD - max_sse) / sse_delta * 100)) {
+                    percent = Math.floor((sse_delta + Constants.SSE_THRESHOLD - max_sse) / sse_delta * 100);
+                    self.postMessage({progress: percent});
+                }
+            }
 
         } while(ipt_index !== 0 || max_sse >= Constants.SSE_THRESHOLD);
     };
