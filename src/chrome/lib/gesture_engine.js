@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.1
+ * @version 0.0.2.3
  */
 
 /* global MagicGestures: true */
@@ -34,15 +34,17 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                         data: MagicGestures.tab.gesture.data,
                         command: neuralNetworkResult[0]
                     };
-                    MagicGestures.logging.debug("Recognized by neural network:", neuralNetworkResult, msg);
+                    MagicGestures.logging.debug(msg, "Recognized by neural network:", neuralNetworkResult,
+                        "Direction engine:", MagicGestures.tab.gesture.possibleNext.command);
+                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                 } else if (MagicGestures.tab.gesture.possibleNext.command) {
                     msg = {
                         data: MagicGestures.tab.gesture.data,
                         command: MagicGestures.tab.gesture.possibleNext.command
                     };
-                    MagicGestures.logging.debug("Recognized by direction engine:", msg, "Neural Network:", neuralNetworkResult);
+                    MagicGestures.logging.debug(msg, "Recognized by direction engine:", "Neural Network:", neuralNetworkResult);
+                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                 }
-                MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
             }
         }
     })
@@ -346,31 +348,34 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             if (isNaN(outputOutput)) {debugger;}
                             // outputOutput = Math.exp(outputOutput);
                             // expTot += outputOutput;
-                            outputOutputs.unshift(outputOutput);
+                            outputOutputs.unshift({probability: outputOutput, actions: this.actionsList[i]});
                         }
                         // for (i = this.outputCount - 1; i >= 0; --i)
                         //     outputOutputs[i] /= expTot;
 
-                        // Check if answer not exist.
-                        var actions_index = outputOutputs.indexOf(Math.max.apply(null, outputOutputs));
-                        if (actions_index === -1)
-                            return ["", 0];
+                        outputOutputs.sort(function(lp, rp) {
+                            return rp.probability - lp.probability;
+                        });
 
-                        var actions = this.actionsList[actions_index], action_index;
+                        if (outputOutputs[0].probability < 0.98 || outputOutputs[0].probability - outputOutputs[1].probability < 0.08) {
+                            return ["failed - " + outputOutputs[0].probability + ", " + outputOutputs[1].probability, 0, outputOutputs];
+                        }
+
+                        var actions = outputOutputs[0].actions, action_index;
                         for (action_index = 0; action_index < actions.length; ++action_index) {
                             if (actions[action_index].dependency === dependency) {
-                                return [actions[action_index].name, Math.max.apply(null, outputOutputs)];
+                                return [actions[action_index].name, outputOutputs[0].probability, outputOutputs];
                             }
                         }
 
                         // Backward compatible
                         for (action_index = 0; action_index < actions.length; ++action_index) {
                             if (dependency === "link" && actions[action_index].dependency === "") {
-                                return [actions[action_index].name, Math.max.apply(null, outputOutputs)];
+                                return [actions[action_index].name, outputOutputs[0].probability, outputOutputs];
                             }
                         }
 
-                        return ["", 0];
+                        return ["error", 0, outputOutputs];
                     };
                 };
                 
