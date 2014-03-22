@@ -41,6 +41,7 @@ MagicGestures.init = function() {
     MagicGestures.logging.log("Initializing MagicGestures...");
     MagicGestures.runtime.init("background");
     MagicGestures.ProfileManager.init();
+    // TODO: Reload content script for each tab.
 };
 
 chrome.runtime.onInstalled.addListener(function() {

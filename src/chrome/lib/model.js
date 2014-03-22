@@ -192,6 +192,13 @@ MagicGestures.Profile = function(profile) {
     this.gestures = [];
 
     /**
+     * Since I just want to support only up and down wheel gestures currently,
+     * Use an object store action name with key "U" and "D" is a good solution.
+     * @type {Object.<String, String>}
+     */
+    this.wheelGestures = {/*U: "", D: ""*/};
+
+    /**
      * This varible is the place to cache the gesture tire which complied from gestures. 
      * @type {object.<string, object.<string, object|string|boolean>>}
      */

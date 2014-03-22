@@ -112,13 +112,6 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                 var createSubTrie = function(action) {
                     var currentRoot = gestureTrie;
 
-                    if (action.dependency === "wheel") {
-                        if (!("wheel" in currentRoot)) {
-                            currentRoot.wheel = Object.create(null);
-                        }
-                        currentRoot = currentRoot.wheel;
-                    }
-
                     for (var i = 0; i < gesture.code.length; i++) {
                         var ch = gesture.code.charAt(i);
                         if (!(ch in currentRoot)) {
@@ -137,6 +130,16 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                 for (var gesture in profile.gestures) {
                     gesture = profile.gestures[gesture];
                     gesture.actions.forEach(createSubTrie);
+                }
+
+                if ("U" in profile.wheelGestures) {
+                    gestureTrie.wheel = gestureTrie.wheel ? gestureTrie.wheel : {};
+                    gestureTrie.wheel.U = {command: profile.wheelGestures.U};
+                }
+
+                if ("D" in profile.wheelGestures) {
+                    gestureTrie.wheel = gestureTrie.wheel ? gestureTrie.wheel : {};
+                    gestureTrie.wheel.D = {command: profile.wheelGestures.D};
                 }
 
                 return gestureTrie;

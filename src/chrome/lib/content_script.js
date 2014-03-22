@@ -350,7 +350,8 @@ Object.defineProperty(MagicGestures, "tab", {
                                         var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
                                         var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                         MagicGestures.logging.log(action.command);
-                                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
+                                        if (action)
+                                            MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
                                         if (!MagicGestures.isGTKChrome)
                                             document.oncontextmenu = MagicGestures.tab.disableContextMenu;
                                         break;
