@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.3
+ * @version 0.0.2.5
  */
 
 /* global MagicGestures: true */
@@ -72,9 +72,9 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                 var prevDir = (gesturePtr.code === "") ? "" : gesturePtr.code[gesturePtr.code.length - 1];
                 
                 var currentDir;
-                if (Math.abs(deltaX) >= (endForce ? 1 : 2) * Math.abs(deltaY)) {
+                if (Math.abs(deltaX) >= (endForce ? 1 : 3) * Math.abs(deltaY)) {
                     currentDir = (deltaX > 0) ? "R" : "L";
-                } else if ((endForce ? 1 : 2) * Math.abs(deltaX) < Math.abs(deltaY)) {
+                } else if ((endForce ? 1 : 3) * Math.abs(deltaX) < Math.abs(deltaY)) {
                     currentDir = (deltaY > 0) ? "D" : "U";
                 }
 
@@ -373,7 +373,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
 
                         // Backward compatible
                         for (action_index = 0; action_index < actions.length; ++action_index) {
-                            if (dependency === "link" && actions[action_index].dependency === "") {
+                            if (actions[action_index].dependency === "" && dependency === "link") {
                                 return [actions[action_index].name, outputOutputs[0].probability, outputOutputs];
                             }
                         }

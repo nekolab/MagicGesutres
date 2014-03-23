@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.0
+ * @version 0.0.2.1
  */
 
 /*global MagicGestures: true */

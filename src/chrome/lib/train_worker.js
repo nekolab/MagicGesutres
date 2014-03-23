@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.0
+ * @version 0.0.3.1
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
@@ -13,9 +13,8 @@ var Constants = {
     RESPONSE: 1,
     SSE_THRESHOLD: 0.0001,
     MOMENTUM: 0.9,
-    MINANGLE: -1 * (Math.PI / 180),
-    MAXANGLE: 1 * (Math.PI / 180),
-    SAMPLESCOUNT: 200
+    ANGLEOFFSET: 1 * (Math.PI / 180),
+    SAMPLESCOUNT: 300
 };
 
 var Utils = {
@@ -40,7 +39,7 @@ var generateOutputs = function(length, index) {
 var generateFeatureVectorSamples = function(featureVectors) {
     var newVector = [];
     for (var index = 0; index < featureVectors.length; index += 2) {
-        var angle = (Constants.MAXANGLE - Constants.MINANGLE) * Math.random() + Constants.MINANGLE;
+        var angle = Math.tan(1.45 * (Math.random() * 2 - 1)) / /*tan(1.45) = */8.2381 * Constants.ANGLEOFFSET;
         newVector.push(featureVectors[index] * Math.cos(angle) + featureVectors[index + 1] * Math.sin(angle));
         newVector.push(-featureVectors[index] * Math.sin(angle) + featureVectors[index + 1] * Math.cos(angle));
     }

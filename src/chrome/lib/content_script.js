@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.7
+ * @version 0.0.3.8
  */
 
 /* global MagicGestures: true, chrome: false */
