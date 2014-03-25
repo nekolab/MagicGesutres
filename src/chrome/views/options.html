@@ -10,8 +10,8 @@
   <script src="./options.app/options.controller.js"></script>
 </head>
 <body class="chrome-bootstrap">
-  <div class="frame">
-    <div class="navigation" ng-controller="NavContrller">
+  <div class="frame" ng-controller="NavContrller">
+    <div class="navigation">
       <h1><a style="-webkit-margin-start: -13px;">Magic Gestures</a></h1>
       <ul class="menu">
         <li ng-class="{selected: $route.current.activeTab == 'gestures'}">
@@ -28,7 +28,9 @@
       </ul>
     </div>
     <div class="mainview view">
-      <div class="selected" ng-view></div>
+      <div ng-class="{selected: isSelected}">
+        <ng-view onload="viewRendered()"></ng-view>
+      </div>
     </div>
   </div>
 </body>
