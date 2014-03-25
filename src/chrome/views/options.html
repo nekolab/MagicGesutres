@@ -1,0 +1,35 @@
+<html ng-app="options" ng-csp>
+<head>
+  <meta charset="utf-8" />
+  <title>Magic Gestures</title>
+  <link rel="stylesheet" type="text/css" href="./css/chrome-bootstrap.css" />
+  <script src="./js/angular.min.js"></script>
+  <script src="./js/angular-route.min.js"></script>
+
+  <script src="./options.app/options.app.js"></script>
+  <script src="./options.app/options.controller.js"></script>
+</head>
+<body class="chrome-bootstrap">
+  <div class="frame">
+    <div class="navigation" ng-controller="NavContrller">
+      <h1><a>Magic Gestures</a></h1>
+      <ul class="menu">
+        <li ng-class="{selected: $route.current.activeTab == 'gestures'}">
+          <a href="#/gestures">Gestures</a>
+        </li>
+        <li ng-class="{selected: $route.current.activeTab == 'settings'}">
+          <a href="#/settings">Settings</a>
+        </li>
+      </ul>
+      <ul class="menu">
+        <li ng-class="{selected: $route.current.activeTab == 'help'}">
+          <a href="#/help">Help</a>
+        </li>
+      </ul>
+    </div>
+    <div class="mainview view">
+      <div class="selected" ng-view></div>
+    </div>
+  </div>
+</body>
+</html>
