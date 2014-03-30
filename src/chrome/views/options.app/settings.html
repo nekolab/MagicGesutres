@@ -2,5 +2,122 @@
   <h1>Settings</h1>
 </header>
 <div class="content">
-  <p>content</p>
+  <section>
+    <h3>Mouse Gestures</h3>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.enable">
+        <span>Enable mouse gestures</span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" checked disabled>
+        <span>Trigger to start gesture on</span>
+        <select ng-model="selectedProfile.triggerButton">
+          <option value="2">right</option>
+          <option value="1">middle</option>
+          <option value="0">left</option>
+        </select>
+        <span>button</span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.ttlEnabled">
+        <span>Cancel mouse gesture after
+          <input type="number" min="0" class="inline-input" ng-disabled="!selectedProfile.ttlEnabled" ng-model="selectedProfile.ttl">
+          seconds without move
+        </span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.disableWhenPressed">
+        <span>Disable mouse gestures temporary with holding
+          <select ng-disabled="!selectedProfile.disableWhenPressed" ng-model="selectedProfile.disableWhen">
+            <option value="Ctrl">Ctrl</option>
+            <option value="Alt">Alt</option>
+          </select>
+          key
+        </span>
+      </label>
+    </div>
+  </section>
+      
+  <section>
+    <h3>Trailing Line</h3>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.drawLocus">
+        <span>Draw trailing line</span>
+      </label>
+    </div>
+    <div class="pull-left">
+      <div>
+        <div id="red" class="input-color">
+          <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.red" ng-disabled="!selectedProfile.drawLocus">
+        </div>
+        <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.red" ng-disabled="!selectedProfile.drawLocus">
+      </div>
+      <div>
+        <div id="green" class="input-color">
+          <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.green" ng-disabled="!selectedProfile.drawLocus">
+        </div>
+        <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.green" ng-disabled="!selectedProfile.drawLocus">
+      </div>
+      <div>
+        <div id="blue" class="input-color">
+          <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.blue" ng-disabled="!selectedProfile.drawLocus">
+        </div>
+        <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.blue" ng-disabled="!selectedProfile.drawLocus">
+      </div>
+      <div>
+        <div class="input-color" ng-style="{'background-image': 'linear-gradient(to right, rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',0), rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',0) 10px, rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',1) 140px, rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',1))'}">
+          <input type="range" min="0" max="1" step="0.01" ng-model="selectedProfile.lineColor.alpha" ng-disabled="!selectedProfile.drawLocus">
+        </div>
+        <input type="number" min="0" max="1" step="0.01" ng-model="selectedProfile.lineColor.alpha" ng-disabled="!selectedProfile.drawLocus">
+      </div>
+    </div>
+    <div class="pull-left">
+        <input type="range" min="0" max="6" step="0.2" class="vertical" ng-model="selectedProfile.locusWidth" ng-disabled="!selectedProfile.drawLocus">
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="104px" height="104px">
+      <path d="M20 80 L80 20 M80 20 L60 20 M80 20 L80 40" ng-style="{'stroke':'rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ', ' + selectedProfile.lineColor.alpha
+          + ')', 'stroke-width': selectedProfile.locusWidth + 'px'}" fill="transparent" stroke-linecap="round"></path>
+    </svg>
+  </section>
+
+  <section>
+    <h3>Profiles</h3>
+    <div>
+      <ul class="highlightable editable profile-list">
+        <li ng-repeat = "profile in profileMap" ng-class="{selected: profile.id == selectedProfile.id}">
+          <a ng-click="selectProfile(profile.id)">
+            <dl>
+              <dt>{{profile.name}}</dt>
+              <dd>{{profile.description}}</dd>
+            </dl>
+          </a>
+          <a class="action" ng-hide="profile.id == activedProfile.id" ng-click="activeProfile(profile.id)">Use this profile</a>
+          <a class="action tag" ng-show="profile.id == activedProfile.id">In use</a>
+          <a href="#" class="delete">delete</a>
+        </li>
+      </ul>
+      <div>
+        <button>Add new profile...</button>
+        <button>Edit...</button>
+        <button>Delete...</button>
+      </div>
+    </div>
+  </section>
 </div>

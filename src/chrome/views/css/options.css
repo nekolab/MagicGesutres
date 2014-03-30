@@ -1,0 +1,72 @@
+/* Options page css file. */
+
+.pull-left {
+    float: left;
+}
+
+ul.profile-list {
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+}
+
+ul.profile-list dt {
+    color: rgb(48, 57, 66);
+}
+
+ul.profile-list > li > .action.tag {
+    opacity: 1;
+}
+
+ul.profile-list > li.selected > a:not(.action),
+ul.profile-list > li.selected:hover > a:not(.action),
+ul.profile-list > li.selected:hover > a:not(.action):focus {
+    background-color: #d0d0d0;
+}
+
+input.inline-input {
+    font-size: 11px;
+}
+
+div.input-color {
+    width: 150px;
+    border-radius: 6px;
+    text-align: center;
+    display: inline-block;
+}
+
+div.input-color#red {
+    background-image: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255) 10px, rgb(255, 0, 0) 140px, rgb(255, 0, 0));
+}
+
+div.input-color#green {
+    background-image: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255) 10px, rgb(0, 255, 0) 140px, rgb(0, 255, 0));
+}
+
+div.input-color#blue {
+    background-image: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255) 10px, rgb(0, 0, 255) 140px, rgb(0, 0, 255));
+}
+
+div.input-color > input[type="range"] {
+    width: 130px;
+}
+
+input[type="number"] {
+    width: 3em;
+    text-align: center;
+}
+
+input[type="number"], input[type="range"] {
+    vertical-align: middle;
+}
+
+input[type="range"].vertical {
+    -webkit-appearance: slider-vertical;
+    width: 8px;
+    height: 7.5em;
+    padding: 0 10px;
+}
+
+.chrome-bootstrap .highlightable.editable .delete {
+    top: 17px;
+    right: 3px;
+}
