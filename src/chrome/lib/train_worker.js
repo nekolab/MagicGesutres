@@ -4,7 +4,7 @@
  * @version 0.0.3.1
  */
 
-/*jshint strict: true, globalstrict: true, worker: true */
+/* jshint strict: true, globalstrict: true, worker: true */
 
 "use strict";
 

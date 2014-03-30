@@ -4,8 +4,8 @@
  * @version 0.0.0.5
  */
 
-/*global chrome: false, MagicGestures: true */
-/*jshint strict: true, globalstrict: true, forin: false */
+/* global chrome: false, MagicGestures: true */
+/* jshint strict: true, globalstrict: true, forin: false */
 
 "use strict";
 

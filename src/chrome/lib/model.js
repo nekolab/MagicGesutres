@@ -4,8 +4,8 @@
  * @version 0.0.2.1
  */
 
-/*global MagicGestures: true */
-/*jshint strict: true, globalstrict: true */
+/* global MagicGestures: true */
+/* jshint strict: true, globalstrict: true */
 
 "use strict";
 

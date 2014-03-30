@@ -42,7 +42,8 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                         data: MagicGestures.tab.gesture.data,
                         command: MagicGestures.tab.gesture.possibleNext.command
                     };
-                    MagicGestures.logging.debug(msg, "Recognized by direction engine:", "Neural Network:", neuralNetworkResult);
+                    MagicGestures.logging.debug(msg, "Recognized by direction engine:",
+                        MagicGestures.tab.gesture.possibleNext.command, "Neural Network:", neuralNetworkResult);
                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                 }
             }

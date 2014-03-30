@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.3
+ * @version 0.0.2.4
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -35,8 +35,8 @@ Object.defineProperties(MagicGestures.Preset, {
 MagicGestures.Preset.Profiles.MagicGestures = function() {
     return new MagicGestures.Profile({
         id: "b8980ce9f43e35f2",
-        name: "MagicGestures",
-        description: "MagicGestures style profile.",
+        name: "Magic Gestures",
+        description: "Magic Gestures style profile.",
         enable: true,
         sync: false,
         readOnly: true,
@@ -256,7 +256,7 @@ MagicGestures.Preset.Profiles.Opera = function() {
         enable: true,
         sync: false,
         readOnly: true,
-        locusColor: [255, 255, 255, 1],
+        locusColor: [255, 255, 255, 0],
         gestures: [
             new MagicGestures.Gesture({
                 code: "L",
@@ -682,8 +682,8 @@ MagicGestures.Preset.Profiles.FireGestures = function() {
 MagicGestures.Preset.Profiles.SmoothGestures = function() {
     return new MagicGestures.Profile({
         id: "a18e20513ba94779",
-        name: "SmoothGestures",
-        description: "SmoothGestures style profile.",
+        name: "Smooth Gestures",
+        description: "Smooth Gestures style profile.",
         enable: true,
         sync: false,
         readOnly: true,

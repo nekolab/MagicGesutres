@@ -4,8 +4,8 @@
  * @version 0.0.2.2
  */
 
-/*global chrome: false */
-/*jshint devel: true, esnext: true, forin: false, curly: false, strict: true, globalstrict: true */
+/* global chrome: false */
+/* jshint devel: true, esnext: true, forin: false, curly: false, strict: true, globalstrict: true */
 
 "use strict";
 
