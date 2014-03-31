@@ -13,6 +13,12 @@ var SettingsCtrl = function($scope, $route) {
         $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
         $scope.activedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
     };
+    $scope.createdProfle = {
+        name: "",
+        description: "",
+        copyFromAnotherProfile: false,
+        copyFrom: $scope.selectedProfile.id
+    };
 };
 
 var NavContrller = function($scope, $route) {

@@ -19,4 +19,45 @@ angular.module('options', ['ngRoute'])
                 activeTab: 'help'
             })
             .otherwise({redirectTo: '/settings'});
+    })
+    .directive('crModal', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            template: '<div class="overlay"><div class="page" ng-transclude></div></div>',
+            scope: {
+                showModal: "=show"
+            },
+            link: function(scope, element, attrs) {
+
+                scope.$watch('showModal', function(value) {
+                    element.css({display: value ? "-webkit-box" : "none"});
+                });
+
+                element.find('.exit-button').click(function() {
+                    element.addClass('transparent');
+                    element.on('webkitTransitionEnd', function(e){
+                        element.off('webkitTransitionEnd');
+                        element.removeClass('transparent');
+                        scope.$apply('showModal = false');
+                    });
+                });
+
+                element.click(function() {
+                    var page = element.find('.page');
+                    page.addClass('pulse');
+                    page.on('webkitAnimationEnd', function() {
+                        page.off('webkitAnimationEnd');
+                        page.removeClass('pulse');
+                    });
+                });
+
+                element.find('.page').click(function(e) {
+                    e.stopPropagation();
+                });
+
+                element.appendTo('body');
+            }
+        };
     });

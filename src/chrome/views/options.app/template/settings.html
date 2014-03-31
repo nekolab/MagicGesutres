@@ -114,9 +114,87 @@
         </li>
       </ul>
       <div>
-        <button>Add new profile...</button>
-        <button>Edit...</button>
-        <button>Delete...</button>
+        <button ng-click="isAddingProfile = true">Add new profile...</button>
+        <cr-modal show="isAddingProfile">
+          <h1>Create profile</h1>
+          <div class="close-button exit-button"></div>
+          <div class="content-area">
+            <div class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label">Name:</label>
+                <div class="control">
+                  <input type="text" ng-model="createdProfle.name" placeholder="New profile name">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Description:</label>
+                <div class="control">
+                  <textarea ng-model="createdProfle.description" rows="4" cols="30" placeholder="Optional profile description"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="createdProfle.copyFromAnotherProfile">
+                <span>Copy gestures and settings form</span>
+                <select ng-model="createdProfle.copyFrom" ng-options="id as profile.name for (id, profile) in profileMap"></select>
+              </label>
+            </div>
+          </div>
+          <div class="action-area">
+            <div class="action-area-right">
+              <div class="button-strip">
+                <button class="exit-button">Create</button>
+                <button class="exit-button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </cr-modal>
+        <button ng-click="isEditingProfile = true">Edit...</button>
+        <cr-modal show="isEditingProfile">
+          <h1>Edit profile</h1>
+          <div class="close-button exit-button"></div>
+          <div class="content-area">
+            <div class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label">Name:</label>
+                <div class="control">
+                  <input type="text" ng-model="selectedProfile.name" placeholder="Edit profile name here">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Description:</label>
+                <div class="control">
+                  <textarea ng-model="selectedProfile.description" rows="4" cols="30" placeholder="Edit optional profile description here"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="action-area">
+            <div class="action-area-right">
+              <div class="button-strip">
+                <button class="exit-button">OK</button>
+                <button class="exit-button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </cr-modal>
+        <button ng-click="isDeletingProfile = true">Delete...</button>
+        <cr-modal show="isDeletingProfile">
+          <h1>Delete profile</h1>
+          <div class="close-button exit-button"></div>
+          <div class="content-area">
+            Are you sure you want to delete "{{selectedProfile.name}}"? This cannot be undone!
+          </div>
+          <div class="action-area">
+            <div class="action-area-right">
+              <div class="button-strip">
+                <button class="exit-button">Delete</button>
+                <button class="exit-button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </cr-modal>
       </div>
     </div>
   </section>
