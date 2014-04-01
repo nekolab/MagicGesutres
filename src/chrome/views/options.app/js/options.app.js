@@ -67,6 +67,17 @@ angular.module('options', ['ngRoute'])
             }
         };
     })
+    .filter('actionDependency', function() {
+        return function(object, dependencyExp) {
+            var filteredObject = {};
+            for (var key in object) {
+                if (object.hasOwnProperty(key) && (dependencyExp.indexOf(object[key].dependency) != -1)) {
+                    filteredObject[key] = object[key];
+                }
+            }
+            return filteredObject;
+        }
+    })
     .filter('mousekey', function() {
         return function(input) {
             switch(input) {

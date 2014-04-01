@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.5
+ * @version 0.0.3.0
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -911,317 +911,471 @@ MagicGestures.Preset.Profiles.SmoothGestures = function() {
 Object.defineProperties(MagicGestures.Preset.Actions, {
 
     close_tab: {
-        value: function(tab) {
-            chrome.tabs.remove(tab.id);
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.remove(tab.id);
+            }
         },
         enumerable: true
     },
 
     close_other_tabs: {
-        value: function(tab) {
-            chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    if (!tabs[i].pinned && tabs[i].id !== tab.id) {
-                        chrome.tabs.remove(tabs[i].id);
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    for (var i = tabs.length - 1; i >= 0; i--) {
+                        if (!tabs[i].pinned && tabs[i].id !== tab.id) {
+                            chrome.tabs.remove(tabs[i].id);
+                        }
                     }
-                }
-            });
+                });
+            }
         },
         enumerable: true
     },
 
     close_tabs_to_the_left: {
-        value: function(tab) {
-            chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    if (tabs[i].index < tab.index && !tabs[i].pinned) {
-                        chrome.tabs.remove(tabs[i].id);
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    for (var i = tabs.length - 1; i >= 0; i--) {
+                        if (tabs[i].index < tab.index && !tabs[i].pinned) {
+                            chrome.tabs.remove(tabs[i].id);
+                        }
                     }
-                }
-            });
+                });
+            }
         },
         enumerable: true
     },
 
     close_tabs_to_the_right: {
-        value: function(tab) {
-            chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    if (tabs[i].index > tab.index && !tabs[i].pinned) {
-                        chrome.tabs.remove(tabs[i].id);
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    for (var i = tabs.length - 1; i >= 0; i--) {
+                        if (tabs[i].index > tab.index && !tabs[i].pinned) {
+                            chrome.tabs.remove(tabs[i].id);
+                        }
                     }
-                }
-            });
+                });
+            }
         },
         enumerable: true
     },
 
     close_window: {
-        value: function(tab) {
-            chrome.windows.remove(tab.windowId);
+        value: {
+            category: "Window",
+            dependency: "none",
+            action: function(tab) {
+                chrome.windows.remove(tab.windowId);
+            }
         },
         enumerable: true
     },
 
     duplicate_tab: {
-        value: function(tab) {
-            chrome.tabs.duplicate(tab.id);
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.duplicate(tab.id);
+            }
         },
         enumerable: true
     },
 
     full_screen: {
-        value: function(tab) {
-            chrome.windows.update(tab.windowId, {state: "fullscreen"});
+        value: {
+            category: "Window",
+            dependency: "none",
+            action: function(tab) {
+                chrome.windows.update(tab.windowId, {state: "fullscreen"});
+            }
         },
         enumerable: true
     },
 
     history_back: {
-        value: function(tab) {
-            chrome.tabs.executeScript(tab.id, {code: "history.back();"});
+        value: {
+            category: "Navigation",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.executeScript(tab.id, {code: "history.back();"});
+            }
         },
         enumerable: true
     },
 
     history_forward: {
-        value: function(tab) {
-            chrome.tabs.executeScript(tab.id, {code: "history.forward();"});
+        value: {
+            category: "Navigation",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.executeScript(tab.id, {code: "history.forward();"});
+            }
         },
         enumerable: true
     },
 
     maximize_window: {
-        value: function(tab) {
-            var toggle = {maximized: "normal", normal: "maximized", fullscreen: "maximized", minimized: "normal"};
-            chrome.windows.get(tab.windowId, null, function(window) {
-                chrome.windows.update(tab.windowId, {state: toggle[window.state]});
-            });
+        value: {
+            category: "Window",
+            dependency: "none",
+            action: function(tab) {
+                var toggle = {maximized: "normal", normal: "maximized", fullscreen: "maximized", minimized: "normal"};
+                chrome.windows.get(tab.windowId, null, function(window) {
+                    chrome.windows.update(tab.windowId, {state: toggle[window.state]});
+                });
+            }
         },
         enumerable: true
     },
 
     minimize_window: {
-        value: function(tab) {
-            chrome.windows.update(tab.windowId, {state: "minimized"});
+        value: {
+            category: "Window",
+            dependency: "none",
+            action: function(tab) {
+                chrome.windows.update(tab.windowId, {state: "minimized"});
+            }
         },
         enumerable: true
     },
 
     move_to_left: {
-        value: function(tab) {
-            chrome.tabs.move(tab.id, {index: 0});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.move(tab.id, {index: 0});
+            }
         },
         enumerable: true
     },
 
     move_to_right: {
-        value: function(tab) {
-            chrome.tabs.move(tab.id, {index: -1});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.move(tab.id, {index: -1});
+            }
         },
         enumerable: true
     },
 
     navigate_to_new_tab: {
-        value: function(tab) {
-            chrome.tabs.update(tab.id, {url: "chrome://newtab"});
+        value: {
+            category: "Navigation",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.update(tab.id, {url: "chrome://newtab"});
+            }
         },
         enumerable: true
     },
 
     new_tab: {
-        value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1, url: "chrome://newtab"});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.create({index: tab.index + 1, url: "chrome://newtab"});
+            }
         },
         enumerable: true
     },
 
     new_window: {
-        value: function() {
-            chrome.windows.create({});
+        value: {
+            category: "Window",
+            dependency: "none",
+            action: function() {
+                chrome.windows.create({});
+            }
         },
         enumerable: true
     },
 
     next_tab: {
-        value: function(tab) {
-            chrome.tabs.query({index: tab.index + 1, windowId: tab.windowId}, function(tabs) {
-                if (tabs.length !== 0) {chrome.tabs.update(tabs[0].id, {active: true});}
-            });
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({index: tab.index + 1, windowId: tab.windowId}, function(tabs) {
+                    if (tabs.length !== 0) {chrome.tabs.update(tabs[0].id, {active: true});}
+                });
+            }
         },
         enumerable: true
     },
 
     open_bookmarks: {
-        value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1, url: "chrome://bookmarks/"});
+        value: {
+            category: "Tools",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.create({index: tab.index + 1, url: "chrome://bookmarks/"});
+            }
         },
         enumerable: true
     },
 
     open_downloads: {
-        value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1, url: "chrome://downloads/"});
+        value: {
+            category: "Tools",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.create({index: tab.index + 1, url: "chrome://downloads/"});
+            }
         },
         enumerable: true
     },
 
     open_extensions: {
-        value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1, url: "chrome://extensions/"});
+        value: {
+            category: "Tools",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.create({index: tab.index + 1, url: "chrome://extensions/"});
+            }
         },
         enumerable: true
     },
 
     open_history: {
-        value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1, url: "chrome://history/"});
+        value: {
+            category: "Tools",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.create({index: tab.index + 1, url: "chrome://history/"});
+            }
         },
         enumerable: true
     },
 
     open_in_newtab: {
-        value: function(tab, data) {
-            chrome.tabs.create({index: tab.index + 1, url: data.href, openerTabId: tab.id});
-        }
+        value: {
+            category: "Link",
+            dependency: "link",
+            action: function(tab, data) {
+                chrome.tabs.create({index: tab.index + 1, url: data.href, openerTabId: tab.id});
+            }
+        },
+        enumerable: true
     },
 
     open_in_newtab_background: {
-        value: function(tab, data) {
-            chrome.tabs.create({index: tab.index + 1, url: data.href, active: false, openerTabId: tab.id});
-        }
+        value: {
+            category: "Link",
+            dependency: "link",
+            action: function(tab, data) {
+                chrome.tabs.create({index: tab.index + 1, url: data.href, active: false, openerTabId: tab.id});
+            }
+        },
+        enumerable: true
     },
 
     pin_tab: {
-        value: function(tab) {
-            chrome.tabs.update(tab.id, {pinned: true});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.update(tab.id, {pinned: true});
+            }
         },
         enumerable: true
     },
 
     prev_tab: {
-        value: function(tab) {
-            chrome.tabs.query({index: tab.index - 1, windowId: tab.windowId}, function(tabs) {
-                chrome.tabs.update(tabs[0].id, {active: true});
-            });
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({index: tab.index - 1, windowId: tab.windowId}, function(tabs) {
+                    chrome.tabs.update(tabs[0].id, {active: true});
+                });
+            }
         },
         enumerable: true
     },
 
     print_tab: {
-        value: function(tab) {
-            chrome.tabs.executeScript(tab.id, {code: "window.print();"});
+        value: {
+            category: "Page",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.executeScript(tab.id, {code: "window.print();"});
+            }
         },
         enumerable: true
     },
 
     reload_all_tabs: {
-        value: function(tab) {
-            chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    chrome.tabs.reload(tabs[i].id);
-                }
-            });
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    for (var i = tabs.length - 1; i >= 0; i--) {
+                        chrome.tabs.reload(tabs[i].id);
+                    }
+                });
+            }
         },
         enumerable: true
     },
 
     reload_all_tabs_bypass_cache: {
-        value: function(tab) {
-            chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    chrome.tabs.reload(tabs[i].id, {bypassCache: true});
-                }
-            });
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    for (var i = tabs.length - 1; i >= 0; i--) {
+                        chrome.tabs.reload(tabs[i].id, {bypassCache: true});
+                    }
+                });
+            }
         },
         enumerable: true
     },
 
     reload_tab: {
-        value: function(tab) {
-            chrome.tabs.reload(tab.id);
+        value: {
+            category: "Navigation",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.reload(tab.id);
+            }
         },
         enumerable: true
     },
 
     reload_tab_bypass_cache: {
-        value: function(tab) {
-            chrome.tabs.reload(tab.id, {bypassCache: true});
+        value: {
+            category: "Navigation",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.reload(tab.id, {bypassCache: true});
+            }
         },
         enumerable: true
     },
 
     split_tabs: {
-        value: function(tab) {
-            chrome.windows.get(tab.windowId, {populate: true}, function(window) {
-                chrome.windows.create({
-                    focused: true, type: window.type,
-                    incognito: window.incognito, tabId: tab.id
-                }, function(createdWindow) {
-                    for (var i = window.tabs.length - 1; i >= 0; i--) {
-                        if (window.tabs[i].index > tab.index) {
-                            chrome.tabs.move(window.tabs[i].id, {windowId: createdWindow.id, index: window.tabs[i].index - tab.index});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.windows.get(tab.windowId, {populate: true}, function(window) {
+                    chrome.windows.create({
+                        focused: true, type: window.type,
+                        incognito: window.incognito, tabId: tab.id
+                    }, function(createdWindow) {
+                        for (var i = window.tabs.length - 1; i >= 0; i--) {
+                            if (window.tabs[i].index > tab.index) {
+                                chrome.tabs.move(window.tabs[i].id, {windowId: createdWindow.id, index: window.tabs[i].index - tab.index});
+                            }
                         }
-                    }
+                    });
                 });
-            });
+            }
         },
         enumerable: true
     },
 
     stop_loading: {
-        value: function(tab) {
-            chrome.tabs.executeScript(tab.id, {code: "window.stop();"});
+        value: {
+            category: "Navigation",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.executeScript(tab.id, {code: "window.stop();"});
+            }
         },
         enumerable: true
     },
 
     scroll_to_top: {
-        value: function(tab) {
-            chrome.tabs.executeScript(tab.id, {code: "window.scroll(0, 0);"});
+        value: {
+            category: "Page",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.executeScript(tab.id, {code: "window.scroll(0, 0);"});
+            }
         },
         enumerable: true
     },
 
     scroll_to_bottom: {
-        value: function(tab) {
-            chrome.tabs.executeScript(tab.id, {
-                code: "window.scrollTo(0, document.documentElement.scrollHeight);"
-            });
+        value: {
+            category: "Page",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.executeScript(tab.id, {
+                    code: "window.scrollTo(0, document.documentElement.scrollHeight);"
+                });
+            }
         },
         enumerable: true
     },
 
     toggle_pin_tab: {
-        value: function(tab) {
-            chrome.tabs.update(tab.id, {pinned: !tab.pinned});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.update(tab.id, {pinned: !tab.pinned});
+            }
         },
         enumerable: true
     },
 
     undo_close_tab: {
-        value: function(tab) {
-            // Currently, chrome.sessions is only avaliable in Dev Channel (v32).
-            chrome.sessions.getRecentlyClosed(function(sessions) {
-                if (sessions[0]) {
-                    var item = (sessions[0].tab) || (sessions[0].window);
-                    chrome.sessions.restore(item.sessionId);
-                }
-            });
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function() {
+                // Currently, chrome.sessions is only avaliable in Dev Channel (v32).
+                chrome.sessions.getRecentlyClosed(function(sessions) {
+                    if (sessions[0]) {
+                        var item = (sessions[0].tab) || (sessions[0].window);
+                        chrome.sessions.restore(item.sessionId);
+                    }
+                });
+            }
         },
         enumerable: true
     },
 
     unpin_tab: {
-        value: function(tab) {
-            chrome.tabs.update(tab.id, {pinned: false});
+        value: {
+            category: "Tab",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.update(tab.id, {pinned: false});
+            }
         },
         enumerable: true
     },
 
     view_source: {
-        value: function(tab) {
-            chrome.tabs.create({index: tab.index + 1, url: "view-source:" + tab.url, openerTabId: tab.id});
+        value: {
+            category: "Hybrid",
+            dependency: "none",
+            action: function(tab) {
+                chrome.tabs.create({index: tab.index + 1, url: "view-source:" + tab.url, openerTabId: tab.id});
+            }
         },
         enumerable: true
     }

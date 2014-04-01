@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.6
+ * @version 0.0.1.7
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -17,7 +17,7 @@ MagicGestures.runtime.messenger.action = function(type, msg, sender, sendRespons
         case "gesture ACTION":
             MagicGestures.logging.debug(msg);
             if (msg.command in MagicGestures.Preset.Actions) {
-                MagicGestures.Preset.Actions[msg.command].call(null, sender.tab, msg.data);
+                MagicGestures.Preset.Actions[msg.command].action.call(null, sender.tab, msg.data);
             } else {
                 MagicGestures.logging.warn("Gesture action", msg.command, "doesn't support yet");
             }

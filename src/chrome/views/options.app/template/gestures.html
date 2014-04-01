@@ -8,16 +8,16 @@
       <label>
         <input type="checkbox" ng-model="selectedProfile.wheelGestures.U.enabled">
         <span class="inline-block" style="width: 20.5em;">Scroll up with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
-        <select ng-model="selectedProfile.wheelGestures.U.command" ng-options="name as name for (name, value) in actions"
-          ng-disabled="!selectedProfile.wheelGestures.U.enabled"></select>
+        <select ng-options="name as name group by value.category for (name, value) in actions | actionDependency:'none'"
+          ng-model="selectedProfile.wheelGestures.U.command" ng-disabled="!selectedProfile.wheelGestures.U.enabled"></select>
       </label>
     </div>
     <div class="checkbox">
       <label>
         <input type="checkbox" ng-model="selectedProfile.wheelGestures.D.enabled">
         <span class="inline-block" style="width: 20.5em;">Scroll down with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
-        <select ng-model="selectedProfile.wheelGestures.D.command" ng-options="name as name for (name, value) in actions"
-          ng-disabled="!selectedProfile.wheelGestures.D.enabled"></select>
+        <select ng-options="name as name group by value.category for (name, value) in actions | actionDependency:'none'"
+          ng-model="selectedProfile.wheelGestures.D.command" ng-disabled="!selectedProfile.wheelGestures.D.enabled"></select>
       </label>
     </div>
   </section>
