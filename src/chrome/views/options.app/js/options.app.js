@@ -3,7 +3,7 @@ angular.module('options', ['ngRoute'])
         $routeProvider
             .when('/gestures', {
                 templateUrl: 'options.app/template/gestures.html',
-                controller: SettingsCtrl,
+                controller: GesturesCtrl,
                 resolve: NavContrller.resolve,
                 activeTab: 'gestures'
             })
@@ -19,6 +19,12 @@ angular.module('options', ['ngRoute'])
                 activeTab: 'help'
             })
             .otherwise({redirectTo: '/settings'});
+    })
+    .factory('SettingService', function() {
+        return  {
+            activedProfile: new MagicGestures.Profile(MagicGestures.ProfileManager.activedProfile),
+            selectedProfile: new MagicGestures.Profile(MagicGestures.ProfileManager.activedProfile)
+        };
     })
     .directive('crModal', function() {
         return {
@@ -60,7 +66,8 @@ angular.module('options', ['ngRoute'])
                 element.appendTo('body');
             }
         };
-    }).filter('mousekey', function() {
+    })
+    .filter('mousekey', function() {
         return function(input) {
             switch(input) {
                 case 0:

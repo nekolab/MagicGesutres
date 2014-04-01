@@ -1,22 +1,29 @@
-var SettingsCtrl = function($scope, $route) {
+var GesturesCtrl = function($scope, $route, SettingService) {
+    $scope.selectedProfile = SettingService.selectedProfile;
+
+    $scope.actions = Object.keys(MagicGestures.Preset.Actions);
+};
+
+var SettingsCtrl = function($scope, $route, SettingService) {
     $scope.profileMap = MagicGestures.ProfileManager.profileMap;
-    $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.activedProfile);
-    $scope.activedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.activedProfile);
+    $scope.selectedProfile = SettingService.selectedProfile;
+    $scope.activedProfile = SettingService.activedProfile;
+
     $scope.selectProfile = function(profileId) {
-        $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
+        SettingService.selectedProfile = $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
     };
+
     $scope.activeProfile = function(profileId) {
-        $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
-        $scope.activedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
+        SettingService.selectedProfile = $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
+        SettingService.activedProfile = $scope.activedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.profileMap[profileId]);
     };
+
     $scope.createdProfle = {
         name: "",
         description: "",
         copyFromAnotherProfile: false,
         copyFrom: $scope.selectedProfile.id
     };
-
-    $scope.actions = Object.keys(MagicGestures.Preset.Actions);
 };
 
 var NavContrller = function($scope, $route) {
