@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.4
+ * @version 0.0.2.5
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -27,7 +27,7 @@ Object.defineProperties(MagicGestures.Preset, {
         enumerable: true
     },
     Actions: {
-        value: Object.create(null),
+        value: Object.create(Object.prototype),
         enumerable: true
     }
 });

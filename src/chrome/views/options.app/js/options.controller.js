@@ -1,7 +1,7 @@
 var GesturesCtrl = function($scope, $route, SettingService) {
     $scope.selectedProfile = SettingService.selectedProfile;
 
-    $scope.actions = Object.keys(MagicGestures.Preset.Actions);
+    $scope.actions = MagicGestures.Preset.Actions;
 };
 
 var SettingsCtrl = function($scope, $route, SettingService) {
