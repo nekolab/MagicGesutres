@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.5
+ * @version 0.0.2.6
  */
 
 /* global MagicGestures: true */
@@ -132,14 +132,14 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
                     gesture.actions.forEach(createSubTrie);
                 }
 
-                if ("U" in profile.wheelGestures) {
+                if (profile.wheelGestures.U && profile.wheelGestures.U.enabled) {
                     gestureTrie.wheel = gestureTrie.wheel ? gestureTrie.wheel : {};
-                    gestureTrie.wheel.U = {command: profile.wheelGestures.U};
+                    gestureTrie.wheel.U = {command: profile.wheelGestures.U.command};
                 }
 
-                if ("D" in profile.wheelGestures) {
+                if (profile.wheelGestures.D && profile.wheelGestures.D.enabled) {
                     gestureTrie.wheel = gestureTrie.wheel ? gestureTrie.wheel : {};
-                    gestureTrie.wheel.D = {command: profile.wheelGestures.D};
+                    gestureTrie.wheel.D = {command: profile.wheelGestures.D.command};
                 }
 
                 return gestureTrie;

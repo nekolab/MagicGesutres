@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.4
+ * @version 0.0.2.5
  */
 
 /*global MagicGestures: true */
@@ -153,16 +153,13 @@ MagicGestures.Profile = function(profile) {
 
     /**
      * Disable mouse gesture temporary when specific key was pressed.
-     * Accept "Alt" and "Ctrl".
-     * @type {string}
+     * Key "when" accept "Alt" and "Ctrl".
+     * @type {Object.<string, string|boolean>}
      */
-    this.disableWhen = "Alt";
-
-    /**
-     * Indicate "disable when specific key is pressed" is enabled or not.
-     * @type {boolean}
-     */
-    this.disableWhenPressed = false;
+    this.disableGesture = {
+        when: "Alt",
+        enabled: false
+    };
 
     /**
      * Indicate whether to draw the gesture locus or not.
@@ -235,16 +232,12 @@ MagicGestures.Profile = function(profile) {
 
     /**
      * Locus time to live (ttl) means gesture will be canceled after specified seconds with no action.
-     * Set to 0 means disable this option and alway show locus.
-     * @type {number}
+     * @type {Object.<string, number|boolean>}
      */
-    this.ttl = 0;
-
-    /**
-     * Indicates whether ttl is enabled or not.
-     * @type {boolean}
-     */
-    this.ttlEnabled = false;
+    this.ttl = {
+        value: 3,
+        enabled: false
+    };
 
     /**
      * An array which store gestures.
@@ -257,7 +250,17 @@ MagicGestures.Profile = function(profile) {
      * Use an object store action name with key "U" and "D" is a good solution.
      * @type {Object.<String, String>}
      */
-    this.wheelGestures = {/*U: "", D: ""*/};
+    this.wheelGestures = {
+        U: {
+            enabled: false,
+            command: "scroll_to_top"
+        },
+        D: {
+            enabled: false,
+            command: "scroll_to_bottom"
+        }
+        // Furture link support.
+    };
 
     /**
      * This varible is the place to cache the gesture tire which complied from gestures. 
