@@ -1,7 +1,3 @@
-var GesturesCtrl = function($scope, $route) {
-
-};
-
 var SettingsCtrl = function($scope, $route) {
     $scope.profileMap = MagicGestures.ProfileManager.profileMap;
     $scope.selectedProfile = new MagicGestures.Profile(MagicGestures.ProfileManager.activedProfile);
@@ -19,6 +15,8 @@ var SettingsCtrl = function($scope, $route) {
         copyFromAnotherProfile: false,
         copyFrom: $scope.selectedProfile.id
     };
+
+    $scope.actions = Object.keys(MagicGestures.Preset.Actions);
 };
 
 var NavContrller = function($scope, $route) {

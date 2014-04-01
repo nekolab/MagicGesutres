@@ -3,7 +3,7 @@ angular.module('options', ['ngRoute'])
         $routeProvider
             .when('/gestures', {
                 templateUrl: 'options.app/template/gestures.html',
-                controller: GesturesCtrl,
+                controller: SettingsCtrl,
                 resolve: NavContrller.resolve,
                 activeTab: 'gestures'
             })
@@ -60,4 +60,17 @@ angular.module('options', ['ngRoute'])
                 element.appendTo('body');
             }
         };
+    }).filter('mousekey', function() {
+        return function(input) {
+            switch(input) {
+                case 0:
+                    return "left";
+                case 1:
+                    return "middle";
+                case 2:
+                    return "right";
+                default:
+                    return "Unknow";
+            }
+        }
     });

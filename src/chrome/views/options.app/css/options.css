@@ -16,6 +16,10 @@ textarea {
     float: left;
 }
 
+.inline-block {
+    display: inline-block;
+}
+
 ul.profile-list {
     border-radius: 2px;
     -webkit-user-select: none;

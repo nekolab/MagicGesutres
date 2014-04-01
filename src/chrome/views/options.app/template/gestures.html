@@ -2,5 +2,23 @@
   <h1>Gestures</h1>
 </header>
 <div class="content">
-  <p>content</p>
+  <section>
+    <h3>Wheel Gestures</h3>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.wheelGestures.U.enabled">
+        <span class="inline-block" style="width: 20.5em;">Scroll up with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
+        <select ng-model="selectedProfile.wheelGestures.U.command" ng-options="name for name in actions"
+          ng-disabled="!selectedProfile.wheelGestures.U.enabled"></select>
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.wheelGestures.D.enabled">
+        <span class="inline-block" style="width: 20.5em;">Scroll down with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
+        <select ng-model="selectedProfile.wheelGestures.D.command" ng-options="name for name in actions"
+          ng-disabled="!selectedProfile.wheelGestures.D.enabled"></select>
+      </label>
+    </div>
+  </section>
 </div>
