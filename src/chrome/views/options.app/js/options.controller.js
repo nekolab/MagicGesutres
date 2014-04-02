@@ -24,6 +24,8 @@ var SettingsCtrl = function($scope, $route, SettingService) {
         copyFromAnotherProfile: false,
         copyFrom: $scope.selectedProfile.id
     };
+
+    $scope.actions = MagicGestures.Preset.Actions;
 };
 
 var NavContrller = function($scope, $route) {
