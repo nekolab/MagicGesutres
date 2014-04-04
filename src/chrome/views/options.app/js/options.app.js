@@ -41,16 +41,16 @@ angular.module('options', ['ngRoute'])
                     element.css({display: value ? "-webkit-box" : "none"});
                 });
 
-                element.find('.exit-button').click(function() {
+                element.find('.exit-button').on('click', function() {
                     element.addClass('transparent');
-                    element.on('webkitTransitionEnd', function(e){
+                    element.on('webkitTransitionEnd', function(){
                         element.off('webkitTransitionEnd');
                         element.removeClass('transparent');
                         scope.$apply('showModal = false');
                     });
                 });
 
-                element.click(function() {
+                element.on('click', function() {
                     var page = element.find('.page');
                     page.addClass('pulse');
                     page.on('webkitAnimationEnd', function() {
@@ -59,11 +59,18 @@ angular.module('options', ['ngRoute'])
                     });
                 });
 
-                element.find('.page').click(function(e) {
+                element.find('.page').on('click', function(e) {
                     e.stopPropagation();
                 });
 
                 element.appendTo('body');
+
+                scope.$on('$destroy', function() {
+                    element.find('.exit-button').off('click');
+                    element.find('.page').off('click');
+                    element.off('click');
+                    element.remove();
+                });
             }
         };
     })
