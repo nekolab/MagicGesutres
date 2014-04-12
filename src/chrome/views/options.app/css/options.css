@@ -12,12 +12,131 @@ textarea {
     padding-bottom: 4px;
 }
 
+.corner > label {
+    margin-top: 7px;
+    margin-bottom: 0px;
+}
+
+.gray {
+    -webkit-filter: grayscale(100%);
+}
+
+.gestures-list-item svg {
+    display: block;
+    -webkit-user-select: none;
+}
+
 .pull-left {
     float: left;
 }
 
+.block {
+    display: block;
+}
+
 .inline-block {
     display: inline-block;
+}
+
+.gestures-list-item-wrapper {
+    margin: 5px 0;
+}
+
+.gestures-list-item {
+    display: -webkit-box;
+    min-height: 96px;
+}
+
+.gesture-svg .edit {
+    position: absolute;
+    top: 8px;
+    right: 0px;
+    background-image: url("../../img/edit.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    opacity: 0.15;
+    transition-duration: 500ms;
+    -webkit-user-select: none;
+}
+
+.gesture-svg .edit:hover {
+    opacity: 0.8;
+    transition-duration: 500ms;
+}
+
+.gesture-svg,
+.gesture-controls {
+    position: relative;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+}
+
+.gesture-controls {
+    -webkit-margin-start: 1em;
+}
+
+.gesture-controls > .checkbox {
+    display: inline-block;
+    margin-top: 0.65em;
+    margin-bottom: 0px;
+    vertical-align: middle;
+}
+
+.gesture-controls .checkbox label {
+    margin-bottom: 0px;
+}
+
+.chrome-bootstrap button.trash,
+.chrome-bootstrap button.trash:hover:enabled {
+    -webkit-appearance: none;
+    background: none;
+    background-image: url("../../img/trash.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    min-width: 20px;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    padding: 0;
+    position: absolute;
+    height: 22px;
+    opacity: 0.8;
+    right: 0;
+    top: 3px;
+    vertical-align: middle;
+    box-shadow: none;
+}
+
+.enabled-text {
+    margin-right: 3em;
+}
+
+.gesture-advanced-menu {
+    margin-top:1.8em;
+    -webkit-transition:all linear 0.2s;
+    opacity:1;
+}
+
+.gesture-advanced-menu.ng-hide-add,
+.gesture-advanced-menu.ng-hide-remove {
+    display:block!important;
+}
+
+.gesture-advanced-menu.ng-hide {
+    opacity:0;
+}
+
+.diff-wrapper {
+    display: -webkit-box;
+}
+
+.diff-wrapper > .diff-arrow {
+    height: 112px;
+    line-height: 112px;
+    font-size: 4em;
 }
 
 ul.profile-list {
@@ -38,6 +157,17 @@ ul.profile-list > li.selected > a:not(.action),
 ul.profile-list > li.selected:hover > a:not(.action),
 ul.profile-list > li.selected:hover > a:not(.action):focus {
     background-color: #d0d0d0;
+}
+
+ul.gesture-actions {
+    -webkit-box-flex: 1;
+    -webkit-margin-start: 1em;
+}
+
+.chrome-bootstrap .highlightable.gesture-actions li dt .tags {
+    float: none;
+    display: inline;
+    margin-left: 0.5em;
 }
 
 input.inline-input {
@@ -86,10 +216,15 @@ input[type="range"].vertical {
 .chrome-bootstrap .highlightable.editable .delete {
     top: 17px;
     right: 3px;
+    -webkit-user-select: none;
 }
 
 .chrome-bootstrap .overlay .page .content-area {
     padding-left: 30px;
+}
+
+.chrome-bootstrap .overlay .page {
+    -webkit-user-select: none;
 }
 
 .form-horizontal .control-group {
