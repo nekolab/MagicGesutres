@@ -1,7 +1,7 @@
 /**
  * @fileoverview This is preset profiles and actions file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.0
+ * @version 0.0.3.2
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -914,6 +914,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Close current tab",
             action: function(tab) {
                 chrome.tabs.remove(tab.id);
             }
@@ -925,6 +926,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Close all tabs in current window, except for the current one",
             action: function(tab) {
                 chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
                     for (var i = tabs.length - 1; i >= 0; i--) {
@@ -942,6 +944,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Close all tabs left to the current tab in current window",
             action: function(tab) {
                 chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
                     for (var i = tabs.length - 1; i >= 0; i--) {
@@ -959,6 +962,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Close all tabs right to the current tab in current window",
             action: function(tab) {
                 chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
                     for (var i = tabs.length - 1; i >= 0; i--) {
@@ -976,6 +980,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Window",
             dependency: "none",
+            description: "Close current window",
             action: function(tab) {
                 chrome.windows.remove(tab.windowId);
             }
@@ -987,6 +992,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Open a duplicated tab of the current tab",
             action: function(tab) {
                 chrome.tabs.duplicate(tab.id);
             }
@@ -998,6 +1004,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Window",
             dependency: "none",
+            description: "Make current window full screen",
             action: function(tab) {
                 chrome.windows.update(tab.windowId, {state: "fullscreen"});
             }
@@ -1009,6 +1016,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Navigation",
             dependency: "none",
+            description: "Go back to the page in this tab's history",
             action: function(tab) {
                 chrome.tabs.executeScript(tab.id, {code: "history.back();"});
             }
@@ -1020,6 +1028,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Navigation",
             dependency: "none",
+            description: "Go forward to the page in this tab's history",
             action: function(tab) {
                 chrome.tabs.executeScript(tab.id, {code: "history.forward();"});
             }
@@ -1031,11 +1040,9 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Window",
             dependency: "none",
+            description: "Maximize current window",
             action: function(tab) {
-                var toggle = {maximized: "normal", normal: "maximized", fullscreen: "maximized", minimized: "normal"};
-                chrome.windows.get(tab.windowId, null, function(window) {
-                    chrome.windows.update(tab.windowId, {state: toggle[window.state]});
-                });
+                chrome.windows.update(tab.windowId, {state: "maximized"});
             }
         },
         enumerable: true
@@ -1045,6 +1052,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Window",
             dependency: "none",
+            description: "Minimize current window",
             action: function(tab) {
                 chrome.windows.update(tab.windowId, {state: "minimized"});
             }
@@ -1056,6 +1064,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Move current tab once to the left",
             action: function(tab) {
                 chrome.tabs.move(tab.id, {index: 0});
             }
@@ -1067,6 +1076,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Move current tab once to the right",
             action: function(tab) {
                 chrome.tabs.move(tab.id, {index: -1});
             }
@@ -1078,6 +1088,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Navigation",
             dependency: "none",
+            description: "Navigate to new tab page",
             action: function(tab) {
                 chrome.tabs.update(tab.id, {url: "chrome://newtab"});
             }
@@ -1089,6 +1100,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Open a new tab in current window",
             action: function(tab) {
                 chrome.tabs.create({index: tab.index + 1, url: "chrome://newtab"});
             }
@@ -1100,6 +1112,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Window",
             dependency: "none",
+            description: "Open a new window",
             action: function() {
                 chrome.windows.create({});
             }
@@ -1111,6 +1124,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Select the tab to the right of the current tab",
             action: function(tab) {
                 chrome.tabs.query({index: tab.index + 1, windowId: tab.windowId}, function(tabs) {
                     if (tabs.length !== 0) {chrome.tabs.update(tabs[0].id, {active: true});}
@@ -1124,6 +1138,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tools",
             dependency: "none",
+            description: "Open bookmark manager in a new tab",
             action: function(tab) {
                 chrome.tabs.create({index: tab.index + 1, url: "chrome://bookmarks/"});
             }
@@ -1135,6 +1150,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tools",
             dependency: "none",
+            description: "Open downloads manager in a new tab",
             action: function(tab) {
                 chrome.tabs.create({index: tab.index + 1, url: "chrome://downloads/"});
             }
@@ -1146,6 +1162,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tools",
             dependency: "none",
+            description: "Open extensions manager in a new tab",
             action: function(tab) {
                 chrome.tabs.create({index: tab.index + 1, url: "chrome://extensions/"});
             }
@@ -1157,6 +1174,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tools",
             dependency: "none",
+            description: "Open history manager in a new tab",
             action: function(tab) {
                 chrome.tabs.create({index: tab.index + 1, url: "chrome://history/"});
             }
@@ -1168,6 +1186,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Link",
             dependency: "link",
+            description: "Start a gesture on a link to open it in a new tab",
             action: function(tab, data) {
                 chrome.tabs.create({index: tab.index + 1, url: data.href, openerTabId: tab.id});
             }
@@ -1179,6 +1198,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Link",
             dependency: "link",
+            description: "Start a gesture on a link to open it in a new tab in background",
             action: function(tab, data) {
                 chrome.tabs.create({index: tab.index + 1, url: data.href, active: false, openerTabId: tab.id});
             }
@@ -1190,6 +1210,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Pin the current tab",
             action: function(tab) {
                 chrome.tabs.update(tab.id, {pinned: true});
             }
@@ -1201,6 +1222,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Select the tab to the left of the current tab",
             action: function(tab) {
                 chrome.tabs.query({index: tab.index - 1, windowId: tab.windowId}, function(tabs) {
                     chrome.tabs.update(tabs[0].id, {active: true});
@@ -1214,6 +1236,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Page",
             dependency: "none",
+            description: "Print the current tab",
             action: function(tab) {
                 chrome.tabs.executeScript(tab.id, {code: "window.print();"});
             }
@@ -1225,6 +1248,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Reload all tabs in current window",
             action: function(tab) {
                 chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
                     for (var i = tabs.length - 1; i >= 0; i--) {
@@ -1240,6 +1264,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Reload all tabs (skip cache) in current window",
             action: function(tab) {
                 chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
                     for (var i = tabs.length - 1; i >= 0; i--) {
@@ -1255,6 +1280,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Navigation",
             dependency: "none",
+            description: "Reload current tab",
             action: function(tab) {
                 chrome.tabs.reload(tab.id);
             }
@@ -1266,6 +1292,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Navigation",
             dependency: "none",
+            description: "Reload current tab (skip cache)",
             action: function(tab) {
                 chrome.tabs.reload(tab.id, {bypassCache: true});
             }
@@ -1277,6 +1304,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Split all tabs to the right of (and including) the current tab into a new window",
             action: function(tab) {
                 chrome.windows.get(tab.windowId, {populate: true}, function(window) {
                     chrome.windows.create({
@@ -1299,6 +1327,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Navigation",
             dependency: "none",
+            description: "Stop loading the current tab",
             action: function(tab) {
                 chrome.tabs.executeScript(tab.id, {code: "window.stop();"});
             }
@@ -1310,6 +1339,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Page",
             dependency: "none",
+            description: "Scroll to the top of the page",
             action: function(tab) {
                 chrome.tabs.executeScript(tab.id, {code: "window.scroll(0, 0);"});
             }
@@ -1321,6 +1351,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Page",
             dependency: "none",
+            description: "Scroll to the bottom of the page",
             action: function(tab) {
                 chrome.tabs.executeScript(tab.id, {
                     code: "window.scrollTo(0, document.documentElement.scrollHeight);"
@@ -1334,8 +1365,24 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Toggle the pinned state of current tab",
             action: function(tab) {
                 chrome.tabs.update(tab.id, {pinned: !tab.pinned});
+            }
+        },
+        enumerable: true
+    },
+
+    toggle_window_states: {
+        value: {
+            category: "Window",
+            dependency: "none",
+            description: "Toggle current window states (maximized <=> normal)",
+            action: function(tab) {
+                var toggle = {maximized: "normal", normal: "maximized", fullscreen: "maximized", minimized: "normal"};
+                chrome.windows.get(tab.windowId, null, function(window) {
+                    chrome.windows.update(tab.windowId, {state: toggle[window.state]});
+                });
             }
         },
         enumerable: true
@@ -1345,6 +1392,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Open the last closed tab",
             action: function() {
                 // Currently, chrome.sessions is only avaliable in Dev Channel (v32).
                 chrome.sessions.getRecentlyClosed(function(sessions) {
@@ -1362,6 +1410,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Tab",
             dependency: "none",
+            description: "Unpin the current tab",
             action: function(tab) {
                 chrome.tabs.update(tab.id, {pinned: false});
             }
@@ -1373,6 +1422,7 @@ Object.defineProperties(MagicGestures.Preset.Actions, {
         value: {
             category: "Hybrid",
             dependency: "none",
+            description: "View the source code of current page",
             action: function(tab) {
                 chrome.tabs.create({index: tab.index + 1, url: "view-source:" + tab.url, openerTabId: tab.id});
             }
