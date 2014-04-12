@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.6
+ * @version 0.0.2.7
  */
 
 /* global MagicGestures: true */
@@ -57,7 +57,7 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
          * MagicGestures.DirectionEngine.update
          * Update from current point list.
          * Need to be invoked per mouse move.
-         * @param {object} gesturePtr Pointer point to MagicGesture.tab.gesture object.
+         * @param {object} gesturePtr Pointer point to MagicGestures.tab.gesture object.
          * @param {boolean} endForce Set to false when invoked by mousemove, set to true when invoked by mouseup.
          * No return.
          */
@@ -129,7 +129,8 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
 
                 for (var gesture in profile.gestures) {
                     gesture = profile.gestures[gesture];
-                    gesture.actions.forEach(createSubTrie);
+                    if (gesture.enabled)
+                        gesture.actions.forEach(createSubTrie);
                 }
 
                 if (profile.wheelGestures.U && profile.wheelGestures.U.enabled) {

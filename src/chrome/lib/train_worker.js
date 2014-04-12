@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.1
+ * @version 0.0.3.2
  */
 
 /*jshint strict: true, globalstrict: true, worker: true */
@@ -56,15 +56,19 @@ var prepareGestures = function(gestures) {
     var preparedInputs = [], preparedExpectedOutputs = [], actionsList = [];
 
     for (var index = 0; index < networkGestures.length; ++index) {
-        actionsList.push(networkGestures[index].actions);
-        preparedInputs.push(networkGestures[index].featureVectors);
-        preparedExpectedOutputs.push(generateOutputs(outputCount, index));
+        if (networkGestures[index].enabled) {
+            actionsList.push(networkGestures[index].actions);
+            preparedInputs.push(networkGestures[index].featureVectors);
+            preparedExpectedOutputs.push(generateOutputs(outputCount, index));
+        }
     }
 
     for (var count = Constants.SAMPLESCOUNT; count >= 0; --count) {
         for (index = 0; index < networkGestures.length; ++index) {
-            preparedInputs.push(generateFeatureVectorSamples(networkGestures[index].featureVectors));
-            preparedExpectedOutputs.push(generateOutputs(outputCount, index));
+            if (networkGestures[index].enabled) {
+                preparedInputs.push(generateFeatureVectorSamples(networkGestures[index].featureVectors));
+                preparedExpectedOutputs.push(generateOutputs(outputCount, index));
+            }
         }
     }
     

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.5
+ * @version 0.0.2.6
  */
 
 /*global MagicGestures: true */
@@ -58,6 +58,11 @@ MagicGestures.Gesture = function(gesture) {
      * @type {Array.<Array.<number>>}
      */
     this.featureVectors = [];
+
+    /**
+     * Indicates whether this gesture is enabled or not.
+     */
+    this.enabled = true;
 
     /**
      * Store each action in gesture.
