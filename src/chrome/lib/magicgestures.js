@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.2
+ * @version 0.0.2.3
  */
 
 /*global chrome: false */
@@ -174,7 +174,7 @@ Object.defineProperties(MagicGestures.runtime, {
      */
     msgPacker: {
         value: function(dest, type, msg) {
-            if (dest !== "content script" && dest !== "background" && dest !== "options" && dest != "popup") {
+            if (dest !== "content script" && dest !== "background" && dest !== "options" && dest != "popup" && dest != "*") {
                 throw "Not a vaild destination";
             }
             return {
@@ -228,7 +228,7 @@ Object.defineProperties(MagicGestures.runtime, {
      * Send message to everywhere (without content script).
      * This function can be used for every enviroment.
      * @param {string} dest -
-     *      Destination of packet. Accept "content script", "background", "options" or "popup",
+     *      Destination of packet. Accept "background", "options" or "popup",
      *      You can use | to specific two or more destination or use "*" to specific all destination.
      * @param {string} type Message type.
      * @param {any} msg Message content.
@@ -356,7 +356,7 @@ Object.defineProperties(MagicGestures.runtime, {
         value: Object.create(null, {
             messageReceiver: {
                 value: function(message, sender, sendResponse) {
-                    if (message && message.dest && (message.dest.indexOf(MagicGestures.runtime.envName) >= 0 || message.dest.dest === "*")) {
+                    if (message && message.dest && (message.dest.indexOf(MagicGestures.runtime.envName) >= 0 || message.dest === "*")) {
                         MagicGestures.runtime.messenger.action(message.type, message.msg, sender, sendResponse);
                     }
                 }
