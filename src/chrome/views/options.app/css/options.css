@@ -131,6 +131,7 @@ textarea {
 
 .diff-wrapper {
     display: -webkit-box;
+    padding-left: 2.5em;
 }
 
 .diff-wrapper > .diff-arrow {

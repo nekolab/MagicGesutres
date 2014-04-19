@@ -45,6 +45,22 @@
         <ng-view onload="viewRendered()"></ng-view>
       </div>
     </div>
+    <cr-modal show="showRequestReloadModal">
+      <h1>Settings Changed</h1>
+      <div class="content-area">
+        Settigns have been changed in other options tab.<br>
+        You should close or reload this tab to view the latest settings.<br>
+        We recommend that you should open only one options tab once.
+      </div>
+      <div class="action-area">
+        <div class="action-area-right">
+          <div class="button-strip">
+            <button class="exit-button" ng-click="reloadTab()">Reload</button>
+            <button ng-click="closeTab()">Close</button>
+          </div>
+        </div>
+      </div>
+    </cr-modal>
   </div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.7
+ * @version 0.0.2.8
  */
 
 /* global MagicGestures: true */
@@ -29,7 +29,7 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                 }
 
                 var msg;
-                if (neuralNetworkResult[1] >= 0.98) {
+                if (neuralNetworkResult[1] >= 0.98 && MagicGestures.runtime.currentProfile.trained) {
                     msg = {
                         data: MagicGestures.tab.gesture.data,
                         command: neuralNetworkResult[0]
@@ -324,11 +324,14 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
 
                     this.think = function(inputs, dependency) {
 
-                        //Check length
+                        // Check if no neural network
+                        if (this.inputCount == 0) return ["no neural network", 0, []];
+
+                        // Check length
                         if (inputs.length !== this.inputCount)
                             MagicGestures.logging.error("Not a vaild input for neural network engine.", inputs);
 
-                        //Calculate hidden output
+                        // Calculate hidden output
                         var i, j;
                         var hiddenOutputs = [];
                         for (i = this.hiddenCount - 1; i >= 0; --i) {
@@ -341,7 +344,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             hiddenOutputs.unshift(hiddenOutput);
                         }
 
-                        //Calculate final output
+                        // Calculate final output
                         var outputOutputs = []/*, expTot*/;
                         for (i = this.outputCount - 1; i >= 0; --i) {
                             var outputOutput = this.outputWeights[(i + 1) * (this.hiddenCount + 1) - 1] * -1;
@@ -372,7 +375,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             }
                         }
 
-                        // Backward compatible
+                        // Backward compatible for gesture on link but not with link
                         for (action_index = 0; action_index < actions.length; ++action_index) {
                             if (actions[action_index].dependency === "" && dependency === "link") {
                                 return [actions[action_index].name, outputOutputs[0].probability, outputOutputs];

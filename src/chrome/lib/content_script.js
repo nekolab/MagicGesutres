@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures content script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.1
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -27,8 +27,7 @@ MagicGestures.init = function(){
         // Auto update when activedProfileCache changed.
         chrome.storage.onChanged.addListener(function(changes, areaName) {
             if (areaName == "local" && "activedProfileCache" in changes) {
-                MagicGestures.runtime.currentProfile = activedProfile.activedProfileCache;
-                MagicGestures.tab.gesture.possibleNext = activedProfile.activedProfileCache.gestureTrie;
+                MagicGestures.runtime.currentProfile = changes.activedProfileCache.newValue;
             }
         });
     });

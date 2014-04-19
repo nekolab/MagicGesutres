@@ -78,6 +78,24 @@ angular.module('options', ['ngRoute', 'ngAnimate'])
             }
         };
     })
+    .directive('mgBeforeUnload', ['$parse', function($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var fn = $parse(attrs.mgBeforeUnload);
+                var onbeforeunload = function(event){
+                    scope.$apply(function() {
+                        fn(scope, {$event: event});
+                    });
+                };
+                window.addEventListener("beforeunload", onbeforeunload);
+
+                scope.$on('$destroy', function() {
+                    window.removeEventListener("beforeunload", onbeforeunload);
+                });
+            }
+        }
+    }])
     .directive('gestureActionSelect' ,['$filter', function($filter) {
         return {
             restrict: 'E',
@@ -123,10 +141,12 @@ angular.module('options', ['ngRoute', 'ngAnimate'])
                         }
                         scope.currentAction = undefined;
                     } else if (oldValue === null || oldValue === undefined) {
-                        scope.gesture.actions.push(scope.currentAction = new MagicGestures.Action({
-                            name: newValue,
-                            dependency: (scope.gestureActionType === "link") ? "link" : ""
-                        }));
+                        scope.gesture.actions[(scope.gestureActionType === "link") ? "push" : "unshift"](
+                            scope.currentAction = new MagicGestures.Action({
+                                name: newValue,
+                                dependency: (scope.gestureActionType === "link") ? "link" : ""
+                            })
+                        );
                     }
                     scope.description = (scope.actions[newValue]) ? scope.actions[newValue].description : "Please select an action";
                 });

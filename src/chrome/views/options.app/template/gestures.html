@@ -1,4 +1,4 @@
-<header>
+<header mg-before-unload="saveGestures($event)">
   <h1>Gestures</h1>
   <div class="corner">
     <label>
@@ -33,7 +33,7 @@
       </div>
     </cr-modal>
 
-    <button>Unlock the magic again!</button>
+    <button>Unlock the magic now!</button>
     <div class="spacer"></div>
     <a class="delete" style="opacity: 1; top: 17px; right: 5px;" ng-click="searchActions=''">delete</a>
     <input type="text" placeholder="Search actions" ng-model="searchActions"/>
@@ -66,13 +66,13 @@
           <div class="gesture-advanced-menu" ng-show="enableAdvancedSettings">
             <div class="checkbox">
               <label>
-                <input type="checkbox">
+                <input type="checkbox" checked disabled>
                 <span class="enabled-text">Enabled for magic engine</span>
               </label>
             </div>
             <div class="checkbox">
               <label>
-                <input type="checkbox">
+                <input type="checkbox" checked disabled>
                 <span class="enabled-text">Enabled for classic engine</span>
               </label>
             </div>

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.6
+ * @version 0.0.2.7
  */
 
 /*global MagicGestures: true */
@@ -274,10 +274,16 @@ MagicGestures.Profile = function(profile) {
     this.gestureTrie = undefined;
 
     /**
-     * NeuralNet is the object which stores info about neural network.
-     * @type {object}
+     * Indicate whether the neural network is trained or not.
+     * @type {boolean}
      */
-    this.neuralNetInfo = undefined;
+    this.trained = true;
+
+    /**
+     * NeuralNet is the object which stores info about neural network.
+     * @type {string|object}
+     */
+    this.neuralNetInfo = '{"inputCount":0,"hiddenCount":0,"outputCount":0,"actionsList":[],"hiddenWeights":[],"outputWeights":[]}';
 
     if (profile) {
         for (var item in profile) {
