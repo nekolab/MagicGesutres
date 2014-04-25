@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.9
+ * @version 0.0.1.10
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -13,7 +13,6 @@ MagicGestures.init = function() {
     MagicGestures.logging.log("Initializing MagicGestures...");
     MagicGestures.runtime.init("background");
     MagicGestures.ProfileManager.init();
-    // TODO: Reload content script for each tab.
 
     MagicGestures.runtime.messenger.addListener("gesture ACTION", function(msg, sender, sendResponse) {
         MagicGestures.logging.debug(msg);
@@ -50,6 +49,19 @@ chrome.runtime.onInstalled.addListener(function() {
     MagicGestures.logging.debug("MagicGestures onInstalled!!");
     MagicGestures.runtime.runOnce();
     MagicGestures.ProfileManager.runOnce();
+
+    // Reload content script for each tab.
+    chrome.tabs.query({}, function(tabs) {
+        tabs.forEach(function(tab) {
+            chrome.tabs.executeScript(tab.id, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
+                chrome.tabs.executeScript(tab.id, {file: "lib/gesture_engine.js", allFrames: true, runAt: "document_start"}, function() {
+                    chrome.tabs.executeScript(tab.id, {file: "lib/gesture_canvas.js", allFrames: true, runAt: "document_start"}, function() {
+                        chrome.tabs.executeScript(tab.id, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"});
+                    });
+                });
+            });
+        });
+    });
 });
 
 MagicGestures.init();
