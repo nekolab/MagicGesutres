@@ -1,10 +1,10 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.5
+ * @version 0.0.3.0
  */
 
-/* global MagicGestures: true */
+/* global MagicGestures: true, chrome: false */
 /* jshint strict: true, globalstrict: true, forin: false, debug: true */
 
 "use strict";
@@ -29,7 +29,7 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                 }
 
                 var msg;
-                if (neuralNetworkResult[1] >= 0.98) {
+                if (neuralNetworkResult[1] >= 0.975 && MagicGestures.runtime.currentProfile.trained === true) {
                     msg = {
                         data: MagicGestures.tab.gesture.data,
                         command: neuralNetworkResult[0]
@@ -45,6 +45,8 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                     MagicGestures.logging.debug(msg, "Recognized by direction engine:",
                         MagicGestures.tab.gesture.possibleNext.command, "Neural Network:", neuralNetworkResult);
                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
+                } else {
+                    MagicGestures.logging.debug("Not recognized, Neural network:", neuralNetworkResult);
                 }
             }
         }
@@ -58,7 +60,7 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
          * MagicGestures.DirectionEngine.update
          * Update from current point list.
          * Need to be invoked per mouse move.
-         * @param {object} gesturePtr Pointer point to MagicGesture.tab.gesture object.
+         * @param {object} gesturePtr Pointer point to MagicGestures.tab.gesture object.
          * @param {boolean} endForce Set to false when invoked by mousemove, set to true when invoked by mouseup.
          * No return.
          */
@@ -130,17 +132,18 @@ Object.defineProperty(MagicGestures, "DirectionEngine", {
 
                 for (var gesture in profile.gestures) {
                     gesture = profile.gestures[gesture];
-                    gesture.actions.forEach(createSubTrie);
+                    if (gesture.enabled)
+                        gesture.actions.forEach(createSubTrie);
                 }
 
-                if ("U" in profile.wheelGestures) {
+                if (profile.wheelGestures.U && profile.wheelGestures.U.enabled) {
                     gestureTrie.wheel = gestureTrie.wheel ? gestureTrie.wheel : {};
-                    gestureTrie.wheel.U = {command: profile.wheelGestures.U};
+                    gestureTrie.wheel.U = {command: profile.wheelGestures.U.command};
                 }
 
-                if ("D" in profile.wheelGestures) {
+                if (profile.wheelGestures.D && profile.wheelGestures.D.enabled) {
                     gestureTrie.wheel = gestureTrie.wheel ? gestureTrie.wheel : {};
-                    gestureTrie.wheel.D = {command: profile.wheelGestures.D};
+                    gestureTrie.wheel.D = {command: profile.wheelGestures.D.command};
                 }
 
                 return gestureTrie;
@@ -324,11 +327,14 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
 
                     this.think = function(inputs, dependency) {
 
-                        //Check length
+                        // Check if no neural network
+                        if (this.inputCount === 0) return ["no neural network", 0, []];
+
+                        // Check length
                         if (inputs.length !== this.inputCount)
                             MagicGestures.logging.error("Not a vaild input for neural network engine.", inputs);
 
-                        //Calculate hidden output
+                        // Calculate hidden output
                         var i, j;
                         var hiddenOutputs = [];
                         for (i = this.hiddenCount - 1; i >= 0; --i) {
@@ -341,7 +347,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             hiddenOutputs.unshift(hiddenOutput);
                         }
 
-                        //Calculate final output
+                        // Calculate final output
                         var outputOutputs = []/*, expTot*/;
                         for (i = this.outputCount - 1; i >= 0; --i) {
                             var outputOutput = this.outputWeights[(i + 1) * (this.hiddenCount + 1) - 1] * -1;
@@ -361,8 +367,9 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             return rp.probability - lp.probability;
                         });
 
-                        if (outputOutputs[0].probability < 0.98 || outputOutputs[0].probability - outputOutputs[1].probability < 0.08) {
-                            return ["failed - " + outputOutputs[0].probability + ", " + outputOutputs[1].probability, 0, outputOutputs];
+                        if (outputOutputs[0].probability < 0.975 || outputOutputs[0].probability - outputOutputs[1].probability < 0.08) {
+                            return ["failed - " + outputOutputs[0].probability + ", " + outputOutputs[1].probability,
+                                outputOutputs[0].probability, outputOutputs];
                         }
 
                         var actions = outputOutputs[0].actions, action_index;
@@ -372,7 +379,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             }
                         }
 
-                        // Backward compatible
+                        // Backward compatible for gesture on link but not with link
                         for (action_index = 0; action_index < actions.length; ++action_index) {
                             if (actions[action_index].dependency === "" && dependency === "link") {
                                 return [actions[action_index].name, outputOutputs[0].probability, outputOutputs];
@@ -384,6 +391,74 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                 };
                 
                 return new Network((typeof neunetInfo === "string") ? JSON.parse(neunetInfo) : neunetInfo);
+            }
+        },
+
+        /**
+         * MagicGestures.NeuralNetEngine.trainNeuralNet
+         * Train neural network and use notification center show notifications.
+         * @param {string} state State for chrome.idle API. (Optional)
+         */
+        trainNeuralNet: {
+            value: function(state) {
+                if (state && state !== "idle") return;
+                if (state) chrome.idle.onStateChanged.removeListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
+                MagicGestures.runtime.set({neuralnetTrainScheduled: false});
+                var profileMap = MagicGestures.ProfileManager.profileMap;
+
+                var trainProfile = function(profileID) {
+                    var notificationID;
+                    chrome.notifications.create('', {
+                        type: "progress",
+                        title: "MagicGestures",
+                        iconUrl: "res/img/48.png",
+                        message: "Unlocking magic for " + profileMap[profileID].name,
+                        progress: 5
+                    }, function(nid) {
+                        notificationID = nid;
+                    });
+
+                    profileMap[profileID].trained = "training";
+                    MagicGestures.ProfileManager.updateProfile(profileMap[profileID]);
+                    MagicGestures.runtime.sendRuntimeMessage("*", "trainingNeuralNet PMEVENT");
+                    MagicGestures.runtime.sendRuntimeMessage("options", "cancelReloadRequest UIEVENT");
+
+                    var worker = new Worker('lib/train_worker.js');
+                    worker.addEventListener('message', function(e) {
+                        if ("actionsList" in e.data) {
+                            profileMap[profileID].trained = true;
+                            profileMap[profileID].neuralNetInfo = e.data;
+                            MagicGestures.ProfileManager.updateProfile(profileMap[profileID]);
+                            MagicGestures.runtime.sendRuntimeMessage("*", "neuralNetTrained PMEVENT");
+                            MagicGestures.runtime.sendRuntimeMessage("options", "cancelReloadRequest UIEVENT");
+                            chrome.notifications.clear(notificationID, function(){});
+                            chrome.notifications.create('', {
+                                type: "basic",
+                                title: "MagicGestures",
+                                iconUrl: "res/img/48.png",
+                                message: "Magic Unlocked!"
+                            }, function(nid){
+                                notificationID = nid;
+                            });
+                        }
+                        if ("progress" in e.data && notificationID) {
+                            chrome.notifications.update(notificationID, {progress: e.data.progress}, function(){});
+                        }
+                    }, false);
+
+                    worker.postMessage({
+                        command: "train",
+                        networkInfo: {
+                            gestures: profileMap[profileID].gestures
+                        }
+                    });
+                };
+
+                for (var profileID in profileMap) {
+                    if (profileMap.hasOwnProperty(profileID) && !profileMap[profileID].trained) {
+                        trainProfile(profileID);
+                    }
+                }
             }
         }
     })

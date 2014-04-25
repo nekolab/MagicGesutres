@@ -1,0 +1,114 @@
+<header mg-before-unload="saveGestures($event)">
+  <h1>Gestures</h1>
+  <div class="corner">
+    <label>
+      <input type="checkbox" ng-model="enableAdvancedSettings">
+      Advanced settings
+    </label>
+  </div>
+  <div class="controls">
+    <button ng-click="isAddingNewGesture=true">Add a new gesture</button>
+    <cr-modal show="isAddingNewGesture" on-close="resetTemporaryGesture()">
+      <h1>Add new gesture</h1>
+      <div class="close-button exit-button"></div>
+      <div class="content-area">
+        <div>Draw a new gesture on screen then select actions you want</div>
+        <div class="gestures-list-item">
+          <div class="gesture-svg">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="112" height="112" mg-thumbnail="createdGesture"/>
+          </div>
+          <ul class="highlightable editable gesture-actions" style="-webkit-margin-start: 0;">
+            <gesture-action-select actions="actions" gesture="createdGesture"/></gesture-action-select>
+            <gesture-action-select actions="actions" gesture="createdGesture" gesture-action-type="link"/></gesture-action-select>
+          </ul>
+        </div>
+      </div>
+      <div class="action-area">
+        <div class="action-area-right">
+          <div class="button-strip">
+            <button class="exit-button" ng-click="addGesture()">Add</button>
+            <button class="exit-button">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </cr-modal>
+
+    <button ng-click="saveGestures()">Unlock the magic now!</button>
+    <div class="spacer"></div>
+    <a class="delete" style="opacity: 1; top: 17px; right: 5px;" ng-click="searchActions=''">delete</a>
+    <input type="text" placeholder="Search actions" ng-model="searchActions"/>
+  </div>
+</header>
+
+<div class="content" style="padding-top: 106px;">
+  <div id="gestures-list">
+
+    <div class="gestures-list-item-wrapper" ng-class="{gray: !gesture.enabled}" ng-repeat="gesture in selectedProfile.gestures">
+      <div class="gestures-list-item">
+        <div class="gesture-svg">
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="112" height="112" mg-thumbnail="gesture"/>
+          <a class="edit" ng-show="gesture.enabled" ng-click="$parent.isEditingGesture=true;$parent.editedGesture=gesture"></a>
+        </div>
+
+        <ul class="highlightable editable gesture-actions">
+          <gesture-action-select actions="actions" gesture="gesture"/></gesture-action-select>
+          <gesture-action-select actions="actions" gesture="gesture" gesture-action-type="link"/></gesture-action-select>
+        </ul>
+
+        <div class="gesture-controls">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="gesture.enabled">
+              <span class="enabled-text">Enabled</span>
+            </label>
+          </div>
+          <button class="trash" ng-click="deleteGesture(gesture)"></button>
+          <div class="gesture-advanced-menu" ng-show="enableAdvancedSettings">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" checked disabled>
+                <span class="enabled-text">Enabled for magic engine</span>
+              </label>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" checked disabled>
+                <span class="enabled-text">Enabled for classic engine</span>
+              </label>
+            </div>
+          </div>
+        </div> <!-- End of gesture-controls -->
+
+      </div>
+    </div> <!-- End of gestures-list-item-wrapper -->
+
+  </div> <!-- End of gestures-list -->
+
+  <cr-modal show="isEditingGesture" on-close="resetTemporaryGesture()">
+    <h1>Edit gesture</h1>
+    <div class="close-button exit-button"></div>
+    <div class="content-area">
+      <div>Draw a new gesture on screen</div>
+      <div class="diff-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="112" height="112" mg-thumbnail="editedGesture"/>
+        <div class="diff-arrow">⇒</div>
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="112" height="112" mg-thumbnail="createdGesture"/>
+      </div>
+    </div>
+    <div class="action-area">
+      <div class="action-area-right">
+        <div class="button-strip">
+          <button class="exit-button" ng-click="editGesture()">Edit</button>
+          <button class="exit-button">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </cr-modal>
+
+  <cr-modal show="isTrainingGestures" cr-allow-nav>
+    <h1>Unlocking Magic</h1>
+    <div class="content-area no-action-area">
+      Be patient! We are working hard to unlock the magic...
+    </div>
+  </cr-modal>
+</div>

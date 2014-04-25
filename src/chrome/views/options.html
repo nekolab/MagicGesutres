@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="options" ng-csp>
+<head>
+  <meta charset="utf-8" />
+  <title>Magic Gestures</title>
+  <link rel="stylesheet" type="text/css" href="./css/chrome-bootstrap.css" />
+  <link rel="stylesheet" type="text/css" href="./css/angular-csp.css" />
+  <link rel="stylesheet" type="text/css" href="./options.app/css/options.css" />
+
+  <script src="./../lib/magicgestures.js"></script>
+  <script src="./../lib/model.js"></script>
+  <script src="./../lib/preset.js"></script>
+  <script src="./../lib/gesture_engine.js"></script>
+  <script src="./../lib/gesture_canvas.js"></script>
+  <script src="./../lib/profile_manager.js"></script>
+
+  <script src="./js/jquery-2.1.0.min.js"></script>
+  <script src="./js/angular.min.js"></script>
+  <script src="./js/angular-route.min.js"></script>
+  <script src="./js/angular-animate.min.js"></script>
+
+  <script src="./options.app/js/options.app.js"></script>
+  <script src="./options.app/js/options.controller.js"></script>
+</head>
+<body class="chrome-bootstrap">
+  <div class="frame" ng-controller="NavContrller">
+    <div class="navigation">
+      <h1><a style="-webkit-margin-start: -13px;">Magic Gestures</a></h1>
+      <ul class="menu">
+        <li ng-class="{selected: $route.current.activeTab == 'gestures'}">
+          <a href="#/gestures">Gestures</a>
+        </li>
+        <li ng-class="{selected: $route.current.activeTab == 'settings'}">
+          <a href="#/settings">Settings</a>
+        </li>
+      </ul>
+      <ul class="menu">
+        <li ng-class="{selected: $route.current.activeTab == 'help'}">
+          <a href="#/help">Help</a>
+        </li>
+      </ul>
+    </div>
+    <div class="mainview view">
+      <div ng-class="{selected: isSelected}">
+        <ng-view onload="viewRendered()"></ng-view>
+      </div>
+    </div>
+    <cr-modal show="showRequestReloadModal">
+      <h1>Settings Changed</h1>
+      <div class="content-area">
+        Settigns have been changed in other options tab.<br>
+        You should close or reload this tab to view the latest settings.<br>
+        We recommend that you should open only one options tab once.
+      </div>
+      <div class="action-area">
+        <div class="action-area-right">
+          <div class="button-strip">
+            <button class="exit-button" ng-click="reloadTab()">Reload</button>
+            <button ng-click="closeTab()">Close</button>
+          </div>
+        </div>
+      </div>
+    </cr-modal>
+  </div>
+</body>
+</html>

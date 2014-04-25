@@ -1,7 +1,7 @@
 /**
  * @fileoverview Profile and Gesture model.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.1
+ * @version 0.0.2.7
  */
 
 /* global MagicGestures: true */
@@ -58,6 +58,11 @@ MagicGestures.Gesture = function(gesture) {
      * @type {Array.<Array.<number>>}
      */
     this.featureVectors = [];
+
+    /**
+     * Indicates whether this gesture is enabled or not.
+     */
+    this.enabled = true;
 
     /**
      * Store each action in gesture.
@@ -152,10 +157,14 @@ MagicGestures.Profile = function(profile) {
     this.triggerButton = 2;
 
     /**
-     * Indicate whether disable gesture when alt pressed or not.
-     * @type {boolean}
+     * Disable mouse gesture temporary when specific key was pressed.
+     * Key "when" accept "Alt" and "Ctrl".
+     * @type {Object.<string, string|boolean>}
      */
-    this.disableWhenAlt = false;
+    this.disableGesture = {
+        when: "Alt",
+        enabled: false
+    };
 
     /**
      * Indicate whether to draw the gesture locus or not.
@@ -172,18 +181,68 @@ MagicGestures.Profile = function(profile) {
     this.locusColor = [255, 255, 255, 1];
 
     /**
+     * Locus color visitor.
+     * Can parse string to number.
+     * All changes will be reflected on this.locusColor.
+     */
+    this.lineColor = Object.create(null);
+    var MagicProfile = this;
+    Object.defineProperties(this.lineColor, {
+        red: {
+            get: function() {
+                return MagicProfile.locusColor[0];
+            },
+            set: function(value) {
+                MagicProfile.locusColor[0] = parseFloat(value);
+            }
+        },
+        green: {
+            get: function() {
+                return MagicProfile.locusColor[1];
+            },
+            set: function(value) {
+                MagicProfile.locusColor[1] = parseFloat(value);
+            }
+        },
+        blue: {
+            get: function() {
+                return MagicProfile.locusColor[2];
+            },
+            set: function(value) {
+                MagicProfile.locusColor[2] = parseFloat(value);
+            }
+        },
+        alpha: {
+            get: function() {
+                return MagicProfile.locusColor[3];
+            },
+            set: function(value) {
+                MagicProfile.locusColor[3] = parseFloat(value);
+            }
+        }
+    });
+
+    /**
      * Indicate the width of locus.
      * Unit is px, default to 2.
      * @type {number}
      */
-    this.locusWidth = 2;
+    var locusWidth = 2;
+    this.__defineGetter__("locusWidth", function() {
+        return locusWidth;
+    });
+    this.__defineSetter__("locusWidth", function(value) {
+        locusWidth = parseFloat(value);
+    });
 
     /**
      * Locus time to live (ttl) means gesture will be canceled after specified seconds with no action.
-     * Set to 0 means disable this option and alway show locus.
-     * @type {number}
+     * @type {Object.<string, number|boolean>}
      */
-    this.ttl = 0;
+    this.ttl = {
+        value: 3,
+        enabled: false
+    };
 
     /**
      * An array which store gestures.
@@ -196,7 +255,17 @@ MagicGestures.Profile = function(profile) {
      * Use an object store action name with key "U" and "D" is a good solution.
      * @type {Object.<String, String>}
      */
-    this.wheelGestures = {/*U: "", D: ""*/};
+    this.wheelGestures = {
+        U: {
+            enabled: false,
+            command: "scroll_to_top"
+        },
+        D: {
+            enabled: false,
+            command: "scroll_to_bottom"
+        }
+        // Furture link support.
+    };
 
     /**
      * This varible is the place to cache the gesture tire which complied from gestures. 
@@ -205,15 +274,22 @@ MagicGestures.Profile = function(profile) {
     this.gestureTrie = undefined;
 
     /**
-     * NeuralNet is the object which stores info about neural network.
-     * @type {object}
+     * Indicate whether the neural network is trained or not.
+     * @type {boolean}
      */
-    this.neuralNetInfo = undefined;
+    this.trained = true;
+
+    /**
+     * NeuralNet is the object which stores info about neural network.
+     * @type {string|object}
+     */
+    this.neuralNetInfo = '{"inputCount":0,"hiddenCount":0,"outputCount":0,"actionsList":[],"hiddenWeights":[],"outputWeights":[]}';
 
     if (profile) {
         for (var item in profile) {
             if (this.hasOwnProperty(item)) {
-                this[item] = profile[item];
+                if (item !== "lineColor")
+                    this[item] = profile[item];
             } else {
                 MagicGestures.logging.warn("Not a vaild profile member:", item);
             }

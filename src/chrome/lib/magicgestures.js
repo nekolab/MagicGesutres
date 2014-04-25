@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.2
+ * @version 0.0.2.5
  */
 
 /* global chrome: false */
@@ -9,8 +9,8 @@
 
 "use strict";
 
-var DIR = true, DEBUG = true, INFO = true;
-var LOG = true, ERROR = true, WARN = true, ASSERT = true;
+var LOG = true, INFO = true, DEBUG = true;
+var DIR = true, WARN = true, ERROR = true, ASSERT = true;
 
 var MagicGestures = Object.create(null);
 
@@ -174,7 +174,7 @@ Object.defineProperties(MagicGestures.runtime, {
      */
     msgPacker: {
         value: function(dest, type, msg) {
-            if (dest !== "content script" && dest !== "background" && dest !== "options" && dest != "popup") {
+            if (dest !== "content script" && dest !== "background" && dest !== "options" && dest != "popup" && dest != "*") {
                 throw "Not a vaild destination";
             }
             return {
@@ -228,7 +228,7 @@ Object.defineProperties(MagicGestures.runtime, {
      * Send message to everywhere (without content script).
      * This function can be used for every enviroment.
      * @param {string} dest -
-     *      Destination of packet. Accept "content script", "background", "options" or "popup",
+     *      Destination of packet. Accept "background", "options" or "popup",
      *      You can use | to specific two or more destination or use "*" to specific all destination.
      * @param {string} type Message type.
      * @param {any} msg Message content.
@@ -350,25 +350,73 @@ Object.defineProperties(MagicGestures.runtime, {
      * MagicGestures.runtime.messenger module is a module which provides basic message management.
      * This messenger will check all message passed by chrome.runtime.onMessage and pick
      * the message which destination is correct (or "*") and call action to handle it.
-     * MagicGestures.runtime.messenger.action is an interface and should be implement in any enviroment.
+     * You can use "addListener" or "removeListener" to management listener pool.
      */
     messenger: {
         value: Object.create(null, {
-            messageReceiver: {
-                value: function(message, sender, sendResponse) {
-                    if (message && message.dest && (message.dest.indexOf(MagicGestures.runtime.envName) >= 0 || message.dest.dest === "*")) {
-                        MagicGestures.runtime.messenger.action(message.type, message.msg, sender, sendResponse);
+            
+            /**
+             * MagicGestures.runtime.messenger.listenerPool
+             * Store listeners.
+             * @type {Array.<Object.<string, string|Function>>}
+             */
+            listenerPool: {
+                value: []
+            },
+
+            /**
+             * MagicGestures.runtime.messenger.addListener
+             * Add listener for runtime message.
+             * @param {string} type Message's type you want to listen.
+             * @param {function} callbackFunction Callback function should be invoked.
+             *
+             * @callback {runtime.messenger~addListenerCallback}
+             * @param {string} msg Message carried by event.
+             * @param {MessageSender} sender Message sender (only avaliable to background page).
+             * @param {function} sendResponse It's a function which can reply this event, you can pass any message to it.
+             */
+            addListener: {
+                value: function(type, callbackFunction) {
+                    MagicGestures.runtime.messenger.listenerPool.push({type: type, callback: callbackFunction});
+                }
+            },
+
+            /**
+             * MagicGestures.runtime.messenger.removeListener
+             * Remove listener for runtime message.
+             * @param {string} type Message's type you want to remove.
+             *
+             * @callback {runtime.messenger~removeListenerCallback}
+             * @param {string} msg Message carried by event.
+             * @param {MessageSender} sender Message sender (only avaliable to background page).
+             * @param {function} sendResponse It's a function which can reply this event, you can pass any message to it.
+             */
+            removeListener: {
+                value: function(type, callbackFunction) {
+                    for (var index = MagicGestures.runtime.messenger.listenerPool.length - 1; index >= 0; --index) {
+                        var currentListener = MagicGestures.runtime.messenger.listenerPool[index];
+                        if (type == currentListener.type && callbackFunction == currentListener.callback) {
+                            MagicGestures.runtime.messenger.listenerPool.splice(index, 1);
+                        }
                     }
                 }
             },
 
             /**
-             * MagicGestures.runtime.messenger.action is an interface which is writable and should be implemented.
-             * Every message which destination is "*" or current enviroment's name will be send to here. 
+             * MagicGestures.runtime.messenger.messageReceiver
+             * Receive message from chrome.runtime.onMessage and send it to each matched listener.
              */
-            action: {
-                value: function(type, msg, sender, sendResponse) {},
-                writable: true
+            messageReceiver: {
+                value: function(message, sender, sendResponse) {
+                    if (message && message.dest && (message.dest.indexOf(MagicGestures.runtime.envName) >= 0 || message.dest === "*")) {
+                        for (var index = MagicGestures.runtime.messenger.listenerPool.length - 1; index >= 0; --index) {
+                            var currentListener = MagicGestures.runtime.messenger.listenerPool[index];
+                            if (message.type == currentListener.type) {
+                                currentListener.callback.call(null, message.msg, sender, sendResponse);
+                            }
+                        }
+                    }
+                }
             }
         })
     }

@@ -1,0 +1,238 @@
+<header>
+  <h1>Settings</h1>
+</header>
+<div class="content">
+  <section>
+    <h3>Mouse Gestures</h3>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.enable" ng-change="updateSeletctedProfile()">
+        <span>Enable mouse gestures</span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" checked disabled>
+        <span>Trigger to start gesture on</span>
+        <select ng-model="selectedProfile.triggerButton" ng-change="updateSeletctedProfile()">
+          <option value="2">right</option>
+          <option value="1">middle</option>
+          <option value="0">left</option>
+        </select>
+        <span>button</span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.ttl.enabled" ng-change="updateSeletctedProfile()">
+        <span>Cancel mouse gesture after
+          <input type="number" min="0" step="0.1" class="inline-input" ng-disabled="!selectedProfile.ttl.enabled"
+            ng-model="selectedProfile.ttl.value" ng-change="updateSeletctedProfile()">
+          seconds without move
+        </span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.disableGesture.enabled" ng-change="updateSeletctedProfile()">
+        <span>Disable mouse gestures temporary with holding
+          <select ng-disabled="!selectedProfile.disableGesture.enabled"
+            ng-model="selectedProfile.disableGesture.when" ng-change="updateSeletctedProfile()">
+            <option value="Ctrl">Ctrl</option>
+            <option value="Alt">Alt</option>
+          </select>
+          key
+        </span>
+      </label>
+    </div>
+  </section>
+
+  <section>
+    <h3>Wheel Gestures</h3>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.wheelGestures.U.enabled"
+          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()">
+        <span class="inline-block" style="width: 20.5em;">Scroll up with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
+        <select ng-options="name as name group by value.category for (name, value) in actions | actionDependency:'none'"
+          ng-model="selectedProfile.wheelGestures.U.command" ng-disabled="!selectedProfile.wheelGestures.U.enabled"
+          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()"></select>
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.wheelGestures.D.enabled"
+          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()">
+        <span class="inline-block" style="width: 20.5em;">Scroll down with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
+        <select ng-options="name as name group by value.category for (name, value) in actions | actionDependency:'none'"
+          ng-model="selectedProfile.wheelGestures.D.command" ng-disabled="!selectedProfile.wheelGestures.D.enabled"
+          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()"></select>
+      </label>
+    </div>
+  </section>
+      
+  <section>
+    <h3>Trailing Line</h3>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+        <span>Draw trailing line</span>
+      </label>
+    </div>
+    <div class="pull-left">
+      <div>
+        <div id="red" class="input-color">
+          <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.red"
+            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+        </div>
+        <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.red"
+          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+      </div>
+      <div>
+        <div id="green" class="input-color">
+          <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.green"
+            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+        </div>
+        <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.green"
+          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+      </div>
+      <div>
+        <div id="blue" class="input-color">
+          <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.blue"
+            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+        </div>
+        <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.blue"
+          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+      </div>
+      <div>
+        <div class="input-color" ng-style="{'background-image': 'linear-gradient(to right, rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',0), rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',0) 10px, rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',1) 140px, rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',1))'}">
+          <input type="range" min="0" max="1" step="0.01" ng-model="selectedProfile.lineColor.alpha"
+            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+        </div>
+        <input type="number" min="0" max="1" step="0.01" ng-model="selectedProfile.lineColor.alpha"
+          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+      </div>
+    </div>
+    <div class="pull-left">
+        <input type="range" min="0" max="6" step="0.2" class="vertical" ng-model="selectedProfile.locusWidth"
+          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="104px" height="104px">
+      <path d="M20 80 L80 20 M80 20 L60 20 M80 20 L80 40" ng-style="{'stroke':'rgba(' + selectedProfile.lineColor.red
+          + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ', ' + selectedProfile.lineColor.alpha
+          + ')', 'stroke-width': selectedProfile.locusWidth + 'px'}" fill="transparent" stroke-linecap="round"></path>
+    </svg>
+  </section>
+
+  <section>
+    <h3>Profiles</h3>
+    <div>
+      <ul class="highlightable editable profile-list">
+        <li ng-repeat = "profile in profileMap" ng-class="{selected: profile.id == selectedProfile.id}">
+          <a ng-click="selectProfile(profile.id)">
+            <dl>
+              <dt>{{profile.name}}</dt>
+              <dd>{{profile.description||"No description for this profile"}}</dd>
+            </dl>
+          </a>
+          <a class="action" ng-hide="profile.id == activedProfile.id" ng-click="activeProfile(profile.id)">Use this profile</a>
+          <a class="action tag" ng-show="profile.id == activedProfile.id">In use</a>
+          <a class="delete" ng-click="selectProfile(profile.id);$parent.isDeletingProfile=true">delete</a>
+        </li>
+      </ul>
+      <div>
+        <button ng-click="isAddingProfile = true">Add new profile...</button>
+        <cr-modal show="isAddingProfile" on-close="resetTemporaryProfile()">
+          <h1>Create profile</h1>
+          <div class="close-button exit-button"></div>
+          <div class="content-area">
+            <div class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label">Name:</label>
+                <div class="control">
+                  <input type="text" ng-model="profileTemplate.name" placeholder="New profile name">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Description:</label>
+                <div class="control">
+                  <textarea ng-model="profileTemplate.description" rows="4" cols="30" placeholder="Optional profile description"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="profileTemplate.copyFromAnotherProfile">
+                <span>Copy gestures and settings form</span>
+                <select ng-model="profileTemplate.copyFrom" ng-options="id as profile.name for (id, profile) in profileMap"></select>
+              </label>
+            </div>
+          </div>
+          <div class="action-area">
+            <div class="action-area-right">
+              <div class="button-strip">
+                <button class="exit-button" ng-click="createProflile()">Create</button>
+                <button class="exit-button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </cr-modal>
+        
+        <button ng-click="isEditingProfile = true">Edit...</button>
+        <cr-modal show="isEditingProfile" on-close="resetTemporaryProfile()">
+          <h1>Edit profile</h1>
+          <div class="close-button exit-button"></div>
+          <div class="content-area">
+            <div class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label">Name:</label>
+                <div class="control">
+                  <input type="text" ng-model="profileTemplate.name" ng-trim="true" placeholder="{{selectedProfile.name}}">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Description:</label>
+                <div class="control">
+                  <textarea ng-model="profileTemplate.description" rows="4" cols="30" placeholder="{{selectedProfile.description}}"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="action-area">
+            <div class="action-area-right">
+              <div class="button-strip">
+                <button class="exit-button" ng-click="editProfileInfo()">OK</button>
+                <button class="exit-button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </cr-modal>
+
+        <button ng-click="isDeletingProfile = true">Delete...</button>
+        <cr-modal show="isDeletingProfile">
+          <h1>Delete profile</h1>
+          <div class="close-button exit-button"></div>
+          <div class="content-area">
+            Are you sure you want to delete profile "{{selectedProfile.name}}"? This cannot be undone!
+          </div>
+          <div class="action-area">
+            <div class="action-area-right">
+              <div class="button-strip">
+                <button class="exit-button" ng-click="deleteProfile(selectedProfile.id)">Delete</button>
+                <button class="exit-button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </cr-modal>
+      </div>
+    </div>
+  </section>
+</div>
