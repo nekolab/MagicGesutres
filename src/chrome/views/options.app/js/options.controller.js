@@ -8,6 +8,8 @@ var GesturesCtrl = function($scope, SettingService) {
 
     $scope.actions = MagicGestures.Preset.Actions;
 
+    $scope.isTrainingGestures = ($scope.selectedProfile.trained === "training");
+
     $scope.addGesture = function(event) {
         delete $scope.createdGesture.timestamp;
         var createdGesture = new MagicGestures.Gesture($scope.createdGesture);
@@ -70,15 +72,32 @@ var GesturesCtrl = function($scope, SettingService) {
     };
 
     $scope.saveGestures = function(e){
-        if (simpleDiffCheck()){
+        if (simpleDiffCheck() || !e){
             $scope.selectedProfile.trained = false;
             $scope.selectedProfile.gestureTrie = MagicGestures.DirectionEngine.generateTrie($scope.selectedProfile);
             MagicGestures.ProfileManager.updateProfile($scope.selectedProfile);
-            MagicGestures.runtime.sendRuntimeMessage('background', 'neuralGestureChanged PMEVENT');
+            MagicGestures.runtime.sendRuntimeMessage('background', 'neuralGestureChanged PMEVENT', {
+                trainWhenIdle: !!e
+            });
         }
     };
 
     $scope.$on('$locationChangeStart', $scope.saveGestures);
+
+    var onTrainingNeuralNet = function(msg, sender, sendResponse) {
+        $scope.$apply("isTrainingGestures=true");
+    };
+    MagicGestures.runtime.messenger.addListener("trainingNeuralNet PMEVENT", onTrainingNeuralNet);
+
+    var onNeuralNetTrained = function(msg, sender, sendResponse) {
+        $scope.$apply("isTrainingGestures=false");
+    };
+    MagicGestures.runtime.messenger.addListener("neuralNetTrained PMEVENT", onNeuralNetTrained);
+
+    $scope.$on('$destroy', function() {
+        MagicGestures.runtime.messenger.removeListener("neuralNetTrained PMEVENT", onNeuralNetTrained);
+        MagicGestures.runtime.messenger.removeListener("trainingNeuralNet PMEVENT", onTrainingNeuralNet);
+    });
 };
 
 var SettingsCtrl = function($scope, $window, SettingService) {
@@ -212,9 +231,15 @@ var NavContrller = function($scope, $route, $window, SettingService) {
     };
     MagicGestures.runtime.messenger.addListener("profileUpdated PMEVENT", onProfileUpdated);
 
+    var onCancelReloadRequest = function(msg, sender, sendResponse) {
+        $scope.$apply("showRequestReloadModal = false");
+    };
+    MagicGestures.runtime.messenger.addListener("cancelReloadRequest UIEVENT", onCancelReloadRequest);
+
     $scope.$on('$destroy', function() {
         MagicGestures.runtime.messenger.removeListener("profileUpdated PMEVENT", onProfileUpdated);
         MagicGestures.runtime.messenger.removeListener("activedProfileUpdated PMEVENT", onActivedProfileUpdated);
+        MagicGestures.runtime.messenger.removeListener("cancelReloadRequest UIEVENT", onCancelReloadRequest);
     });
 };
 

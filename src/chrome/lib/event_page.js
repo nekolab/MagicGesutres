@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.8
+ * @version 0.0.1.9
  */
 
 /*global chrome: false, MagicGestures: true */
@@ -31,6 +31,17 @@ MagicGestures.init = function() {
                 break;
             default:
                 break;
+        }
+    });
+
+    MagicGestures.runtime.messenger.addListener("neuralGestureChanged PMEVENT", function(msg, sender, sendResponse) {
+        var neuralnetTrainScheduled = MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled;
+        if (!msg.trainWhenIdle) {
+            MagicGestures.NeuralNetEngine.trainNeuralNet();
+        } else if (!neuralnetTrainScheduled) {
+            // chrome.idle.setDetectionInterval(15);
+            chrome.idle.onStateChanged.addListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
+            MagicGestures.runtime.set({neuralnetTrainScheduled: true});
         }
     });
 };

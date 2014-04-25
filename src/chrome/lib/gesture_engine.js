@@ -1,10 +1,10 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.8
+ * @version 0.0.3.0
  */
 
-/* global MagicGestures: true */
+/* global MagicGestures: true, chrome: false */
 /* jshint strict: true, globalstrict: true, forin: false, debug: true */
 
 "use strict";
@@ -29,7 +29,7 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                 }
 
                 var msg;
-                if (neuralNetworkResult[1] >= 0.98 && MagicGestures.runtime.currentProfile.trained) {
+                if (neuralNetworkResult[1] >= 0.975 && MagicGestures.runtime.currentProfile.trained === true) {
                     msg = {
                         data: MagicGestures.tab.gesture.data,
                         command: neuralNetworkResult[0]
@@ -44,6 +44,8 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                     };
                     MagicGestures.logging.debug(msg, "Recognized by direction engine:", "Neural Network:", neuralNetworkResult);
                     MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
+                } else {
+                    MagicGestures.logging.debug("Not recognized, Neural network:", neuralNetworkResult);
                 }
             }
         }
@@ -325,7 +327,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                     this.think = function(inputs, dependency) {
 
                         // Check if no neural network
-                        if (this.inputCount == 0) return ["no neural network", 0, []];
+                        if (this.inputCount === 0) return ["no neural network", 0, []];
 
                         // Check length
                         if (inputs.length !== this.inputCount)
@@ -364,8 +366,9 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             return rp.probability - lp.probability;
                         });
 
-                        if (outputOutputs[0].probability < 0.98 || outputOutputs[0].probability - outputOutputs[1].probability < 0.08) {
-                            return ["failed - " + outputOutputs[0].probability + ", " + outputOutputs[1].probability, 0, outputOutputs];
+                        if (outputOutputs[0].probability < 0.975 || outputOutputs[0].probability - outputOutputs[1].probability < 0.08) {
+                            return ["failed - " + outputOutputs[0].probability + ", " + outputOutputs[1].probability,
+                                outputOutputs[0].probability, outputOutputs];
                         }
 
                         var actions = outputOutputs[0].actions, action_index;
@@ -387,6 +390,74 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                 };
                 
                 return new Network((typeof neunetInfo === "string") ? JSON.parse(neunetInfo) : neunetInfo);
+            }
+        },
+
+        /**
+         * MagicGestures.NeuralNetEngine.trainNeuralNet
+         * Train neural network and use notification center show notifications.
+         * @param {string} state State for chrome.idle API. (Optional)
+         */
+        trainNeuralNet: {
+            value: function(state) {
+                if (state && state !== "idle") return;
+                if (state) chrome.idle.onStateChanged.removeListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
+                MagicGestures.runtime.set({neuralnetTrainScheduled: false});
+                var profileMap = MagicGestures.ProfileManager.profileMap;
+
+                var trainProfile = function(profileID) {
+                    var notificationID;
+                    chrome.notifications.create('', {
+                        type: "progress",
+                        title: "MagicGestures",
+                        iconUrl: "res/img/48.png",
+                        message: "Unlocking magic for " + profileMap[profileID].name,
+                        progress: 5
+                    }, function(nid) {
+                        notificationID = nid;
+                    });
+
+                    profileMap[profileID].trained = "training";
+                    MagicGestures.ProfileManager.updateProfile(profileMap[profileID]);
+                    MagicGestures.runtime.sendRuntimeMessage("*", "trainingNeuralNet PMEVENT");
+                    MagicGestures.runtime.sendRuntimeMessage("options", "cancelReloadRequest UIEVENT");
+
+                    var worker = new Worker('lib/train_worker.js');
+                    worker.addEventListener('message', function(e) {
+                        if ("actionsList" in e.data) {
+                            profileMap[profileID].trained = true;
+                            profileMap[profileID].neuralNetInfo = e.data;
+                            MagicGestures.ProfileManager.updateProfile(profileMap[profileID]);
+                            MagicGestures.runtime.sendRuntimeMessage("*", "neuralNetTrained PMEVENT");
+                            MagicGestures.runtime.sendRuntimeMessage("options", "cancelReloadRequest UIEVENT");
+                            chrome.notifications.clear(notificationID, function(){});
+                            chrome.notifications.create('', {
+                                type: "basic",
+                                title: "MagicGestures",
+                                iconUrl: "res/img/48.png",
+                                message: "Magic Unlocked!"
+                            }, function(nid){
+                                notificationID = nid;
+                            });
+                        }
+                        if ("progress" in e.data && notificationID) {
+                            chrome.notifications.update(notificationID, {progress: e.data.progress}, function(){});
+                        }
+                    }, false);
+
+                    worker.postMessage({
+                        command: "train",
+                        networkInfo: {
+                            gestures: profileMap[profileID].gestures
+                        }
+                    });
+                };
+
+                for (var profileID in profileMap) {
+                    if (profileMap.hasOwnProperty(profileID) && !profileMap[profileID].trained) {
+                        trainProfile(profileID);
+                    }
+                }
             }
         }
     })

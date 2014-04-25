@@ -242,3 +242,7 @@ label {
     display: block;
     margin-bottom: 5px;
 }
+
+.content-area.no-action-area {
+    margin-bottom: 20px;
+}

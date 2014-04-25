@@ -31,11 +31,11 @@
       "run_at": "document_start"
     }
   ],
-  "minimum_chrome_version": "27",
+  "minimum_chrome_version": "28",
 
   "options_page": "views/options.html",
 
   "permissions": [
-    "tabs", "<all_urls>", "storage", "sessions"
+    "<all_urls>", "idle", "notifications", "storage", "sessions", "tabs"
   ]
 }

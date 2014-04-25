@@ -67,7 +67,8 @@ angular.module('options', ['ngRoute', 'ngAnimate'])
                     e.stopPropagation();
                 });
 
-                element.appendTo('body');
+                if (!("crAllowNav" in attrs))
+                    element.appendTo('body');
 
                 scope.$on('$destroy', function() {
                     element.find('.exit-button').off('click');

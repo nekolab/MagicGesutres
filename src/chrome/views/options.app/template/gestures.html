@@ -33,7 +33,7 @@
       </div>
     </cr-modal>
 
-    <button>Unlock the magic now!</button>
+    <button ng-click="saveGestures()">Unlock the magic now!</button>
     <div class="spacer"></div>
     <a class="delete" style="opacity: 1; top: 17px; right: 5px;" ng-click="searchActions=''">delete</a>
     <input type="text" placeholder="Search actions" ng-model="searchActions"/>
@@ -102,6 +102,13 @@
           <button class="exit-button">Cancel</button>
         </div>
       </div>
+    </div>
+  </cr-modal>
+
+  <cr-modal show="isTrainingGestures" cr-allow-nav>
+    <h1>Unlocking Magic</h1>
+    <div class="content-area no-action-area">
+      Be patient! We are working hard to unlock the magic...
     </div>
   </cr-modal>
 </div>
