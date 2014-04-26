@@ -19,14 +19,17 @@
   },
 
   "background": {
-    "scripts": [ "lib/magicgestures.js", "lib/gesture_engine.js", "lib/model.js", "lib/preset.js", "lib/profile_manager.js", "lib/event_page.js" ],
+    "scripts": [
+      "lib/magicgestures.js", "lib/gesture_engine.js", "lib/model.js", "lib/preset.js",
+      "lib/api_actions.js", "lib/profile_manager.js", "lib/event_page.js"
+    ],
     "persistent": false
   },
 
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
-      "js": [ "lib/magicgestures.js", "lib/gesture_engine.js", "lib/gesture_canvas.js", "lib/content_script.js" ],
+      "js": [ "lib/magicgestures.js", "lib/js_actions.js", "lib/gesture_engine.js", "lib/gesture_canvas.js", "lib/content_script.js" ],
       "all_frames": true,
       "run_at": "document_start"
     }

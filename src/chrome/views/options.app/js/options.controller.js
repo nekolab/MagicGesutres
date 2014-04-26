@@ -6,7 +6,7 @@ var GesturesCtrl = function($scope, SettingService) {
         $scope.activedProfile = SettingService.activedProfile;
     }
 
-    $scope.actions = MagicGestures.Preset.Actions;
+    $scope.actions = MagicGestures.Actions;
 
     $scope.isTrainingGestures = ($scope.selectedProfile.trained === "training");
 
@@ -101,7 +101,7 @@ var GesturesCtrl = function($scope, SettingService) {
 };
 
 var SettingsCtrl = function($scope, $window, SettingService) {
-    $scope.actions = MagicGestures.Preset.Actions;
+    $scope.actions = MagicGestures.Actions;
     $scope.selectedProfile = SettingService.selectedProfile;
     if (SettingService.activedProfile.id == $scope.selectedProfile.id) {
         $scope.activedProfile = SettingService.activedProfile = $scope.selectedProfile;

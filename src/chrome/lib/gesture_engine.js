@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.0
+ * @version 0.0.3.1
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -36,7 +36,10 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                     };
                     MagicGestures.logging.debug(msg, "Recognized by neural network:", neuralNetworkResult,
                         "Direction engine:", MagicGestures.tab.gesture.possibleNext.command);
-                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
+                    if (msg.command in MagicGestures.Actions && MagicGestures.Actions[msg.command].isNativeJSAction)
+                        MagicGestures.Actions[msg.command].action(msg.data);
+                    else
+                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                 } else if (MagicGestures.tab.gesture.possibleNext.command) {
                     msg = {
                         data: MagicGestures.tab.gesture.data,
@@ -44,7 +47,10 @@ Object.defineProperty(MagicGestures, "GestureEngine", {
                     };
                     MagicGestures.logging.debug(msg, "Recognized by direction engine:",
                         MagicGestures.tab.gesture.possibleNext.command, "Neural Network:", neuralNetworkResult);
-                    MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
+                    if (msg.command in MagicGestures.Actions && MagicGestures.Actions[msg.command].isNativeJSAction)
+                        MagicGestures.Actions[msg.command].action(msg.data);
+                    else
+                        MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", msg);
                 } else {
                     MagicGestures.logging.debug("Not recognized, Neural network:", neuralNetworkResult);
                 }

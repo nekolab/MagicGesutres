@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.10
+ * @version 0.0.1.11
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -16,8 +16,8 @@ MagicGestures.init = function() {
 
     MagicGestures.runtime.messenger.addListener("gesture ACTION", function(msg, sender, sendResponse) {
         MagicGestures.logging.debug(msg);
-        if (msg.command in MagicGestures.Preset.Actions) {
-            MagicGestures.Preset.Actions[msg.command].action.call(null, sender.tab, msg.data);
+        if (msg.command in MagicGestures.Actions) {
+            MagicGestures.Actions[msg.command].action.call(null, sender.tab, msg.data);
         } else {
             MagicGestures.logging.warn("Gesture action", msg.command, "doesn't support yet");
         }
@@ -54,9 +54,11 @@ chrome.runtime.onInstalled.addListener(function() {
     chrome.tabs.query({}, function(tabs) {
         tabs.forEach(function(tab) {
             chrome.tabs.executeScript(tab.id, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
-                chrome.tabs.executeScript(tab.id, {file: "lib/gesture_engine.js", allFrames: true, runAt: "document_start"}, function() {
-                    chrome.tabs.executeScript(tab.id, {file: "lib/gesture_canvas.js", allFrames: true, runAt: "document_start"}, function() {
-                        chrome.tabs.executeScript(tab.id, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"});
+                chrome.tabs.executeScript(tab.id, {file: "lib/js_actions.js", allFrames: true, runAt: "document_start"}, function() { 
+                    chrome.tabs.executeScript(tab.id, {file: "lib/gesture_engine.js", allFrames: true, runAt: "document_start"}, function() {
+                        chrome.tabs.executeScript(tab.id, {file: "lib/gesture_canvas.js", allFrames: true, runAt: "document_start"}, function() {
+                            chrome.tabs.executeScript(tab.id, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"});
+                        });
                     });
                 });
             });

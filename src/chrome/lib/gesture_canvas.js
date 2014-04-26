@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures gesture canvas support.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.10
+ * @version 0.0.3.12
  */
 
 /* global MagicGestures: true */
@@ -96,6 +96,8 @@ Object.defineProperty(MagicGestures, "tab", {
         init: {
             value: function() {
                 MagicGestures.tab.mouseHandler.init();
+                // Show page action for current tab.
+                MagicGestures.runtime.sendRuntimeMessage("background", "page_action ACTION", {command: "show"});
             }
         },
 
@@ -362,8 +364,12 @@ Object.defineProperty(MagicGestures, "tab", {
                                         var wheelActions = MagicGestures.runtime.currentProfile.gestureTrie.wheel;
                                         var action = (event.wheelDelta > 0) ? wheelActions.U : wheelActions.D;
                                         MagicGestures.logging.log(action.command);
-                                        if (action)
-                                            MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
+                                        if (action) {
+                                            if (action.command in MagicGestures.Actions && MagicGestures.Actions[action.command].isNativeJSAction)
+                                                MagicGestures.Actions[action.command].action();
+                                            else
+                                                MagicGestures.runtime.sendRuntimeMessage("background", "gesture ACTION", {command: action.command});
+                                        }
                                         if (!MagicGestures.isGTKChrome)
                                             document.oncontextmenu = MagicGestures.tab.disableContextMenu;
                                         break;
