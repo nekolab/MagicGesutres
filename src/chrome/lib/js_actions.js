@@ -88,7 +88,7 @@ Object.defineProperties(MagicGestures.Actions, {
             description: "Scroll to the bottom of the page",
             isNativeJSAction: true,
             action: function(tab) {
-                window.scrollTo(0, document.documentElement.scrollHeight);
+                window.scrollTo(0, Math.max.apply(null, [document.documentElement.scrollHeight, document.body.scrollHeight]));
             }
         },
         enumerable: true
