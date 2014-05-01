@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.1
+ * @version 0.0.3.2
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -407,7 +407,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
          */
         trainNeuralNet: {
             value: function(state) {
-                if (state && state !== "idle") return;
+                if (state && state !== "idle") return; // See http://crbug.com/366580 for more details.
                 if (state) chrome.idle.onStateChanged.removeListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
                 MagicGestures.runtime.set({neuralnetTrainScheduled: false});
                 var profileMap = MagicGestures.ProfileManager.profileMap;
@@ -419,7 +419,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                         title: "MagicGestures",
                         iconUrl: "res/img/48.png",
                         message: "Unlocking magic for " + profileMap[profileID].name,
-                        progress: 5
+                        progress: 2
                     }, function(nid) {
                         notificationID = nid;
                     });
@@ -442,13 +442,15 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                                 type: "basic",
                                 title: "MagicGestures",
                                 iconUrl: "res/img/48.png",
-                                message: "Magic Unlocked!"
+                                message: profileMap[profileID].name + ": Magic Unlocked!"
                             }, function(nid){
                                 notificationID = nid;
                             });
                         }
                         if ("progress" in e.data && notificationID) {
-                            chrome.notifications.update(notificationID, {progress: e.data.progress}, function(){});
+                            chrome.notifications.update(notificationID, {
+                                progress: Math.round(50 * Math.log(1.01 - 0.01 * e.data.progress) / Math.log(0.1))
+                            }, function(){});
                         }
                     }, false);
 

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.5
+ * @version 0.0.2.6
  */
 
 /* global chrome: false */
@@ -237,7 +237,12 @@ Object.defineProperties(MagicGestures.runtime, {
     sendRuntimeMessage: {
         value: function(dest, type, msg, responseCallback) {
             var runtimeMessage = MagicGestures.runtime.msgPacker(dest, type, msg);
-            chrome.runtime.sendMessage(runtimeMessage, responseCallback);
+            try {
+                chrome.runtime.sendMessage(runtimeMessage, responseCallback);
+            } catch (err) {
+                if (MagicGestures.runtime.envName === "content script")
+                    document.removeEventListener("mousedown", MagicGestures.tab.mouseHandler.eventAdapter, true);
+            }
         }
     },
 

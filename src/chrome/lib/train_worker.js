@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures neural network train web worker.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.2
+ * @version 0.0.3.3
  */
 
 /* jshint strict: true, globalstrict: true, worker: true */
@@ -190,7 +190,7 @@ var Network = function(inputCount, outputCount, hiddenCount) {
             max_sse = (sse > max_sse) ? sse : max_sse;
 
             if ((ipt_index = (++ipt_index) % inputs.length) === 0) {
-                if (!sse_delta && max_sse < 30 * Constants.SSE_THRESHOLD)
+                if (!sse_delta && max_sse < 15 * Constants.SSE_THRESHOLD)
                     sse_delta = max_sse - Constants.SSE_THRESHOLD;
                 if (percent < Math.floor((sse_delta + Constants.SSE_THRESHOLD - max_sse) / sse_delta * 100)) {
                     percent = Math.floor((sse_delta + Constants.SSE_THRESHOLD - max_sse) / sse_delta * 100);
