@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.11
+ * @version 0.0.1.12
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -43,10 +43,33 @@ MagicGestures.init = function() {
             MagicGestures.runtime.set({neuralnetTrainScheduled: true});
         }
     });
+
+    chrome.alarms.onAlarm.addListener(function(alarm) {
+        if (alarm.name === "syncStorage") {
+            if (MagicGestures.runtime.get('syncStorageScheduled').syncStorageScheduled) {
+                MagicGestures.runtime.set({syncStorageScheduled: false});
+                chrome.alarms.clear("syncStorage");
+            }
+            MagicGestures.ProfileManager.syncStorage();
+        }
+    });
 };
+
+chrome.runtime.onStartup.addListener(function() {
+    if (MagicGestures.runtime.get('syncStorageScheduled').syncStorageScheduled) {
+        MagicGestures.runtime.set({syncStorageScheduled: false});
+        MagicGestures.ProfileManager.syncStorage();
+    }
+});
 
 chrome.runtime.onInstalled.addListener(function() {
     MagicGestures.logging.debug("MagicGestures onInstalled!!");
+
+    if (MagicGestures.runtime.get('syncStorageScheduled').syncStorageScheduled) {
+        MagicGestures.runtime.set({syncStorageScheduled: false});
+        MagicGestures.ProfileManager.syncStorage();
+    }
+    
     MagicGestures.runtime.runOnce();
     MagicGestures.ProfileManager.runOnce();
 

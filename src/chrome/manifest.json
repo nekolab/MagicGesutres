@@ -39,6 +39,6 @@
   "options_page": "views/options.html",
 
   "permissions": [
-    "<all_urls>", "idle", "notifications", "storage", "sessions", "tabs"
+    "<all_urls>", "alarms", "idle", "notifications", "storage", "sessions", "tabs"
   ]
 }

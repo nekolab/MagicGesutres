@@ -1,7 +1,7 @@
 /**
  * @fileoverview MagicGestures profile manager.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.0
+ * @version 0.0.1.1
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -38,7 +38,7 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                 if (profileID in MagicGestures.ProfileManager.profileMap) {
                     var activedProfile = MagicGestures.ProfileManager.profileMap[profileID];
                     MagicGestures.runtime.set({activedProfileID: profileID});
-                    chrome.storage.local.set({activedProfileCache: activedProfile}, function(){
+                    chrome.storage.local.set({activedProfileCache: activedProfile, activedProfileID: profileID}, function(){
                         MagicGestures.runtime.sendRuntimeMessage('*', 'activedProfileChanged PMEVENT', {
                             changedTo: profileID,
                             pmInstanceID: MagicGestures.ProfileManager.instanceID
@@ -125,6 +125,23 @@ Object.defineProperty(MagicGestures, "ProfileManager", {
                 MagicGestures.runtime.sendRuntimeMessage('*', 'profileMapUpdated PMEVENT', {
                     pmInstanceID: MagicGestures.ProfileManager.instanceID
                 });
+                if (!MagicGestures.runtime.get('syncStorageScheduled').syncStorageScheduled) {
+                    chrome.alarms.create("syncStorage", {
+                        delayInMinutes: 3,
+                        periodInMinutes: 1
+                    });
+                    MagicGestures.runtime.set({syncStorageScheduled: true});
+                }
+            }
+        },
+
+        /**
+         * MagicGestures.ProfileManager.syncStorage
+         */
+        syncStorage: {
+            value: function() {
+                MagicGestures.logging.log("Syncing runtime to chrome local storage...");
+                chrome.storage.local.set({profileMap: MagicGestures.ProfileManager.profileMap});
             }
         },
 
