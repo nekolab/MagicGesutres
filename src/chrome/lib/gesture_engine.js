@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures identification engine.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.3.2
+ * @version 0.0.3.3
  */
 
 /* global MagicGestures: true, chrome: false */
@@ -412,7 +412,18 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                 MagicGestures.runtime.set({neuralnetTrainScheduled: false});
                 var profileMap = MagicGestures.ProfileManager.profileMap;
 
-                var trainProfile = function(profileID) {
+                var needTrainProfile = [];
+                for (var profileID in profileMap) {
+                    if (profileMap.hasOwnProperty(profileID) && !profileMap[profileID].trained) {
+                        needTrainProfile.push(profileID);
+                    }
+                }
+
+                var trainProfile = function() {
+
+                    if (needTrainProfile.length === 0) return;
+                    var profileID = needTrainProfile.shift();
+
                     var notificationID;
                     chrome.notifications.create('', {
                         type: "progress",
@@ -426,7 +437,9 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
 
                     profileMap[profileID].trained = "training";
                     MagicGestures.ProfileManager.updateProfile(profileMap[profileID]);
-                    MagicGestures.runtime.sendRuntimeMessage("*", "trainingNeuralNet PMEVENT");
+                    MagicGestures.runtime.sendRuntimeMessage("*", "trainingNeuralNet PMEVENT", {
+                        trainingProfile: profileID
+                    });
                     MagicGestures.runtime.sendRuntimeMessage("options", "cancelReloadRequest UIEVENT");
 
                     var worker = new Worker('lib/train_worker.js');
@@ -435,7 +448,9 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             profileMap[profileID].trained = true;
                             profileMap[profileID].neuralNetInfo = e.data;
                             MagicGestures.ProfileManager.updateProfile(profileMap[profileID]);
-                            MagicGestures.runtime.sendRuntimeMessage("*", "neuralNetTrained PMEVENT");
+                            MagicGestures.runtime.sendRuntimeMessage("*", "neuralNetTrained PMEVENT", {
+                                trainedProfile: profileID
+                            });
                             MagicGestures.runtime.sendRuntimeMessage("options", "cancelReloadRequest UIEVENT");
                             chrome.notifications.clear(notificationID, function(){});
                             chrome.notifications.create('', {
@@ -446,6 +461,8 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                             }, function(nid){
                                 notificationID = nid;
                             });
+                            worker.terminate();
+                            trainProfile();
                         }
                         if ("progress" in e.data && notificationID) {
                             chrome.notifications.update(notificationID, {
@@ -462,11 +479,7 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
                     });
                 };
 
-                for (var profileID in profileMap) {
-                    if (profileMap.hasOwnProperty(profileID) && !profileMap[profileID].trained) {
-                        trainProfile(profileID);
-                    }
-                }
+                trainProfile();
             }
         }
     })

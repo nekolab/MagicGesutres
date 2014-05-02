@@ -1,4 +1,4 @@
-<header>
+<header mg-before-unload="updateSeletctedProfileIfScheduled()">
   <h1>Settings</h1>
 </header>
 <div class="content">
@@ -7,7 +7,7 @@
 
     <div class="checkbox">
       <label>
-        <input type="checkbox" ng-model="selectedProfile.enable" ng-change="updateSeletctedProfile()">
+        <input type="checkbox" ng-model="selectedProfile.enable" ng-change="scheduleUpdateProfile()">
         <span>Enable mouse gestures</span>
       </label>
     </div>
@@ -16,7 +16,7 @@
       <label>
         <input type="checkbox" checked disabled>
         <span>Trigger to start gesture on</span>
-        <select ng-model="selectedProfile.triggerButton" ng-change="updateSeletctedProfile()">
+        <select ng-model="selectedProfile.triggerButton" ng-change="scheduleUpdateProfile()">
           <option value="2">right</option>
           <option value="1">middle</option>
           <option value="0">left</option>
@@ -27,10 +27,10 @@
 
     <div class="checkbox">
       <label>
-        <input type="checkbox" ng-model="selectedProfile.ttl.enabled" ng-change="updateSeletctedProfile()">
+        <input type="checkbox" ng-model="selectedProfile.ttl.enabled" ng-change="scheduleUpdateProfile()">
         <span>Cancel mouse gesture after
           <input type="number" min="0" step="0.1" class="inline-input" ng-disabled="!selectedProfile.ttl.enabled"
-            ng-model="selectedProfile.ttl.value" ng-change="updateSeletctedProfile()">
+            ng-model="selectedProfile.ttl.value" ng-change="scheduleUpdateProfile()">
           seconds without move
         </span>
       </label>
@@ -38,10 +38,10 @@
 
     <div class="checkbox">
       <label>
-        <input type="checkbox" ng-model="selectedProfile.disableGesture.enabled" ng-change="updateSeletctedProfile()">
+        <input type="checkbox" ng-model="selectedProfile.disableGesture.enabled" ng-change="scheduleUpdateProfile()">
         <span>Disable mouse gestures temporary with holding
           <select ng-disabled="!selectedProfile.disableGesture.enabled"
-            ng-model="selectedProfile.disableGesture.when" ng-change="updateSeletctedProfile()">
+            ng-model="selectedProfile.disableGesture.when" ng-change="scheduleUpdateProfile()">
             <option value="Ctrl">Ctrl</option>
             <option value="Alt">Alt</option>
           </select>
@@ -56,21 +56,21 @@
     <div class="checkbox">
       <label>
         <input type="checkbox" ng-model="selectedProfile.wheelGestures.U.enabled"
-          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()">
+          ng-change="updateSeletctedProfileTrie();scheduleUpdateProfile()">
         <span class="inline-block" style="width: 20.5em;">Scroll up with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
         <select ng-options="name as name group by value.category for (name, value) in actions | actionDependency:'none'"
           ng-model="selectedProfile.wheelGestures.U.command" ng-disabled="!selectedProfile.wheelGestures.U.enabled"
-          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()"></select>
+          ng-change="updateSeletctedProfileTrie();scheduleUpdateProfile()"></select>
       </label>
     </div>
     <div class="checkbox">
       <label>
         <input type="checkbox" ng-model="selectedProfile.wheelGestures.D.enabled"
-          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()">
+          ng-change="updateSeletctedProfileTrie();scheduleUpdateProfile()">
         <span class="inline-block" style="width: 20.5em;">Scroll down with holding mouse {{selectedProfile.triggerButton | mousekey}} button:</span>
         <select ng-options="name as name group by value.category for (name, value) in actions | actionDependency:'none'"
           ng-model="selectedProfile.wheelGestures.D.command" ng-disabled="!selectedProfile.wheelGestures.D.enabled"
-          ng-change="updateSeletctedProfileTrie();updateSeletctedProfile()"></select>
+          ng-change="updateSeletctedProfileTrie();scheduleUpdateProfile()"></select>
       </label>
     </div>
   </section>
@@ -79,7 +79,7 @@
     <h3>Trailing Line</h3>
     <div class="checkbox">
       <label>
-        <input type="checkbox" ng-model="selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+        <input type="checkbox" ng-model="selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
         <span>Draw trailing line</span>
       </label>
     </div>
@@ -87,26 +87,26 @@
       <div>
         <div id="red" class="input-color">
           <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.red"
-            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+            ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
         </div>
         <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.red"
-          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+          ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
       </div>
       <div>
         <div id="green" class="input-color">
           <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.green"
-            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+            ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
         </div>
         <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.green"
-          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+          ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
       </div>
       <div>
         <div id="blue" class="input-color">
           <input type="range" min="0" max="255" ng-model="selectedProfile.lineColor.blue"
-            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+            ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
         </div>
         <input type="number" min="0" max="255" ng-model="selectedProfile.lineColor.blue"
-          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+          ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
       </div>
       <div>
         <div class="input-color" ng-style="{'background-image': 'linear-gradient(to right, rgba(' + selectedProfile.lineColor.red
@@ -115,15 +115,15 @@
           + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',1) 140px, rgba(' + selectedProfile.lineColor.red
           + ', ' + selectedProfile.lineColor.green + ', ' + selectedProfile.lineColor.blue + ',1))'}">
           <input type="range" min="0" max="1" step="0.01" ng-model="selectedProfile.lineColor.alpha"
-            ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+            ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
         </div>
         <input type="number" min="0" max="1" step="0.01" ng-model="selectedProfile.lineColor.alpha"
-          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+          ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
       </div>
     </div>
     <div class="pull-left">
         <input type="range" min="0" max="6" step="0.2" class="vertical" ng-model="selectedProfile.locusWidth"
-          ng-disabled="!selectedProfile.drawLocus" ng-change="updateSeletctedProfile()">
+          ng-disabled="!selectedProfile.drawLocus" ng-change="scheduleUpdateProfile()">
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="104px" height="104px">
       <path d="M20 80 L80 20 M80 20 L60 20 M80 20 L80 40" ng-style="{'stroke':'rgba(' + selectedProfile.lineColor.red

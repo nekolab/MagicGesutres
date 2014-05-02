@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.12
+ * @version 0.0.1.13
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -13,6 +13,8 @@ MagicGestures.init = function() {
     MagicGestures.logging.log("Initializing MagicGestures...");
     MagicGestures.runtime.init("background");
     MagicGestures.ProfileManager.init();
+
+    // chrome.idle.setDetectionInterval(15);
 
     MagicGestures.runtime.messenger.addListener("gesture ACTION", function(msg, sender, sendResponse) {
         MagicGestures.logging.debug(msg);
@@ -34,11 +36,9 @@ MagicGestures.init = function() {
     });
 
     MagicGestures.runtime.messenger.addListener("neuralGestureChanged PMEVENT", function(msg, sender, sendResponse) {
-        var neuralnetTrainScheduled = MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled;
         if (!msg.trainWhenIdle) {
             MagicGestures.NeuralNetEngine.trainNeuralNet();
-        } else if (!neuralnetTrainScheduled) {
-            // chrome.idle.setDetectionInterval(15);
+        } else if (!MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled) {
             chrome.idle.onStateChanged.addListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
             MagicGestures.runtime.set({neuralnetTrainScheduled: true});
         }
@@ -60,6 +60,10 @@ chrome.runtime.onStartup.addListener(function() {
         MagicGestures.runtime.set({syncStorageScheduled: false});
         MagicGestures.ProfileManager.syncStorage();
     }
+
+    if (MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled) {
+        chrome.idle.onStateChanged.addListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
+    }
 });
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -69,9 +73,13 @@ chrome.runtime.onInstalled.addListener(function() {
         MagicGestures.runtime.set({syncStorageScheduled: false});
         MagicGestures.ProfileManager.syncStorage();
     }
-    
+
+    var neuralnetTrainScheduled = MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled;
+
     MagicGestures.runtime.runOnce();
     MagicGestures.ProfileManager.runOnce();
+
+    MagicGestures.runtime.set({neuralnetTrainScheduled: neuralnetTrainScheduled});
 
     // Reload content script for each tab.
     chrome.tabs.query({}, function(tabs) {

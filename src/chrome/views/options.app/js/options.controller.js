@@ -82,19 +82,24 @@ var GesturesCtrl = function($scope, SettingService) {
         }
     };
 
+    var saveScheduleID = window.setInterval($scope.saveGestures, 3000, "dummy event");
+
     $scope.$on('$locationChangeStart', $scope.saveGestures);
 
     var onTrainingNeuralNet = function(msg, sender, sendResponse) {
-        $scope.$apply("isTrainingGestures=true");
+        if (msg.trainingProfile === $scope.selectedProfile.id)
+            $scope.$apply("isTrainingGestures=true");
     };
     MagicGestures.runtime.messenger.addListener("trainingNeuralNet PMEVENT", onTrainingNeuralNet);
 
     var onNeuralNetTrained = function(msg, sender, sendResponse) {
-        $scope.$apply("isTrainingGestures=false");
+        if (msg.trainedProfile === $scope.selectedProfile.id)
+            $scope.$apply("isTrainingGestures=false");
     };
     MagicGestures.runtime.messenger.addListener("neuralNetTrained PMEVENT", onNeuralNetTrained);
 
     $scope.$on('$destroy', function() {
+        window.clearInterval(saveScheduleID);
         MagicGestures.runtime.messenger.removeListener("neuralNetTrained PMEVENT", onNeuralNetTrained);
         MagicGestures.runtime.messenger.removeListener("trainingNeuralNet PMEVENT", onTrainingNeuralNet);
     });
@@ -118,6 +123,7 @@ var SettingsCtrl = function($scope, $window, SettingService) {
     };
 
     $scope.activeProfile = function(profileID) {
+        $scope.updateSeletctedProfileIfScheduled();
         MagicGestures.ProfileManager.activeProfile(profileID);
     };
 
@@ -134,6 +140,7 @@ var SettingsCtrl = function($scope, $window, SettingService) {
     };
 
     $scope.deleteProfile = function(profileID) {
+        $scope.updateSeletctedProfileIfScheduled();
         if (profileID == $scope.activedProfile.id) {
             if (Object.keys($scope.profileMap).length == 1) {
                 $window.alert("You cannot delete the last profile.");
@@ -150,6 +157,7 @@ var SettingsCtrl = function($scope, $window, SettingService) {
     };
 
     $scope.selectProfile = function(profileID) {
+        $scope.updateSeletctedProfileIfScheduled();
         $scope.selectedProfile = SettingService.selectedProfile = new MagicGestures.Profile($scope.profileMap[profileID]);
         if ($scope.activedProfile.id == profileID)
             $scope.activedProfile = SettingService.activedProfile = $scope.selectedProfile;
@@ -162,9 +170,24 @@ var SettingsCtrl = function($scope, $window, SettingService) {
         $scope.profileTemplate.copyFrom = $scope.selectedProfile.id;
     };
 
-    $scope.updateSeletctedProfile = function() {
-        MagicGestures.ProfileManager.updateProfile($scope.selectedProfile);
+    var saveScheduleID;
+    $scope.scheduleUpdateProfile = function() {
+        if (!saveScheduleID) {
+            saveScheduleID = window.setTimeout(function() {
+                saveScheduleID = undefined;
+                MagicGestures.ProfileManager.updateProfile($scope.selectedProfile);
+            }, 3000);
+        }
     };
+
+    $scope.updateSeletctedProfileIfScheduled = function() {
+        if (saveScheduleID) {
+            MagicGestures.ProfileManager.updateProfile($scope.selectedProfile);
+            window.clearTimeout(saveScheduleID);
+            saveScheduleID = undefined;
+        }
+    };
+    $scope.$on('$locationChangeStart', $scope.updateSeletctedProfileIfScheduled);
 
     $scope.updateSeletctedProfileTrie = function() {
         $scope.selectedProfile.gestureTrie = MagicGestures.DirectionEngine.generateTrie($scope.selectedProfile);
@@ -187,6 +210,7 @@ var SettingsCtrl = function($scope, $window, SettingService) {
     MagicGestures.runtime.messenger.addListener("activedProfileChanged PMEVENT", onActivedProfileChanged);
 
     $scope.$on('$destroy', function() {
+        window.clearTimeout(saveScheduleID);
         MagicGestures.runtime.messenger.removeListener("profileMapUpdated PMEVENT", onProfileMapUpdated);
         MagicGestures.runtime.messenger.removeListener("activedProfileChanged PMEVENT", onActivedProfileChanged);
     });
