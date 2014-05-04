@@ -1,7 +1,7 @@
 /**
  * @fileoverview Actions which use chrome.* API.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.0
+ * @version 0.0.2.3
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -208,8 +208,10 @@ Object.defineProperties(MagicGestures.Actions, {
             dependency: "none",
             description: "Select the tab to the right of the current tab",
             action: function(tab) {
-                chrome.tabs.query({index: tab.index + 1, windowId: tab.windowId}, function(tabs) {
-                    if (tabs.length !== 0) {chrome.tabs.update(tabs[0].id, {active: true});}
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    // Assume all tab is sorted by index.
+                    var index = (tab.index === tabs.length - 1) ? 0 : tab.index + 1;
+                    chrome.tabs.update(tabs[index].id, {active: true});
                 });
             }
         },
@@ -306,8 +308,10 @@ Object.defineProperties(MagicGestures.Actions, {
             dependency: "none",
             description: "Select the tab to the left of the current tab",
             action: function(tab) {
-                chrome.tabs.query({index: tab.index - 1, windowId: tab.windowId}, function(tabs) {
-                    chrome.tabs.update(tabs[0].id, {active: true});
+                chrome.tabs.query({windowId: tab.windowId}, function(tabs) {
+                    // Assume all tab is sorted by index.
+                    var index = (tab.index === 0) ? tabs.length - 1 : tab.index - 1;
+                    chrome.tabs.update(tabs[index].id, {active: true});
                 });
             }
         },
@@ -426,13 +430,60 @@ Object.defineProperties(MagicGestures.Actions, {
             dependency: "none",
             description: "Open the last closed tab",
             action: function() {
-                // Currently, chrome.sessions is only avaliable in Dev Channel (v32).
-                chrome.sessions.getRecentlyClosed(function(sessions) {
-                    if (sessions[0]) {
-                        var item = (sessions[0].tab) || (sessions[0].window);
-                        chrome.sessions.restore(item.sessionId);
+                if (chrome.sessions) {
+                    // Currently, chrome.sessions is only avaliable in Dev Channel (v36).
+                    chrome.sessions.getRecentlyClosed(function(sessions) {
+                        if (sessions[0]) {
+                            var item = (sessions[0].tab) || (sessions[0].window);
+                            chrome.sessions.restore(item.sessionId);
+                        }
+                    });
+                } else {
+                    var undo_info = MagicGestures.runtime.get(["current_tabs", "closedTabStack"]);
+                    var last_closed_tab = (undo_info.closedTabStack||[]).pop();
+                    if (last_closed_tab && undo_info.current_tabs[last_closed_tab]) {
+                        var check_opener_tab = function(callback) {
+                            if (! undo_info.current_tabs[last_closed_tab].openerTabId) {
+                                delete undo_info.current_tabs[last_closed_tab].openerTabId;
+                                callback();
+                            } else {
+                                chrome.tabs.get(undo_info.current_tabs[last_closed_tab].openerTabId, function(tab) {
+                                    if (!tab)
+                                        delete undo_info.current_tabs[last_closed_tab].openerTabId;
+                                    callback();
+                                });
+                            }
+                        };
+
+                        var check_windowId = function(callback) {
+                            chrome.windows.get(undo_info.current_tabs[last_closed_tab].windowId, function(w) {
+                                if (!w)
+                                    chrome.windows.create({}, function(nw) {
+                                        undo_info.current_tabs[last_closed_tab].windowId = nw.id;
+                                        callback();
+                                    });
+                                else
+                                    callback();
+                            });
+                        };
+
+                        check_opener_tab(function() {
+                            check_windowId(function() {
+                                undo_info.current_tabs[last_closed_tab].active = true;
+                                chrome.tabs.create(undo_info.current_tabs[last_closed_tab], function() {
+                                    chrome.windows.update(undo_info.current_tabs[last_closed_tab].windowId, {
+                                        focused: true
+                                    }, function() {
+                                        delete undo_info.current_tabs[last_closed_tab];
+                                        MagicGestures.runtime.set(undo_info);
+                                    });
+                                });
+                            });
+                        });
+
+                        
                     }
-                });
+                }
             }
         },
         enumerable: true
@@ -462,3 +513,74 @@ Object.defineProperties(MagicGestures.Actions, {
         enumerable: true
     }
 });
+
+// Undo Close Tab support
+if (!chrome.sessions) {
+    chrome.tabs.onCreated.addListener(function(tab) {
+        var current_tabs = MagicGestures.runtime.get("current_tabs").current_tabs || {};
+        current_tabs[tab.id] = {
+            url: tab.url,
+            index: tab.index,
+            pinned: tab.pinned,
+            windowId: tab.windowId,
+            openerTabId: tab.openerTabId
+        };
+        MagicGestures.runtime.set({current_tabs: current_tabs});
+    });
+
+    chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+        var current_tabs = MagicGestures.runtime.get("current_tabs").current_tabs || {};
+        current_tabs[tabId] = {
+            url: tab.url,
+            index: tab.index,
+            pinned: tab.pinned,
+            windowId: tab.windowId,
+            openerTabId: tab.openerTabId
+        };
+        MagicGestures.runtime.set({current_tabs: current_tabs});
+    });
+
+    chrome.tabs.onMoved.addListener(function (tabId, moveInfo) {
+        var current_tabs = MagicGestures.runtime.get("current_tabs").current_tabs || {};
+        if (!(tabId in current_tabs)) return;
+        current_tabs[tabId].index = moveInfo.toIndex;
+        current_tabs[tabId].windowId = moveInfo.windowId;
+        MagicGestures.runtime.set({current_tabs: current_tabs});
+    });
+
+    chrome.tabs.onAttached.addListener(function(tabId, attachInfo) {
+        var current_tabs = MagicGestures.runtime.get("current_tabs").current_tabs || {};
+        if (!(tabId in current_tabs)) return;
+        current_tabs[tabId].index = attachInfo.newPosition;
+        current_tabs[tabId].windowId = attachInfo.newWindowId;
+        MagicGestures.runtime.set({current_tabs: current_tabs});
+    });
+
+    chrome.tabs.onRemoved.addListener(function(tabId) {
+        var undo_info = MagicGestures.runtime.get(["current_tabs", "closedTabStack"]);
+        var closedTabStack = undo_info.closedTabStack || [];
+        while (closedTabStack.length >= 20)
+            delete undo_info.current_tabs[closedTabStack.shift()];
+        closedTabStack.push(tabId);
+        MagicGestures.runtime.set({closedTabStack: closedTabStack, current_tabs: undo_info.current_tabs});
+    });
+
+    Object.defineProperty(MagicGestures.Actions, "runOnce", {
+        value: function(callback) {
+            chrome.tabs.query({}, function(tabs) {
+                var current_tabs = {};
+                tabs.forEach(function(tab) {
+                    current_tabs[tab.id] = {
+                        url: tab.url,
+                        index: tab.index,
+                        pinned: tab.pinned,
+                        windowId: tab.windowId,
+                        openerTabId: tab.openerTabId
+                    };
+                });
+                MagicGestures.runtime.set({current_tabs: current_tabs});
+                callback();
+            });
+        }
+    });
+}

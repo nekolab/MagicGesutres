@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.6
+ * @version 0.0.2.7
  */
 
 /* global chrome: false */
@@ -257,6 +257,7 @@ Object.defineProperties(MagicGestures.runtime, {
      */
     get: {
         value: function(keys) {
+            console.groupCollapsed("Getting %O from runtime storage", keys);
             var runtimeItems = localStorage.getItem("runtime");
             if (runtimeItems) {
                 runtimeItems = JSON.parse(runtimeItems);
@@ -287,6 +288,7 @@ Object.defineProperties(MagicGestures.runtime, {
                     }
                 }
             }
+            console.groupEnd();
             return result;
         },
         configurable: true
@@ -301,6 +303,7 @@ Object.defineProperties(MagicGestures.runtime, {
      */
     set: {
         value: function(items) {
+            console.groupCollapsed("Setting %O to runtime storage", items);
             var runtimeItems = JSON.parse(localStorage.getItem("runtime"));
             MagicGestures.logging.debug("Original items:", items);
             MagicGestures.logging.debug("Original runtimeItems:", runtimeItems);
@@ -312,6 +315,7 @@ Object.defineProperties(MagicGestures.runtime, {
 
             MagicGestures.logging.debug("After merge runtimeItems:", runtimeItems);
             localStorage.setItem("runtime", JSON.stringify(runtimeItems));
+            console.groupEnd();
         },
         configurable: true
     },

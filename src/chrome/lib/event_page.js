@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.13
+ * @version 0.0.1.15
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -64,11 +64,14 @@ chrome.runtime.onStartup.addListener(function() {
     if (MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled) {
         chrome.idle.onStateChanged.addListener(MagicGestures.NeuralNetEngine.trainNeuralNet);
     }
+
+    MagicGestures.runtime.set({current_tabs: {}, closedTabStack: []});
 });
 
 chrome.runtime.onInstalled.addListener(function() {
     MagicGestures.logging.debug("MagicGestures onInstalled!!");
 
+    chrome.alarms.clearAll();
     if (MagicGestures.runtime.get('syncStorageScheduled').syncStorageScheduled) {
         MagicGestures.runtime.set({syncStorageScheduled: false});
         MagicGestures.ProfileManager.syncStorage();
@@ -77,9 +80,12 @@ chrome.runtime.onInstalled.addListener(function() {
     var neuralnetTrainScheduled = MagicGestures.runtime.get("neuralnetTrainScheduled").neuralnetTrainScheduled;
 
     MagicGestures.runtime.runOnce();
-    MagicGestures.ProfileManager.runOnce();
+    MagicGestures.Actions.runOnce(function() {
+        MagicGestures.ProfileManager.runOnce(function() {
+            MagicGestures.runtime.set({neuralnetTrainScheduled: neuralnetTrainScheduled});
+        });
+    });
 
-    MagicGestures.runtime.set({neuralnetTrainScheduled: neuralnetTrainScheduled});
 
     // Reload content script for each tab.
     chrome.tabs.query({}, function(tabs) {
