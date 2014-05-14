@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures event page script file.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.1.15
+ * @version 0.0.1.16
  */
 
 /* global chrome: false, MagicGestures: true */
@@ -82,25 +82,26 @@ chrome.runtime.onInstalled.addListener(function() {
     MagicGestures.runtime.runOnce();
     MagicGestures.Actions.runOnce(function() {
         MagicGestures.ProfileManager.runOnce(function() {
-            MagicGestures.runtime.set({neuralnetTrainScheduled: neuralnetTrainScheduled});
-        });
-    });
+            if (neuralnetTrainScheduled)
+                MagicGestures.runtime.set({neuralnetTrainScheduled: neuralnetTrainScheduled});
 
-
-    // Reload content script for each tab.
-    chrome.tabs.query({}, function(tabs) {
-        tabs.forEach(function(tab) {
-            chrome.tabs.executeScript(tab.id, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
-                chrome.tabs.executeScript(tab.id, {file: "lib/js_actions.js", allFrames: true, runAt: "document_start"}, function() { 
-                    chrome.tabs.executeScript(tab.id, {file: "lib/gesture_engine.js", allFrames: true, runAt: "document_start"}, function() {
-                        chrome.tabs.executeScript(tab.id, {file: "lib/gesture_canvas.js", allFrames: true, runAt: "document_start"}, function() {
-                            chrome.tabs.executeScript(tab.id, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"});
+            // Reload content script for each tab.
+            chrome.tabs.query({}, function(tabs) {
+                tabs.forEach(function(tab) {
+                    chrome.tabs.executeScript(tab.id, {file: "lib/magicgestures.js", allFrames: true, runAt: "document_start"}, function() {
+                        chrome.tabs.executeScript(tab.id, {file: "lib/js_actions.js", allFrames: true, runAt: "document_start"}, function() { 
+                            chrome.tabs.executeScript(tab.id, {file: "lib/gesture_engine.js", allFrames: true, runAt: "document_start"}, function() {
+                                chrome.tabs.executeScript(tab.id, {file: "lib/gesture_canvas.js", allFrames: true, runAt: "document_start"}, function() {
+                                    chrome.tabs.executeScript(tab.id, {file: "lib/content_script.js", allFrames: true, runAt: "document_start"});
+                                });
+                            });
                         });
                     });
                 });
             });
         });
     });
+
 });
 
 MagicGestures.init();

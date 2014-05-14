@@ -1,7 +1,7 @@
 /**
  * @fileoverview Magic Gestures object.
  * @author sunny@magicgestures.org {Sunny}
- * @version 0.0.2.7
+ * @version 0.0.2.8
  */
 
 /* global chrome: false */
@@ -262,7 +262,8 @@ Object.defineProperties(MagicGestures.runtime, {
             if (runtimeItems) {
                 runtimeItems = JSON.parse(runtimeItems);
             } else {
-                return MagicGestures.logging.error("No runtime module in localstorage!!!");
+                MagicGestures.logging.error("No runtime module in localstorage!!!");
+                return {};
             }
 
             var result = Object.create(null);
