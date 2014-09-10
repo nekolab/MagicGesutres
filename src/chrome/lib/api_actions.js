@@ -290,6 +290,18 @@ Object.defineProperties(MagicGestures.Actions, {
         enumerable: true
     },
 
+    open_options: {
+        value: {
+            category: "Settings",
+            dependency: "none",
+            description: "Open Magic Gestures options page",
+            action: function(tab) {
+                chrome.tabs.create({url: "chrome-extension://" + chrome.runtime.id + "/views/options.html"});
+            }
+        },
+        enumerable: true
+    },
+
     pin_tab: {
         value: {
             category: "Tab",
@@ -583,4 +595,8 @@ if (!chrome.sessions) {
             });
         }
     });
+} else {
+    MagicGestures.Actions.runOnce = function(callback) {
+        callback.apply(null);
+    }
 }
