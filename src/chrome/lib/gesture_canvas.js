@@ -437,20 +437,41 @@ Object.defineProperty(MagicGestures, "tab", {
                                         break;
                                     case "mouseup":
                                         MagicGestures.tab.gestureCanvas.context2D.lineTo(event.clientX, event.clientY);
-                                        MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
+                                        // MagicGestures.DirectionEngine.update(MagicGestures.tab.gesture, true);
                                         document.removeEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                         document.removeEventListener("mouseup", MagicGestures.tab.mouseHandler.eventAdapter, true);
                                         window.removeEventListener("mousewheel", MagicGestures.tab.mouseHandler.transition, false);
-                                        MagicGestures.tab.destoryCanvas();
-                                        if (!MagicGestures.tab.recordMode.enabled)
-                                            MagicGestures.GestureEngine.recognize();
-                                        else if (MagicGestures.tab.recordMode.callback)
-                                            MagicGestures.tab.recordMode.callback();
+                                        // MagicGestures.tab.destoryCanvas();
+                                        // if (!MagicGestures.tab.recordMode.enabled)
+                                        //     MagicGestures.GestureEngine.recognize();
+                                        // else if (MagicGestures.tab.recordMode.callback)
+                                        //     MagicGestures.tab.recordMode.callback();
 
                                         if (!MagicGestures.isGTKChrome)
                                             document.oncontextmenu = MagicGestures.tab.disableContextMenu;
-                                        MagicGestures.tab.gesture.reset();
-                                        MagicGestures.tab.mouseHandler.currentState = "free";
+                                        // MagicGestures.tab.gesture.reset();
+                                        // MagicGestures.tab.mouseHandler.currentState = "free";
+
+                                        window.onkeypress = function(e) {
+                                            if (e.keyCode === 114) {
+                                                MagicGestures.tab.destoryCanvas();
+                                                MagicGestures.tab.gesture.reset();
+                                                MagicGestures.tab.mouseHandler.currentState = "free";
+                                            }
+                                            window.onkeypress = null;
+                                        };
+
+                                        MagicGestures.NeuralNetEngine.pointFilter(MagicGestures.tab.gesture.points);
+                                        MagicGestures.tab.gestureCanvas.context2D.strokeStyle = 'rgb(0,255,0)';
+                                        MagicGestures.tab.gestureCanvas.context2D.beginPath();
+                                        for (var i = 0; i < MagicGestures.tab.gesture.points.length; i += 2) {
+                                            MagicGestures.tab.gestureCanvas.context2D.arc(
+                                                MagicGestures.tab.gesture.points[i], MagicGestures.tab.gesture.points[i + 1],
+                                                5, 0, 2 * Math.PI, true
+                                            )
+                                        }
+                                        MagicGestures.tab.gestureCanvas.context2D.stroke();
+
                                         break;
                                     default:
                                         MagicGestures.logging.error("FSM: Invaild event while working:", event);

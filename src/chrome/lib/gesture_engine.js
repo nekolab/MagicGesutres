@@ -171,114 +171,174 @@ Object.defineProperty(MagicGestures, "NeuralNetEngine", {
         pointFilter: {
             value: function(pointsPtr) {
 
-                var i, loopCount = 0;
-                var getDistanceArray = function(pointsArray) {
-                    var distanceArray = [];
-
-                    for (var i = 0; i < pointsArray.length / 2 - 1; ++i) {
-                        distanceArray.push(Math.sqrt(
-                            Math.pow(pointsArray[2 * (i + 1)] - pointsArray[2 * i], 2) +
-                            Math.pow(pointsArray[2 * (i + 1) + 1] - pointsArray[2 * i + 1], 2)
-                        ));
+                var threshold = (function() {
+                    var minX = Number.MAX_VALUE, maxX = Number.MIN_VALUE,
+                        minY = Number.MAX_VALUE, maxY = Number.MIN_VALUE;
+                    for (var i = 0; i < pointsPtr.length; i += 2) {
+                        if (pointsPtr[i] < minX) {
+                            minX = pointsPtr[i];
+                        } else if (pointsPtr[i] > maxX) {
+                            maxX = pointsPtr[i];
+                        }
+                        if (pointsPtr[i + 1] < minY) {
+                            minY = pointsPtr[i + 1];
+                        } else if (pointsPtr[i + 1] > maxY) {
+                            maxY = pointsPtr[i + 1];
+                        }
                     }
+                    var xLength = maxX - minY, yLength = maxY - minY;
+                    return Math.max(xLength / 16, yLength / 16);
+                })();
 
-                    return distanceArray;
+                console.log(threshold)
+
+                var farDistanceFromLine = function (pointList) {
+                    var distance = 0, index = 0, maxDistance = 0,
+                        a = pointList[pointList.length - 1] - pointList[1],
+                        b = pointList[pointList.length - 2] - pointList[0],
+                        c = pointList[pointList.length - 2] * pointList[1] - pointList[0] * pointList[pointList.length - 1],
+                        t = Math.sqrt(a * a + b * b);
+                    for (var i = 2; i < pointList.length - 2; i += 2) {
+                        distance = Math.abs((a * pointList[i] - b * pointList[i + 1] + c)) / t;
+                        if (distance > maxDistance) {
+                            index = i;
+                            maxDistance = distance;
+                        }
+                    }
+                    return [index, maxDistance];
                 };
 
-                while (pointsPtr.length >= 132) {
-                    if (pointsPtr.length % 4 !== 0)
-                        pointsPtr.push(pointsPtr[pointsPtr.length - 2], pointsPtr[pointsPtr.length - 1]);
+                var douglasPeucker = function (pointList) {
+                    var m = farDistanceFromLine(pointList), r1, r2,
+                        index = m[0], distance = m[1], len = pointList.length;
 
-                    for (i = 0; i < pointsPtr.length / 2; i += 2) {
-                        pointsPtr[i] = (pointsPtr[2 * i] + pointsPtr[2 * (i + 1)]) / 2;
-                        pointsPtr[i + 1] = (pointsPtr[2 * i + 1] + pointsPtr[2 * i + 3]) / 2;
-                    }
-                    pointsPtr.length /= 2;
-                    
-                    if (++loopCount > 60) {
-                        MagicGestures.logging.error("Infinite loop detected!!!!");
-                        debugger;
-                        break;
-                    }
-                }
-
-                loopCount = 0;
-                for(i = pointsPtr.length / 2 - 1; i >= 1; --i) {
-                    if (pointsPtr[i * 2] === pointsPtr[i * 2 - 2] && pointsPtr[i * 2 + 1] === pointsPtr[i * 2 - 1]) {
-                        if (i !== 1) {
-                            if (pointsPtr[i * 2] === pointsPtr[i * 2 - 4] && pointsPtr[i * 2 + 1] === pointsPtr[i * 2 - 3]) {
-                                pointsPtr.splice(2 * i - 2, 2);
-                            } else {
-                                pointsPtr.splice(2 * i - 2, 2,
-                                    (pointsPtr[2 * i] + pointsPtr[2 * i - 4]) / 2,
-                                    (pointsPtr[2 * i + 1] + pointsPtr[2 * i - 3]) / 2
-                                );
-                            }
-                            ++i;
-                            continue;
-                        } else {
-                            pointsPtr.splice(0, 2);
-                        }
-                    }
-
-                    if (++loopCount > 200) {
-                        MagicGestures.logging.error("Infinite loop detected!!!!");
-                        debugger;
-                        break;
-                    }
-                }
-
-                loopCount = 0;
-                var distanceArray = getDistanceArray(pointsPtr);
-                while (pointsPtr.length >= 4 && pointsPtr.length != 66) {
-                    if (pointsPtr.length <= 64) {
-                        var maxDistance = Math.max.apply(null, distanceArray);
-                        var maxAt = distanceArray.indexOf(maxDistance);
-                        pointsPtr.splice(2 * maxAt + 2, 0,
-                            (pointsPtr[2 * maxAt] + pointsPtr[2 * maxAt + 2]) / 2,
-                            (pointsPtr[2 * maxAt + 1] + pointsPtr[2 * maxAt + 3]) / 2
-                        );
-                        distanceArray.splice(maxAt, 1, maxDistance / 2, maxDistance / 2);
+                    if (distance > threshold) {
+                        r1 = douglasPeucker(pointList.slice(0, index + 2));
+                        r2 = douglasPeucker(pointList.slice(index + 2, len));
+                        return r1.slice(0, -2).concat(r2);
                     } else {
-                        var minDistance = Math.min.apply(null, distanceArray);
-                        var minAt = distanceArray.indexOf(minDistance);
-                        if (minAt === 0) {
-                            pointsPtr.splice(2, 2);
-                            distanceArray.splice(0, 2, Math.sqrt(
-                                Math.pow(pointsPtr[2] - pointsPtr[0], 2) +
-                                Math.pow(pointsPtr[3] - pointsPtr[1], 2)
-                            ));
-                        } else if (minAt === distanceArray.length - 1) {
-                            pointsPtr.splice(-4, 2);
-                            var pointsLength = pointsPtr.length;
-                            distanceArray.splice(-2, 2, Math.sqrt(
-                                Math.pow(pointsPtr[pointsLength - 2] - pointsPtr[pointsLength - 4], 2) +
-                                Math.pow(pointsPtr[pointsLength - 1] - pointsPtr[pointsLength - 3], 2)
-                            ));
-                        } else {
-                            pointsPtr.splice(2 * minAt, 4,
-                                (pointsPtr[2 * minAt] + pointsPtr[2 * minAt + 2]) / 2,
-                                (pointsPtr[2 * minAt + 1] + pointsPtr[2 * minAt + 3]) /2
-                            );
-                            distanceArray.splice(minAt - 1, 3,
-                                Math.sqrt(
-                                    Math.pow(pointsPtr[2 * minAt] - pointsPtr[2 * minAt - 2], 2) +
-                                    Math.pow(pointsPtr[2 * minAt + 1] - pointsPtr[2 * minAt - 1], 2)
-                                ),
-                                Math.sqrt(
-                                    Math.pow(pointsPtr[2 * minAt + 2] - pointsPtr[2 * minAt], 2) +
-                                    Math.pow(pointsPtr[2 * minAt + 3] - pointsPtr[2 * minAt + 1], 2)
-                                )
-                            );
-                        }
+                        return pointList.slice(0, 2).concat(pointList.slice(len - 2, len));
                     }
+                };
 
-                    if (++loopCount > 60) {
-                        MagicGestures.logging.error("Infinite loop detected!!!!");
-                        debugger;
-                        break;
-                    }
+                var result = douglasPeucker(pointsPtr);
+                console.log(result);
+
+                pointsPtr.length = 0;
+                for (var i = 0; i < result.length; ++i) {
+                    pointsPtr.push(result[i]);
                 }
+
+                return result;
+
+                // var i, loopCount = 0;
+                // var getDistanceArray = function(pointsArray) {
+                //     var distanceArray = [];
+
+                //     for (var i = 0; i < pointsArray.length / 2 - 1; ++i) {
+                //         distanceArray.push(Math.sqrt(
+                //             Math.pow(pointsArray[2 * (i + 1)] - pointsArray[2 * i], 2) +
+                //             Math.pow(pointsArray[2 * (i + 1) + 1] - pointsArray[2 * i + 1], 2)
+                //         ));
+                //     }
+
+                //     return distanceArray;
+                // };
+
+                // while (pointsPtr.length >= 132) {
+                //     if (pointsPtr.length % 4 !== 0)
+                //         pointsPtr.push(pointsPtr[pointsPtr.length - 2], pointsPtr[pointsPtr.length - 1]);
+
+                //     for (i = 0; i < pointsPtr.length / 2; i += 2) {
+                //         pointsPtr[i] = (pointsPtr[2 * i] + pointsPtr[2 * (i + 1)]) / 2;
+                //         pointsPtr[i + 1] = (pointsPtr[2 * i + 1] + pointsPtr[2 * i + 3]) / 2;
+                //     }
+                //     pointsPtr.length /= 2;
+                    
+                //     if (++loopCount > 60) {
+                //         MagicGestures.logging.error("Infinite loop detected!!!!");
+                //         debugger;
+                //         break;
+                //     }
+                // }
+
+                // loopCount = 0;
+                // for(i = pointsPtr.length / 2 - 1; i >= 1; --i) {
+                //     if (pointsPtr[i * 2] === pointsPtr[i * 2 - 2] && pointsPtr[i * 2 + 1] === pointsPtr[i * 2 - 1]) {
+                //         if (i !== 1) {
+                //             if (pointsPtr[i * 2] === pointsPtr[i * 2 - 4] && pointsPtr[i * 2 + 1] === pointsPtr[i * 2 - 3]) {
+                //                 pointsPtr.splice(2 * i - 2, 2);
+                //             } else {
+                //                 pointsPtr.splice(2 * i - 2, 2,
+                //                     (pointsPtr[2 * i] + pointsPtr[2 * i - 4]) / 2,
+                //                     (pointsPtr[2 * i + 1] + pointsPtr[2 * i - 3]) / 2
+                //                 );
+                //             }
+                //             ++i;
+                //             continue;
+                //         } else {
+                //             pointsPtr.splice(0, 2);
+                //         }
+                //     }
+
+                //     if (++loopCount > 200) {
+                //         MagicGestures.logging.error("Infinite loop detected!!!!");
+                //         debugger;
+                //         break;
+                //     }
+                // }
+
+                // loopCount = 0;
+                // var distanceArray = getDistanceArray(pointsPtr);
+                // while (pointsPtr.length >= 4 && pointsPtr.length != 66) {
+                //     if (pointsPtr.length <= 64) {
+                //         var maxDistance = Math.max.apply(null, distanceArray);
+                //         var maxAt = distanceArray.indexOf(maxDistance);
+                //         pointsPtr.splice(2 * maxAt + 2, 0,
+                //             (pointsPtr[2 * maxAt] + pointsPtr[2 * maxAt + 2]) / 2,
+                //             (pointsPtr[2 * maxAt + 1] + pointsPtr[2 * maxAt + 3]) / 2
+                //         );
+                //         distanceArray.splice(maxAt, 1, maxDistance / 2, maxDistance / 2);
+                //     } else {
+                //         var minDistance = Math.min.apply(null, distanceArray);
+                //         var minAt = distanceArray.indexOf(minDistance);
+                //         if (minAt === 0) {
+                //             pointsPtr.splice(2, 2);
+                //             distanceArray.splice(0, 2, Math.sqrt(
+                //                 Math.pow(pointsPtr[2] - pointsPtr[0], 2) +
+                //                 Math.pow(pointsPtr[3] - pointsPtr[1], 2)
+                //             ));
+                //         } else if (minAt === distanceArray.length - 1) {
+                //             pointsPtr.splice(-4, 2);
+                //             var pointsLength = pointsPtr.length;
+                //             distanceArray.splice(-2, 2, Math.sqrt(
+                //                 Math.pow(pointsPtr[pointsLength - 2] - pointsPtr[pointsLength - 4], 2) +
+                //                 Math.pow(pointsPtr[pointsLength - 1] - pointsPtr[pointsLength - 3], 2)
+                //             ));
+                //         } else {
+                //             pointsPtr.splice(2 * minAt, 4,
+                //                 (pointsPtr[2 * minAt] + pointsPtr[2 * minAt + 2]) / 2,
+                //                 (pointsPtr[2 * minAt + 1] + pointsPtr[2 * minAt + 3]) /2
+                //             );
+                //             distanceArray.splice(minAt - 1, 3,
+                //                 Math.sqrt(
+                //                     Math.pow(pointsPtr[2 * minAt] - pointsPtr[2 * minAt - 2], 2) +
+                //                     Math.pow(pointsPtr[2 * minAt + 1] - pointsPtr[2 * minAt - 1], 2)
+                //                 ),
+                //                 Math.sqrt(
+                //                     Math.pow(pointsPtr[2 * minAt + 2] - pointsPtr[2 * minAt], 2) +
+                //                     Math.pow(pointsPtr[2 * minAt + 3] - pointsPtr[2 * minAt + 1], 2)
+                //                 )
+                //             );
+                //         }
+                //     }
+
+                //     if (++loopCount > 60) {
+                //         MagicGestures.logging.error("Infinite loop detected!!!!");
+                //         debugger;
+                //         break;
+                //     }
+                // }
             }
         },
 
