@@ -329,12 +329,12 @@ Object.defineProperty(MagicGestures, "tab", {
                         switch(MagicGestures.tab.mouseHandler.currentState) {
                             case "free":
                                 if (event.type == "mousedown") {
-                                    if (MagicGestures.isGTKChrome && new Date().getTime() - MagicGestures.tab.lastRightClick <= 300) {
-                                        MagicGestures.tab.lastRightClick = new Date().getTime();
+                                    if (MagicGestures.isGTKChrome && Date.now() - MagicGestures.tab.lastRightClick <= 300) {
+                                        MagicGestures.tab.lastRightClick = Date.now();
                                         break;
                                     } else if (MagicGestures.isGTKChrome) {
                                         document.oncontextmenu = MagicGestures.tab.disableContextMenu;
-                                        MagicGestures.tab.lastRightClick = new Date().getTime();
+                                        MagicGestures.tab.lastRightClick = Date.now();
                                     }
 
                                     document.addEventListener("mousemove", MagicGestures.tab.mouseHandler.eventAdapter, true);
