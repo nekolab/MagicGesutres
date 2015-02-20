@@ -331,6 +331,7 @@ Object.defineProperty(MagicGestures, "tab", {
                                 if (event.type == "mousedown") {
                                     if (MagicGestures.isGTKChrome && Date.now() - MagicGestures.tab.lastRightClick <= 300) {
                                         MagicGestures.tab.lastRightClick = Date.now();
+                                        MagicGestures.tab.gesture.reset();
                                         break;
                                     } else if (MagicGestures.isGTKChrome) {
                                         document.oncontextmenu = MagicGestures.tab.disableContextMenu;
